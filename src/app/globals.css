@@ -63,6 +63,12 @@ body.ah-theme {
   }
 }
 
+/* Landing modunda sayfa arka plani tamamen kapatilir - iframe opak beyaz */
+body.ah-theme.landing-mode {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
 @media (max-width: 768px) {
   body.ah-theme {
     background-attachment: fixed;

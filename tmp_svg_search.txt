@@ -1,0 +1,1 @@
+<svg width=24 height=24 fill=none viewBox="0 0 24 24" role=presentation focusable=false><path fill=#4A4A4A fill-rule=evenodd d="M7.939 3.609a8 8 0 0 1 9.38 12.296l4.388 4.388a1 1 0 0 1-1.414 1.414l-4.388-4.387A8 8 0 1 1 7.94 3.609M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12" class=base clip-rule=evenodd></path></svg>
