@@ -503,9 +503,17 @@ export function WheelClient({
       return;
     }
 
-    const settledPrize = getPrizeFromRotation(rotationRef.current, wheelCfgRef.current.prizes) ?? pendingPrizeRef.current;
+    const cfg = wheelCfgRef.current;
+    const settled = getPrizeFromRotation(rotationRef.current, cfg.prizes);
+    // Guvenlik: Auto/Motorrad/iPhone/Erneut ASLA kazanamaz — yalniz nakit dilimler.
+    const settledWinnable =
+      settled && settled.kind === "amount" && cfg.winnable.some((p) => p.rotationIndex === settled.rotationIndex)
+        ? settled
+        : null;
+    const finalPrize = settledWinnable ?? pendingPrizeRef.current;
     pendingPrizeRef.current = null;
-    void finalizeSpin(settledPrize);
+    if (!finalPrize) return;
+    void finalizeSpin(finalPrize);
   };
 
 

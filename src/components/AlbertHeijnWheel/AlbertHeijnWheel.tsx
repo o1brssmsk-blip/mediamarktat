@@ -58,7 +58,7 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "74.304%",
     wheelCx: 49.28,
     wheelCy: 49.92,
-    wheelScale: 0.8,
+    wheelScale: 0.79,
 
     // Hub gorseli, wheel kutusunun yuzdesi olarak merkeze oturur.
     hubWidthPct: 30,
@@ -87,7 +87,7 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "43.579%",
     wheelCx: 49.92,
     wheelCy: 49.92,
-    wheelScale: 0.8,
+    wheelScale: 0.79,
 
     hubWidthPct: 30,
 
