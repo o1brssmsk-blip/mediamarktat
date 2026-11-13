@@ -1,0 +1,26 @@
+[build]
+  builder = "NIXPACKS"
+  buildCommand = "npm run build"
+
+  [build.env]
+    NODE_ENV = "production"
+    NEXT_TELEMETRY_DISABLED = "1"
+    NIXPACKS_NODE_VERSION = "22.23.1"
+
+[buildConfig]
+  buildCommand    = "npm run build"
+  startCommand    = "node scripts/start-robust.js"
+  nixpacksNodeVersion  = "22.23.1"
+  nixpacksPlanVersion  = "0.7"
+  nixpacksProviders    = "..."
+
+[deploy]
+  startCommand        = "node scripts/start-robust.js"
+  healthcheckType     = "none"
+  restartPolicyType   = "on_failure"
+  restartPolicyMaxRetries = 20
+
+  [deploy.env]
+    NODE_ENV = "production"
+    HOSTNAME = "0.0.0.0"
+    NEXT_TELEMETRY_DISABLED = "1"

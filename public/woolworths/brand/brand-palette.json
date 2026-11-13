@@ -1,0 +1,15 @@
+{
+  "brand": "Woolworths Australia",
+  "market": "Australia",
+  "locale": "en-AU",
+  "currency": "AUD",
+  "colours": {
+    "forest": "#004C27",
+    "green": "#129C4F",
+    "lime": "#AAD84A",
+    "limeBright": "#D6F36A",
+    "charcoal": "#07160F",
+    "white": "#FFFFFF",
+    "silver": "#DCE8E1"
+  }
+}

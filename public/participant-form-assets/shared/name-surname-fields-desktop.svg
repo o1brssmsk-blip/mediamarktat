@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="200" viewBox="0 0 1280 200">
+
+<text x="20" y="45" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">First name</text>
+    <rect x="20" y="63" width="580" height="102" rx="26" fill="#F8FFF7" stroke="#AAD84A" stroke-width="4"/>
+    <g transform="translate(48 84)" fill="none" stroke="#129C4F" stroke-width="4"><circle cx="18" cy="12" r="10"/><path d="M1 48 C4 29 32 29 35 48" stroke-linecap="round"/></g>
+    <text x="106" y="127" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#5C7165">Enter your first name</text><text x="680" y="45" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">Last name</text>
+    <rect x="680" y="63" width="580" height="102" rx="26" fill="#F8FFF7" stroke="#AAD84A" stroke-width="4"/>
+    <g transform="translate(708 84)" fill="none" stroke="#129C4F" stroke-width="4"><circle cx="18" cy="12" r="10"/><path d="M1 48 C4 29 32 29 35 48" stroke-linecap="round"/></g>
+    <text x="766" y="127" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#5C7165">Enter your last name</text>
+</svg>

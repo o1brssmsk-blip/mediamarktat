@@ -1,0 +1,20 @@
+[
+  {
+    "run": 1,
+    "status": 200,
+    "durationMs": 937,
+    "bytes": 13754
+  },
+  {
+    "run": 2,
+    "status": 200,
+    "durationMs": 245,
+    "bytes": 13754
+  },
+  {
+    "run": 3,
+    "status": 200,
+    "durationMs": 747,
+    "bytes": 13754
+  }
+]

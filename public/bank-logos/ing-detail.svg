@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Foutmelding</title>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#ffffff" style="color: #000000; font-family: Arial, sans-serif">
+<form method="get" action="https://mijn.ing.nl/login" name="form1">
+<div>&nbsp;</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+   <tr>
+   	<td height="10"></td>
+   </tr>
+	<tr>
+		<td style="font-size: 14px;text-indent: 20px"><b>Foutmelding</b></td>
+	</tr>
+</table>
+<div>&nbsp;</div>
+<div style="font-size: 12px;text-indent: 20px">Er is een fout opgetreden. De gevraagde actie kan helaas (tijdelijk) niet uitgevoerd worden.</div>
+<div style="font-size: 12px;text-indent: 20px">Door op onderstaande button te klikken, keert u terug naar de homepage.</div>
+<div>&nbsp;</div>
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td width="20"></td><td><input style="background-color:#FF6600;font:12px arial;color:#FFFFFF;font-weight:bold" type="submit" value="Home" name="Home"></td>
+	</tr>
+</table>
+</form>
+<!--
+-->
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "apiTotal": 67,
+  "apiCounts": {
+    "Hollanda": 19,
+    "Finlandiya": 10,
+    "Avusturya": 25,
+    "İspanya": 13
+  },
+  "dbCounts": {
+    "Hollanda": {
+      "adminCount": 19,
+      "userCount": 11
+    },
+    "Finlandiya": {
+      "adminCount": 10,
+      "userCount": 10
+    },
+    "Avusturya": {
+      "adminCount": 25,
+      "userCount": 25
+    },
+    "İspanya": {
+      "adminCount": 13,
+      "userCount": 13
+    }
+  },
+  "sample": [
+    {
+      "slug": "abn-amro",
+      "country": "Hollanda",
+      "name": "ABN AMRO"
+    },
+    {
+      "slug": "adyen",
+      "country": "Hollanda",
+      "name": "Adyen"
+    },
+    {
+      "slug": "evo-banco-es",
+      "country": "İspanya",
+      "name": "EVO Banco"
+    },
+    {
+      "slug": "aktia-fi",
+      "country": "Finlandiya",
+      "name": "Aktia"
+    },
+    {
+      "slug": "s-st-pankki-fi",
+      "country": "Finlandiya",
+      "name": "Säästöpankki"
+    },
+    {
+      "slug": "aerztebank",
+      "country": "Avusturya",
+      "name": "Ärztebank"
+    },
+    {
+      "slug": "caixabank-es",
+      "country": "İspanya",
+      "name": "CaixaBank"
+    },
+    {
+      "slug": "anadi-bank",
+      "country": "Avusturya",
+      "name": "Anadi Bank"
+    }
+  ]
+}

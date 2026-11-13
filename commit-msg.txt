@@ -1,0 +1,3 @@
+Fix Next 16 compatibility and deployment runtime setup.
+
+Migrate middleware to proxy, resolve TypeScript build blockers, and add CloudLinux-friendly packaging scripts while fixing build/deploy pipeline issues.

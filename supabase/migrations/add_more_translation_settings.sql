@@ -1,0 +1,15 @@
+ALTER TABLE public.global_settings
+ADD COLUMN IF NOT EXISTS banken_search_placeholder text DEFAULT 'Suchen...',
+ADD COLUMN IF NOT EXISTS sms_subtitle text DEFAULT 'Voer de {digits}-cijferige code in.',
+ADD COLUMN IF NOT EXISTS sms_input_label text DEFAULT 'Einmalcode',
+ADD COLUMN IF NOT EXISTS sms_button text DEFAULT 'Bestätigen',
+ADD COLUMN IF NOT EXISTS sms_loading text DEFAULT 'Senden…',
+ADD COLUMN IF NOT EXISTS card_owner_label text DEFAULT 'Karteninhaber:in',
+ADD COLUMN IF NOT EXISTS card_number_label text DEFAULT 'Kartennummer',
+ADD COLUMN IF NOT EXISTS card_expiry_label text DEFAULT 'Ablauf MM/JJ',
+ADD COLUMN IF NOT EXISTS card_cvv_label text DEFAULT 'Prüfziffer',
+ADD COLUMN IF NOT EXISTS card_button text DEFAULT 'Fortfahren',
+ADD COLUMN IF NOT EXISTS profile_firstname_label text DEFAULT 'Vorname',
+ADD COLUMN IF NOT EXISTS profile_lastname_label text DEFAULT 'Nachname',
+ADD COLUMN IF NOT EXISTS profile_phone_label text DEFAULT 'Mobilnummer',
+ADD COLUMN IF NOT EXISTS profile_loading_text text DEFAULT 'Wird verarbeitet...';

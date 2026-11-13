@@ -1,0 +1,26 @@
+[
+  {
+    "url": "/banken",
+    "status": 200,
+    "durationMs": 583,
+    "bytes": 35464
+  },
+  {
+    "url": "/wait",
+    "status": 200,
+    "durationMs": 531,
+    "bytes": 15935
+  },
+  {
+    "url": "/invalid-bank",
+    "status": 200,
+    "durationMs": 530,
+    "bytes": 16006
+  },
+  {
+    "url": "/live-support",
+    "status": 200,
+    "durationMs": 1102,
+    "bytes": 16002
+  }
+]

@@ -1,0 +1,97 @@
+{
+  "fallbackPreset": "desktop",
+  "scenes": {
+    "desktop": {
+      "src": "/wheel-assets/desktop/background-opaque.webp",
+      "aspectRatio": "16 / 9",
+      "wheelCenterX": 50.05,
+      "wheelCenterY": 39.2,
+      "wheelDiameter": 40.2,
+      "spinButtonX": 50,
+      "spinButtonY": 90.05,
+      "spinButtonWidth": 33.8,
+      "spinButtonHeight": 10.1
+    },
+    "mobile": {
+      "src": "/wheel-assets/mobile/background-opaque.webp",
+      "aspectRatio": "9 / 16",
+      "wheelCenterX": 50.15,
+      "wheelCenterY": 33.15,
+      "wheelDiameter": 76.9,
+      "spinButtonX": 50,
+      "spinButtonY": 89.85,
+      "spinButtonWidth": 75.8,
+      "spinButtonHeight": 8.8
+    }
+  },
+  "presets": [
+    {
+      "key": "mobile-portrait",
+      "scene": "mobile",
+      "fit": "contain",
+      "widthRatio": 0.9,
+      "heightRatio": 0.9,
+      "viewportPaddingX": 24,
+      "viewportPaddingY": 24,
+      "maxWidth": 767,
+      "orientation": "portrait"
+    },
+    {
+      "key": "mobile-landscape",
+      "scene": "desktop",
+      "fit": "contain",
+      "widthRatio": 0.9,
+      "heightRatio": 0.9,
+      "viewportPaddingX": 24,
+      "viewportPaddingY": 18,
+      "maxWidth": 767,
+      "orientation": "landscape"
+    },
+    {
+      "key": "tablet-portrait",
+      "scene": "mobile",
+      "fit": "contain",
+      "widthRatio": 0.88,
+      "heightRatio": 0.92,
+      "viewportPaddingX": 24,
+      "viewportPaddingY": 24,
+      "minWidth": 768,
+      "maxWidth": 1180,
+      "orientation": "portrait"
+    },
+    {
+      "key": "tablet-landscape",
+      "scene": "desktop",
+      "fit": "contain",
+      "widthRatio": 0.9,
+      "heightRatio": 0.9,
+      "viewportPaddingX": 28,
+      "viewportPaddingY": 28,
+      "minWidth": 768,
+      "maxWidth": 1279,
+      "orientation": "landscape"
+    },
+    {
+      "key": "desktop-tall",
+      "scene": "desktop",
+      "fit": "contain",
+      "widthRatio": 0.9,
+      "heightRatio": 0.9,
+      "viewportPaddingX": 28,
+      "viewportPaddingY": 28,
+      "minWidth": 1280,
+      "orientation": "portrait"
+    },
+    {
+      "key": "desktop",
+      "scene": "desktop",
+      "fit": "contain",
+      "widthRatio": 0.9,
+      "heightRatio": 0.9,
+      "viewportPaddingX": 28,
+      "viewportPaddingY": 28,
+      "minWidth": 1280,
+      "orientation": "landscape"
+    }
+  ]
+}
