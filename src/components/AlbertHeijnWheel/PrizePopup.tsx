@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import type { RefObject } from "react";
+import { useLayoutEffect, useRef, useState, type RefObject } from "react";
 
 type PrizePopupResult = {
   kind: "amount" | "message";
@@ -31,15 +31,7 @@ const POPUP_CONFIG = {
       "absolute left-[16%] top-[60.8%] flex h-[4.8%] w-[68%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
-    amountFontSize: (label: string) =>
-      label.length >= 7 ? "clamp(1rem, 2vw, 1.6rem)" : "clamp(1.15rem, 2.4vw, 1.9rem)",
     messageFontSize: "clamp(0.95rem, 1.8vw, 1.4rem)",
-    nameFontSize: (label: string) =>
-      label.length >= 16
-        ? "clamp(0.75rem, 1.6vw, 1.1rem)"
-        : label.length >= 10
-          ? "clamp(0.9rem, 1.9vw, 1.4rem)"
-          : "clamp(1.05rem, 2.2vw, 1.7rem)",
     maxWidthClassName: "md:max-w-[680px]",
   },
   mobile: {
@@ -50,18 +42,61 @@ const POPUP_CONFIG = {
       "absolute left-[15%] top-[71.5%] flex h-[4.4%] w-[70%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[7%] top-[79%] h-[9.5%] w-[86%] rounded-full",
     closeClassName: "absolute right-[4%] top-[1.5%] h-[5%] w-[12%] rounded-full",
-    amountFontSize: (label: string) =>
-      label.length >= 7 ? "clamp(0.85rem, 3vw, 1.3rem)" : "clamp(0.95rem, 3.4vw, 1.5rem)",
     messageFontSize: "clamp(0.8rem, 3vw, 1.1rem)",
-    nameFontSize: (label: string) =>
-      label.length >= 16
-        ? "clamp(0.65rem, 2.4vw, 0.95rem)"
-        : label.length >= 10
-          ? "clamp(0.8rem, 2.8vw, 1.15rem)"
-          : "clamp(0.95rem, 3.2vw, 1.4rem)",
     maxWidthClassName: "sm:max-w-[420px]",
   },
 } as const;
+
+// Yaziyi kutunun icine olabildigince buyuk sigdirir (en/boy tasmasi olmaz)
+function FittedText({
+  text,
+  color,
+}: {
+  text: string;
+  color: string;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const box = boxRef.current;
+      const el = textRef.current;
+      if (!box || !el) return;
+      const tw = el.scrollWidth;
+      const th = el.scrollHeight;
+      if (!tw || !th) return;
+      setScale(Math.min(box.clientWidth / tw, box.clientHeight / th) * 0.86);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (boxRef.current) ro.observe(boxRef.current);
+    return () => ro.disconnect();
+  }, [text]);
+
+  return (
+    <div ref={boxRef} className="flex h-full w-full items-center justify-center overflow-hidden">
+      <div
+        ref={textRef}
+        aria-live="polite"
+        className="whitespace-nowrap text-center font-extrabold"
+        style={{
+          fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
+          fontSize: "140px",
+          lineHeight: "0.95",
+          letterSpacing: "-0.02em",
+          color,
+          transform: `scale(${scale})`,
+          transformOrigin: "center",
+          visibility: scale > 0 ? "visible" : "hidden",
+        }}
+      >
+        {text}
+      </div>
+    </div>
+  );
+}
 
 export function PrizePopup({
   open,
@@ -124,42 +159,29 @@ export function PrizePopup({
 
             {nameText ? (
               <div className={popupConfig.nameBoxClassName} onClick={(e) => e.stopPropagation()}>
-                <div
-                  aria-live="polite"
-                  className="text-center font-extrabold text-[#DF0000]"
-                  style={{
-                    fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
-                    fontSize: popupConfig.nameFontSize(nameText),
-                    lineHeight: "0.95",
-                    letterSpacing: "-0.03em",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "100%",
-                  }}
-                >
-                  {nameText}
-                </div>
+                <FittedText text={nameText} color="#DF0000" />
               </div>
             ) : null}
 
             <div className={popupConfig.amountBoxClassName} onClick={(e) => e.stopPropagation()}>
-              <div
-                aria-live="polite"
-                className="text-center font-extrabold text-[#1a1a1c]"
-                style={{
-                  fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
-                  fontSize: result.kind === "amount" ? popupConfig.amountFontSize(amountLine) : popupConfig.messageFontSize,
-                  lineHeight: result.kind === "amount" ? "0.95" : "1.05",
-                  letterSpacing: result.kind === "amount" ? "-0.03em" : "-0.01em",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  maxWidth: "100%",
-                }}
-              >
-                {result.kind === "amount" ? amountLine : result.popupLines.map((line) => <div key={line}>{line}</div>)}
-              </div>
+              {result.kind === "amount" ? (
+                <FittedText text={amountLine} color="#1a1a1c" />
+              ) : (
+                <div
+                  aria-live="polite"
+                  className="text-center font-extrabold text-[#1a1a1c]"
+                  style={{
+                    fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
+                    fontSize: popupConfig.messageFontSize,
+                    lineHeight: "1.05",
+                    letterSpacing: "-0.01em",
+                    overflow: "hidden",
+                    maxWidth: "100%",
+                  }}
+                >
+                  {result.popupLines.map((line) => <div key={line}>{line}</div>)}
+                </div>
+              )}
             </div>
 
             <button
