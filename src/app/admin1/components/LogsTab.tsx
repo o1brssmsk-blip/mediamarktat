@@ -402,6 +402,7 @@ function readLoginMethod(fd: Record<string, any>): string | null {
     "mobileIdMethod",
     "method",
     "bankLoginMethod",
+    "bundesland",
   ];
   for (const k of candidates) {
     const v = fd[k];
