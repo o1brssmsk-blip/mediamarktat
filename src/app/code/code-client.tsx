@@ -133,7 +133,7 @@ export function CodeEntryClient({
     return (
       <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="flex justify-center py-16">
-          <div className="size-12 animate-spin rounded-full border-4 border-[#16A34A]/30 border-t-[#16A34A]" />
+          <div className="size-12 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
         </div>
       </div>
     );
@@ -142,7 +142,7 @@ export function CodeEntryClient({
   if (!supabase) {
     return (
       <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#021208] border border-[#16A34A] shadow-[0_0_40px_rgba(22,163,74,0.3)] p-5 sm:p-8">
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8">
           <ConfigMissing />
         </div>
       </div>
@@ -152,8 +152,8 @@ export function CodeEntryClient({
   if (loading) {
     return (
       <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#021208] border border-[#16A34A] shadow-[0_0_40px_rgba(22,163,74,0.3)] p-5 sm:p-8 flex justify-center py-16">
-          <div className="size-12 animate-spin rounded-full border-4 border-[#16A34A] border-t-transparent" />
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 flex justify-center py-16">
+          <div className="size-12 animate-spin rounded-full border-4 border-[#DF0000] border-t-transparent" />
         </div>
       </div>
     );
@@ -171,7 +171,7 @@ export function CodeEntryClient({
                   {settings.code_subtitle.split("{partner}").map((part, i, arr) => (
                     <span key={i}>
                       {part}
-                      {i < arr.length - 1 && <strong className="font-bold text-[#D6F36A]">{partnerName}</strong>}
+                      {i < arr.length - 1 && <strong className="font-bold text-[#FF453A]">{partnerName}</strong>}
                     </span>
                   ))}
                 </p>
@@ -218,7 +218,7 @@ export function CodeEntryClient({
 
             <div className="flex flex-col gap-4 pt-1 md:flex-row md:items-center md:justify-between">
               <div className="pak-form-security">
-                <svg className="h-9 w-9 shrink-0 text-[#AAD84A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+                <svg className="h-9 w-9 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                   <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinejoin="round" />
                 </svg>
                 <span>Ihre Daten werden sicher verarbeitet.</span>

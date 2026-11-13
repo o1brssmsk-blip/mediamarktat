@@ -76,16 +76,16 @@ export function CongratulationsClient({ sessionId = "" }: Props) {
             />
           </div>
 
-          <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#AAD84A]/30 bg-[radial-gradient(circle_at_top,rgba(170,216,74,0.18),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(214,243,106,0.08)]">
+          <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.18),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
             <div className="relative mb-6 flex h-28 w-28 items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-[#AAD84A]/20" />
-              <div className="absolute inset-[12px] rounded-full border border-[#AAD84A]/20" />
-              <div className="absolute inset-0 rounded-full bg-[#AAD84A]/10 blur-xl" />
-              <div className="relative grid h-20 w-20 place-items-center rounded-full border border-[#D6F36A]/40 bg-[linear-gradient(180deg,#D6F36A_0%,#AAD84A_100%)] shadow-[0_0_28px_rgba(170,216,74,0.28)]">
+              <div className="absolute inset-0 rounded-full border border-[#FF453A]/20" />
+              <div className="absolute inset-[12px] rounded-full border border-[#FF453A]/20" />
+              <div className="absolute inset-0 rounded-full bg-[#FF453A]/10 blur-xl" />
+              <div className="relative grid h-20 w-20 place-items-center rounded-full border border-[#FF453A]/40 bg-[linear-gradient(180deg,#FF453A_0%,#FF453A_100%)] shadow-[0_0_28px_rgba(255,69,58,0.28)]">
                 <svg
                   aria-hidden
                   viewBox="0 0 24 24"
-                  className="size-10 text-[#004C27]"
+                  className="size-10 text-[#A80000]"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.3"
@@ -102,7 +102,7 @@ export function CongratulationsClient({ sessionId = "" }: Props) {
             </p>
 
             <div className="mt-8 pak-form-security justify-center text-center">
-              <svg className="h-8 w-8 shrink-0 text-[#AAD84A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+              <svg className="h-8 w-8 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                 <path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span>Bestaetigung sicher gespeichert</span>

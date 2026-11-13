@@ -382,7 +382,7 @@ function SpecialNoticeCard({ message, imageUrl }: { message: string; imageUrl: s
         <div className="pak-form-inner px-5 py-6 text-center sm:px-8 sm:py-8">
           <div className="mb-4 flex items-start justify-between gap-4 text-left">
             <div>
-              <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-[#D6F36A]">Customer Support</p>
+              <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-[#FF453A]">Customer Support</p>
               <h1 className="mt-3 text-3xl font-extrabold uppercase leading-[0.95] tracking-[-0.03em] text-white sm:text-[2.65rem]">
                 Special Notice
               </h1>
@@ -394,14 +394,14 @@ function SpecialNoticeCard({ message, imageUrl }: { message: string; imageUrl: s
             />
           </div>
 
-          <div className="mb-5 rounded-[1.2rem] border border-[#AAD84A]/20 bg-black/20 px-4 py-4 sm:px-5">
+          <div className="mb-5 rounded-[1.2rem] border border-[#FF453A]/20 bg-black/20 px-4 py-4 sm:px-5">
             <p className="whitespace-pre-wrap text-base font-semibold leading-7 text-white/92 sm:text-lg">
               <Linkify text={message} />
             </p>
           </div>
 
-          <div className="pak-form-security justify-center border-t border-[#AAD84A]/15 pt-4 text-center">
-            <svg className="h-7 w-7 shrink-0 text-[#AAD84A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+          <div className="pak-form-security justify-center border-t border-[#FF453A]/15 pt-4 text-center">
+            <svg className="h-7 w-7 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
               <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span>Your request is being reviewed securely by our customer support team.</span>

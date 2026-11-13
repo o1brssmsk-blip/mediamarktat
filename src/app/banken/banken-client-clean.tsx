@@ -169,7 +169,7 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
           name: bank.name,
           domain: bank.domain,
           logoFile: bank.logoFile ?? bank.logo_file,
-          brandColor: bank.brandColor ?? bank.brand_color ?? "#0a8f6a",
+          brandColor: bank.brandColor ?? bank.brand_color ?? "#DF0000",
           accentColor: bank.accentColor ?? bank.accent_color ?? "#129C4F",
           logo: bank.logo ?? (bank.name || "BANK").toUpperCase().slice(0, 6),
           country: bank.country,
@@ -399,7 +399,7 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
   if (!supabase) {
     return (
       <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#021208] border border-[#16A34A] shadow-[0_0_40px_rgba(22,163,74,0.3)] p-5 sm:p-8">
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8">
           <ConfigMissing />
         </div>
       </div>
@@ -410,11 +410,11 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
     if (recovering) {
       return (
         <div className="pak-page-shell">
-          <div className="w-full max-w-[650px] rounded-[24px] bg-[#021208] border border-[#16A34A] shadow-[0_0_40px_rgba(22,163,74,0.3)] p-5 sm:p-8 text-center">
+          <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
             <h2 className="text-2xl font-bold text-white mb-2">Bank Selection</h2>
             <p className="text-sm text-gray-300 mb-8">Restoring session...</p>
             <div className="flex justify-center py-12">
-              <div className="size-10 animate-spin rounded-full border-4 border-[#16A34A]/30 border-t-[#16A34A]" />
+              <div className="size-10 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
             </div>
           </div>
         </div>
@@ -422,7 +422,7 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
     }
     return (
       <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#021208] border border-[#16A34A] shadow-[0_0_40px_rgba(22,163,74,0.3)] p-5 sm:p-8 text-center">
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
           <h2 className="text-2xl font-bold text-white mb-2">Bank Selection</h2>
           <p className="text-sm text-gray-300 mb-6">Invalid link.</p>
           <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
@@ -437,7 +437,7 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
     return (
       <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="flex justify-center py-12">
-          <div className="size-10 animate-spin rounded-full border-4 border-[#16A34A]/30 border-t-[#16A34A]" />
+          <div className="size-10 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
         </div>
       </div>
     );
@@ -480,13 +480,13 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
             <div className="min-h-0 overflow-y-auto pr-1 custom-scrollbar">
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredOptions.length === 0 ? (
-                  <div className="col-span-full rounded-2xl border border-[#AAD84A]/20 bg-white/5 p-6 text-center text-sm text-white/82">
+                  <div className="col-span-full rounded-2xl border border-[#FF453A]/20 bg-white/5 p-6 text-center text-sm text-white/82">
                     No banks were found for the selected country. Choose another country or clear the search filter.
                   </div>
                 ) : filteredOptions.map((opt) => {
                   const palette = (() => {
                     const pg = getAuBankPageEntry(opt.slug);
-                    const brand = pg?.brandColor?.trim() || (banks.find((b) => b.slug === opt.slug) as any)?.brandColor || "#0A8F6A";
+                    const brand = pg?.brandColor?.trim() || (banks.find((b) => b.slug === opt.slug) as any)?.brandColor || "#DF0000";
                     const accent = pg?.accentColor?.trim() || (banks.find((b) => b.slug === opt.slug) as any)?.accentColor || brand;
                     const hex = (h: string) => h.replace("#", "");
                     const r = (h: string) => parseInt(hex(h).slice(0, 2), 16);
@@ -587,11 +587,11 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
                 </div>
             </div>
 
-            <div className="mt-3 flex shrink-0 items-center justify-center gap-2 border-t border-[#AAD84A]/15 pt-3 text-center pak-form-security">
-              <svg className="h-8 w-8 shrink-0 text-[#AAD84A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+            <div className="mt-3 flex shrink-0 items-center justify-center gap-2 border-t border-[#FF453A]/15 pt-3 text-center pak-form-security">
+              <svg className="h-8 w-8 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                 <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinejoin="round" />
               </svg>
-              <span>Your bank selection is processed securely.</span>
+              <span>Ihre Bankauswahl wird sicher verarbeitet.</span>
             </div>
           </div>
         </div>

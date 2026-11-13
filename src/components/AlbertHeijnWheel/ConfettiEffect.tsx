@@ -8,7 +8,7 @@ type Props = {
   triggerKey: string | null;
 };
 
-const COLORS = ["#16A34A", "#FFFFFF", "#AAD84A"];
+const COLORS = ["#DF0000", "#FFFFFF", "#FF453A"];
 const BURST_COUNT = 8;
 const PARTICLES_PER_BURST = 25;
 const BURST_INTERVAL_MS = 250;
