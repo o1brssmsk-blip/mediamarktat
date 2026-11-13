@@ -687,7 +687,7 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
     );
   }
 
-  if (viewState.approvalStatus) {
+  if (viewState.approvalStatus && viewState.approvalStatus !== "special_notice") {
     return (
       <GenericApprovalCard
         title={APPROVAL_LABELS[viewState.approvalStatus] ?? "Bestaetigung"}
