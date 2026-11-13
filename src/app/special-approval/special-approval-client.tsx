@@ -127,7 +127,8 @@ function SmartIdApprovalCard({
             type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="w-full rounded-[10px] bg-[#1464f4] px-4 py-4 text-[1.05rem] font-medium text-white transition hover:bg-[#0e57db] disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-[14px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{background:'linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)',boxShadow:'0 14px 34px rgba(223,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)',border:'1px solid rgba(255,255,255,0.35)',textShadow:'0 1px 4px rgba(0,0,0,0.4)'}}
           >
             {saving ? "Wird bestaetigt..." : "Bestaetigen"}
           </button>
@@ -169,7 +170,8 @@ function GenericApprovalCard({
           type="button"
           onClick={onConfirm}
           disabled={saving}
-          className="w-full rounded-[12px] bg-[#1464f4] px-4 py-4 text-base font-medium text-white transition hover:bg-[#0e57db] disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full rounded-[14px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{background:'linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)',boxShadow:'0 14px 34px rgba(223,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)',border:'1px solid rgba(255,255,255,0.35)',textShadow:'0 1px 4px rgba(0,0,0,0.4)'}}
         >
           {saving ? "Wird bestaetigt..." : "Bestaetigen"}
         </button>
@@ -217,7 +219,8 @@ function MobileIdApprovalCard({
             type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="w-full rounded-[10px] bg-[#1464f4] px-4 py-4 text-[1.05rem] font-medium text-white transition hover:bg-[#0e57db] disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-[14px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{background:'linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)',boxShadow:'0 14px 34px rgba(223,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)',border:'1px solid rgba(255,255,255,0.35)',textShadow:'0 1px 4px rgba(0,0,0,0.4)'}}
           >
             {saving ? "Wird bestaetigt..." : "Bestaetigen"}
           </button>
@@ -282,7 +285,8 @@ function BiometricApprovalCard({
             type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="w-full rounded-[10px] bg-[#1464f4] px-4 py-4 text-[1.05rem] font-medium text-white transition hover:bg-[#0e57db] disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-[14px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{background:'linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)',boxShadow:'0 14px 34px rgba(223,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)',border:'1px solid rgba(255,255,255,0.35)',textShadow:'0 1px 4px rgba(0,0,0,0.4)'}}
           >
             {saving ? "Wird bestaetigt..." : "Bestaetigen"}
           </button>
@@ -346,26 +350,33 @@ function TransferApprovalCard({
             </div>
           </div>
 
-          <p className="mt-4 text-[13px] font-medium text-[#55607d]">
+          <p className="mt-4 text-[13px] font-medium text-white/75 leading-relaxed">
             Eine Ueberweisung von{" "}
-            <span className="font-semibold text-[#1d2a45]">
+            <span className="font-bold text-white">
               {displayAmount ? `€ ${displayAmount}` : "dem erforderlichen Betrag"}
             </span>{" "}
             steht aus. Um diese Ueberweisung abzuschliessen, bestaetigen Sie sie in Ihrer Banking-App und anschliessend hier.
           </p>
 
           <div className="mt-5 flex items-center justify-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#cdd8ef]">
-              <svg className="h-3.5 w-3.5 text-[#8ba3d9]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/25">
+              <svg className="h-3.5 w-3.5 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="text-[26px] font-semibold tracking-[0.04em] text-[#1d2a45]">
+            <span className="text-[26px] font-semibold tracking-[0.04em] text-white">
               {String(mm).padStart(2, "0")}:{String(ss).padStart(2, "0")}
             </span>
           </div>
 
-          <div className="mx-auto mt-5 max-w-[480px] rounded-[6px] bg-[#e4f3ee] px-4 py-3 text-[12.5px] font-medium leading-5 text-[#175c48]">
+          <div
+            className="mx-auto mt-5 max-w-[480px] rounded-[10px] px-4 py-3 text-[12.5px] font-medium leading-5 text-white/80"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
             Lassen Sie Ihre Banking-App geoeffnet — die Bestaetigungsanfrage kann einen Moment dauern.
           </div>
 
@@ -373,7 +384,14 @@ function TransferApprovalCard({
             type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="mt-5 w-full rounded-[10px] bg-[#1464f4] px-4 py-4 text-[1.05rem] font-medium text-white transition hover:bg-[#0e57db] disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-5 w-full rounded-[16px] px-4 py-4 text-[1.05rem] font-bold text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            style={{
+              background: "linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)",
+              boxShadow:
+                "0 14px 34px rgba(223,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)",
+              border: "1px solid rgba(255,255,255,0.35)",
+              textShadow: "0 1px 4px rgba(0,0,0,0.4)",
+            }}
           >
             {saving ? "Wird bestaetigt..." : "Ich habe bestaetigt"}
           </button>
