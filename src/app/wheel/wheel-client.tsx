@@ -484,7 +484,10 @@ export function WheelClient({
 
     const nextPrize = getRandomWinnablePrize(wheelCfgRef.current);
     const startRotation = rotationRef.current;
-    const targetRotation = getTargetRotation(startRotation, nextPrize.rotationIndex);
+    // Dilim icinde dogal durus: +-10° jitter (dilim yarisi +-20° — indeks bozulmaz).
+    // Kazanilan odul HER ZAMAN gercek durus acisindan hesaplanir (getPrizeFromRotation).
+    const jitter = (Math.random() * 2 - 1) * 10;
+    const targetRotation = getTargetRotation(startRotation, nextPrize.rotationIndex) + jitter;
 
     pendingPrizeRef.current = nextPrize;
     setSpinning(true);

@@ -32,14 +32,14 @@ const POPUP_CONFIG = {
     ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
     amountFontSize: (label: string) =>
-      label.length >= 7 ? "clamp(1.4rem, 3vw, 2.4rem)" : "clamp(1.6rem, 3.5vw, 2.8rem)",
-    messageFontSize: "clamp(1.2rem, 2.2vw, 1.8rem)",
+      label.length >= 7 ? "clamp(1rem, 2vw, 1.6rem)" : "clamp(1.15rem, 2.4vw, 1.9rem)",
+    messageFontSize: "clamp(0.95rem, 1.8vw, 1.4rem)",
     nameFontSize: (label: string) =>
-      label.length >= 22
-        ? "clamp(0.9rem, 2vw, 1.4rem)"
-        : label.length >= 14
-          ? "clamp(1.1rem, 2.4vw, 1.8rem)"
-          : "clamp(1.3rem, 2.8vw, 2.2rem)",
+      label.length >= 16
+        ? "clamp(0.75rem, 1.6vw, 1.1rem)"
+        : label.length >= 10
+          ? "clamp(0.9rem, 1.9vw, 1.4rem)"
+          : "clamp(1.05rem, 2.2vw, 1.7rem)",
     maxWidthClassName: "md:max-w-[680px]",
   },
   mobile: {
@@ -51,14 +51,14 @@ const POPUP_CONFIG = {
     ctaClassName: "absolute left-[7%] top-[79%] h-[9.5%] w-[86%] rounded-full",
     closeClassName: "absolute right-[4%] top-[1.5%] h-[5%] w-[12%] rounded-full",
     amountFontSize: (label: string) =>
-      label.length >= 7 ? "clamp(1.2rem, 4.5vw, 1.9rem)" : "clamp(1.4rem, 5.5vw, 2.2rem)",
-    messageFontSize: "clamp(1rem, 4vw, 1.3rem)",
+      label.length >= 7 ? "clamp(0.85rem, 3vw, 1.3rem)" : "clamp(0.95rem, 3.4vw, 1.5rem)",
+    messageFontSize: "clamp(0.8rem, 3vw, 1.1rem)",
     nameFontSize: (label: string) =>
-      label.length >= 22
-        ? "clamp(0.85rem, 3vw, 1.2rem)"
-        : label.length >= 14
-          ? "clamp(1rem, 3.6vw, 1.5rem)"
-          : "clamp(1.2rem, 4.4vw, 1.8rem)",
+      label.length >= 16
+        ? "clamp(0.65rem, 2.4vw, 0.95rem)"
+        : label.length >= 10
+          ? "clamp(0.8rem, 2.8vw, 1.15rem)"
+          : "clamp(0.95rem, 3.2vw, 1.4rem)",
     maxWidthClassName: "sm:max-w-[420px]",
   },
 } as const;
