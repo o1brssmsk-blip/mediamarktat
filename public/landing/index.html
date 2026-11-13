@@ -10,7 +10,7 @@ html,body{background:#fff;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;c
 
 /* masaustunde ambient arka plan (gorselin kenar renklerinden bulanik) */
 .ambient{display:none;position:fixed;inset:-60px;z-index:0;background:url(mockup.webp) center/cover no-repeat;filter:blur(60px) brightness(.85) saturate(1.15);transform:scale(1.15)}
-.stage{position:relative;z-index:1;max-width:520px;margin:0 auto}
+.stage{position:relative;z-index:1;max-width:520px;margin:0 auto;display:flex;flex-direction:column;min-height:100dvh;background:#fff}
 @media(min-width:700px){.ambient{display:block}}
 
 .shot{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
@@ -32,7 +32,7 @@ html,body{background:#fff;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;c
 @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(46,204,113,.05)}}
 .wrow b{color:#df0000}
 
-.legal{background:#1b1b1b;color:#b9b9b9;padding:32px 20px 28px;font-size:12px;line-height:1.7}
+.legal{background:#1b1b1b;color:#b9b9b9;padding:32px 20px 28px;font-size:12px;line-height:1.7;flex:1}
 .legal-in{max-width:760px;margin:0 auto}
 .legal .badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
 .legal .badges span{background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:8px 14px;font-size:12px;color:#e6e6e6;font-weight:600}
