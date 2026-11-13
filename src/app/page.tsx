@@ -3,7 +3,7 @@ import { findResumableSession } from "@/lib/session-resume";
 import { resolveServerSessionIdentity } from "@/lib/session-id";
 import { stepToPath } from "@/lib/session-routes";
 import type { SessionStep } from "@/types/session";
-import HomeClient from "./home-client";
+import HomeGate from "./home-gate";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: Props) {
     const { sessionId, routeSessionId } = await resolveServerSessionIdentity({
       searchParams: { session: sid },
     });
-    return <HomeClient sessionId={sessionId} routeSessionId={routeSessionId} />;
+    return <HomeGate sessionId={sessionId} routeSessionId={routeSessionId} />;
   }
 
   // Session parametresi YOK: IP/cookie bazli resume — kullanici kaldigi yerden devam eder.
@@ -37,6 +37,6 @@ export default async function Home({ searchParams }: Props) {
     );
   }
 
-  // Yeni ziyaretci -> isim/soyisim/telefon formu -> cark
-  return <HomeClient />;
+  // Yeni ziyaretci -> tanitim landing'i -> isim/soyisim/telefon formu -> cark
+  return <HomeGate />;
 }
