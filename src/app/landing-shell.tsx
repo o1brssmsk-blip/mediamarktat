@@ -37,7 +37,7 @@ export default function LandingShell() {
   }, []);
   return (
     <iframe
-      src={`/landing/index.html${qs}${join}v=7`}
+      src={`/landing/index.html${qs}${join}v=8`}
       title="MediaMarkt Gewinnaktion"
       className="fixed inset-0 z-10 h-full w-full border-0 bg-white"
       style={{ backgroundColor: "#ffffff" }}
