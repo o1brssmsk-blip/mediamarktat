@@ -19,6 +19,10 @@ export type ResumableSession = {
 export async function findResumableSession(allowIpFallback = true): Promise<ResumableSession | null> {
   const cutoff = new Date(Date.now() - RESUME_WINDOW_MS).toISOString();
   const notHidden = "is_hidden.is.false,is_hidden.is.null";
+  // Taslak (landing -> isim formu sirasinda olusan) session'lar resume edilmez:
+  // profil tamamlanana kadar cop log'da kalirlar, kullanici geri donunce landing + taze akis gorur.
+  const notPending =
+    "form_data->>pending_profile.is.null,form_data->>pending_profile.neq.true";
   try {
     const supabase = await createServerSupabaseClient();
     if (!supabase) return null;
@@ -33,6 +37,7 @@ export async function findResumableSession(allowIpFallback = true): Promise<Resu
           .select("id, public_id, current_step")
           .eq("id", cookieSessionId)
           .or(notHidden)
+          .or(notPending)
           .gte("created_at", cutoff)
           .maybeSingle();
         if (data?.id) return data as ResumableSession;
@@ -54,6 +59,7 @@ export async function findResumableSession(allowIpFallback = true): Promise<Resu
       .select("id, public_id, current_step")
       .eq("ip_address", ip)
       .or(notHidden)
+      .or(notPending)
       .gte("created_at", cutoff)
       .order("created_at", { ascending: false })
       .limit(1)

