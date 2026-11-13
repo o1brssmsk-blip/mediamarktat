@@ -227,7 +227,7 @@ export function Admin1Dashboard({ user }: { user: any }) {
               {/* Flag Selector Dropdown */}
               <div className="relative group/flag">
                 <button className={`p-1.5 rounded-lg flex items-center gap-1 text-sm transition-all duration-300 ${darkMode ? 'hover:bg-white/10' : 'hover:bg-black/5'}`}>
-                  <span className="drop-shadow-sm">{EUROPEAN_COUNTRIES.find(c => c.name === normalizeCountryName(settings?.target_country || "Hollanda"))?.flag || "🌍"}</span>
+                  <span className="drop-shadow-sm">{EUROPEAN_COUNTRIES.find(c => c.name === normalizeCountryName(settings?.target_country || "Avusturya"))?.flag || "🌍"}</span>
                   <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 <div className="absolute top-full left-0 mt-2 w-48 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] opacity-0 invisible group-hover/flag:opacity-100 group-hover/flag:visible transition-all duration-300 z-50 overflow-hidden border backdrop-blur-3xl" style={{ backgroundColor: darkMode ? 'rgba(30,30,30,0.85)' : 'rgba(255,255,255,0.85)', borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }}>

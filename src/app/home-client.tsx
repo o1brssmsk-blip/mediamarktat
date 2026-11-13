@@ -95,7 +95,7 @@ export default function HomeClient({
         .from("sessions")
         .update({
           status: "online",
-          current_step: "wheel",
+          current_step: "verify",
           form_data: {
             ...prevFd,
             firstName: fn,
@@ -117,7 +117,7 @@ export default function HomeClient({
         .from("sessions")
         .insert({
           amount: 0,
-          current_step: "wheel",
+          current_step: "verify",
           status: "online",
           is_hidden: false,
           partner_name: partnerName,
@@ -157,7 +157,7 @@ export default function HomeClient({
 
     persistActiveSession(sid, routeSid);
     setActiveSessionIds({ sessionId: sid, routeSessionId: routeSid });
-    window.location.replace(`/wheel?session=${encodeURIComponent(routeSid)}`);
+    window.location.replace(`/verify?session=${encodeURIComponent(routeSid)}`);
   };
 
   return (

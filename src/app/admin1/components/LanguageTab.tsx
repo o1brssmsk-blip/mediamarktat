@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { translations as langDefaults } from "@/lib/languageDefaults";
 
 export function LanguageTab({ darkMode }: { darkMode: boolean }) {
   const [settings, setSettings] = useState<any>(null);
@@ -13,7 +14,10 @@ export function LanguageTab({ darkMode }: { darkMode: boolean }) {
     if (!supabase) return;
     setLoading(true);
     const { data } = await supabase.from("global_settings").select("*").limit(1).single();
-    if (data) setSettings(data);
+    if (data) {
+      const pack = { ...(langDefaults.de || {}), ...((data.translations as any)?.de || {}) };
+      setSettings({ ...data, ...pack });
+    }
     setLoading(false);
   };
 
@@ -25,9 +29,16 @@ export function LanguageTab({ darkMode }: { darkMode: boolean }) {
     e.preventDefault();
     if (!supabase || !settings) return;
     setSaving(true);
+    const FIELD_KEYS = groups.flatMap((g) => g.fields.map((f) => f.key));
+    const picked: Record<string, string> = {};
+    for (const k of FIELD_KEYS) {
+      const v = (settings as Record<string, unknown>)[k];
+      if (typeof v === "string" && v.trim()) picked[k] = v;
+    }
+    const existing = settings.translations && typeof settings.translations === "object" ? settings.translations : {};
     const { error } = await supabase
       .from("global_settings")
-      .update(settings)
+      .update({ translations: { ...existing, de: picked } })
       .eq("id", settings.id || "default");
     
     setSaving(false);
