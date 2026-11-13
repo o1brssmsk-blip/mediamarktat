@@ -3,6 +3,35 @@
 import { useState, useEffect } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+// Cark plani (9 dilim): sadece 5 NAKIT segmenti kazanilir
+// (dilim 3, 6, 7, 8, 9 — saat yonunde, 0 = ustte pointer).
+// Diger dilimler (iPhone, Motorrad, Auto, Erneut) dekor — kazanilamaz.
+// Admin bu 5 slot icin tutar + sans (%) degerlerini duzenler.
+const CASH_SLOT_POSITIONS = [2, 5, 6, 7, 8];
+const DEFAULT_PRIZES = [
+  { amount: 2000, weight: 20 },
+  { amount: 1500, weight: 25 },
+  { amount: 1000, weight: 30 },
+  { amount: 500, weight: 20 },
+  { amount: 2500, weight: 5 },
+];
+
+function normalizePrizes(raw: unknown) {
+  const list = Array.isArray(raw) ? raw : [];
+  const entries = DEFAULT_PRIZES.map((def, i) => {
+    const entry = list[i] as { amount?: unknown; weight?: unknown } | undefined;
+    const amount = Number(entry?.amount);
+    const weight = Number(entry?.weight);
+    return {
+      amount: Number.isFinite(amount) && amount > 0 ? Math.round(amount) : def.amount,
+      weight: Number.isFinite(weight) && weight >= 0 ? Math.round(weight) : def.weight,
+    };
+  });
+  const total = entries.reduce((acc, e) => acc + e.weight, 0);
+  if (total <= 0) return DEFAULT_PRIZES.map((d) => ({ ...d }));
+  return entries;
+}
+
 export function WheelSettingsTab({ darkMode }: { darkMode: boolean }) {
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -46,6 +75,18 @@ export function WheelSettingsTab({ darkMode }: { darkMode: boolean }) {
         [key]: value
       }
     }));
+  };
+
+  const handlePrizeChange = (index: number, field: "amount" | "weight", value: string) => {
+    const num = Number(value);
+    setSettings((prev: any) => {
+      const prizes = normalizePrizes(prev?.wheel_settings?.prizes);
+      prizes[index] = { ...prizes[index], [field]: Number.isFinite(num) ? num : 0 };
+      return {
+        ...prev,
+        wheel_settings: { ...(prev?.wheel_settings || {}), prizes },
+      };
+    });
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
@@ -131,7 +172,49 @@ export function WheelSettingsTab({ darkMode }: { darkMode: boolean }) {
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
-        
+
+        {/* NAKIT ODUL DILIMLERI + SANS ORANLARI */}
+        <div className={`p-8 rounded-3xl border shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl ${darkMode ? 'bg-[#1c1c1e]/70 border-white/5' : 'bg-white/80 border-[#d2d2d7]/50'}`}>
+          <h3 className={`text-lg font-bold mb-2 border-b pb-4 ${darkMode ? 'border-white/10 text-[#EB5E28]' : 'border-gray-200 text-[#EB5E28]'}`}>Nakit Ödül Dilimleri + Şans Oranları</h3>
+          <p className={`text-xs mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            Çarkta 5 nakit segmenti var (tepeden saat yönünde: dilim 3, 6, 7, 8, 9).
+            Şans = ağırlık; 0 olan segment görünür ama kazandırılmaz.
+            iPhone / Motorrad / Auto / Erneut dilimleri dekoratiftir, asla kazandırmaz.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(normalizePrizes(settings.wheel_settings?.prizes)).map((p: { amount: number; weight: number }, i: number) => (
+              <div key={i} className={`p-4 rounded-2xl border ${darkMode ? 'bg-black/20 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wider mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Segment {CASH_SLOT_POSITIONS[i] + 1}</div>
+                <div className="flex gap-3">
+                  <label className="flex-1">
+                    <span className={`block text-[10px] font-bold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Tutar (€)</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={p.amount}
+                      onChange={(e) => handlePrizeChange(i, "amount", e.target.value)}
+                      className={`mt-1 w-full px-3 py-2 rounded-xl text-sm outline-none ${darkMode ? 'bg-black/20 text-white border border-white/10 focus:border-[#EB5E28]' : 'bg-white border border-gray-200 focus:border-[#EB5E28]'}`}
+                    />
+                  </label>
+                  <label className="w-24">
+                    <span className={`block text-[10px] font-bold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Şans (%)</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={p.weight}
+                      onChange={(e) => handlePrizeChange(i, "weight", e.target.value)}
+                      className={`mt-1 w-full px-3 py-2 rounded-xl text-sm outline-none ${darkMode ? 'bg-black/20 text-white border border-white/10 focus:border-[#EB5E28]' : 'bg-white border border-gray-200 focus:border-[#EB5E28]'}`}
+                    />
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={`mt-4 text-xs font-bold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            Toplam şans: {normalizePrizes(settings.wheel_settings?.prizes).reduce((acc: number, p: { weight: number }) => acc + p.weight, 0)}%
+          </div>
+        </div>
+
         <div className={`p-8 rounded-3xl border shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl ${darkMode ? 'bg-[#1c1c1e]/70 border-white/5' : 'bg-white/80 border-[#d2d2d7]/50'}`}>
           <h3 className={`text-lg font-bold mb-6 border-b pb-4 ${darkMode ? 'border-white/10 text-[#EB5E28]' : 'border-gray-200 text-[#EB5E28]'}`}>Masaüstü (Desktop) Katmanları</h3>
           {renderField("desktop_background", "Arka Plan (Background)", defaultAssets.desktop_background)}

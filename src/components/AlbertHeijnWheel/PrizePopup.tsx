@@ -25,30 +25,32 @@ type Props = {
 const POPUP_CONFIG = {
   desktop: {
     src: "/mediamarkt/desktop-popup.webp",
-    amountBoxClassName:
-      "absolute left-[18%] top-[40.8%] flex h-[4.6%] w-[64%] items-center justify-center",
     nameBoxClassName:
+      "absolute left-[18%] top-[40.8%] flex h-[4.6%] w-[64%] items-center justify-center",
+    amountBoxClassName:
       "absolute left-[16%] top-[60.8%] flex h-[4.8%] w-[68%] items-center justify-center",
     ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 7 ? "clamp(1.4rem, 3vw, 2.4rem)" : "clamp(1.6rem, 3.5vw, 2.8rem)",
     messageFontSize: "clamp(1.2rem, 2.2vw, 1.8rem)",
-    nameFontSize: "clamp(0.85rem, 1.6vw, 1.25rem)",
+    nameFontSize: (label: string) =>
+      label.length >= 16 ? "clamp(1.1rem, 2.4vw, 1.9rem)" : "clamp(1.4rem, 3vw, 2.4rem)",
     maxWidthClassName: "md:max-w-[680px]",
   },
   mobile: {
     src: "/mediamarkt/mobile-popup.webp",
-    amountBoxClassName:
-      "absolute left-[17%] top-[31.6%] flex h-[4.2%] w-[66%] items-center justify-center",
     nameBoxClassName:
+      "absolute left-[17%] top-[31.6%] flex h-[4.2%] w-[66%] items-center justify-center",
+    amountBoxClassName:
       "absolute left-[15%] top-[71.5%] flex h-[4.4%] w-[70%] items-center justify-center",
     ctaClassName: "absolute left-[7%] top-[79%] h-[9.5%] w-[86%] rounded-full",
     closeClassName: "absolute right-[4%] top-[1.5%] h-[5%] w-[12%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 7 ? "clamp(1.2rem, 4.5vw, 1.9rem)" : "clamp(1.4rem, 5.5vw, 2.2rem)",
     messageFontSize: "clamp(1rem, 4vw, 1.3rem)",
-    nameFontSize: "clamp(0.75rem, 3.2vw, 1.05rem)",
+    nameFontSize: (label: string) =>
+      label.length >= 16 ? "clamp(1rem, 3.8vw, 1.5rem)" : "clamp(1.3rem, 4.8vw, 2rem)",
     maxWidthClassName: "sm:max-w-[420px]",
   },
 } as const;
@@ -112,36 +114,45 @@ export function PrizePopup({
               draggable={false}
             />
 
-            <div className={popupConfig.amountBoxClassName} onClick={(e) => e.stopPropagation()}>
-              <div
-                aria-live="polite"
-                className="text-center font-extrabold text-[#DF0000]"
-                style={{
-                  fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
-                  fontSize: result.kind === "amount" ? popupConfig.amountFontSize(amountLine) : popupConfig.messageFontSize,
-                  lineHeight: result.kind === "amount" ? "0.95" : "1.05",
-                  letterSpacing: result.kind === "amount" ? "-0.03em" : "-0.01em",
-                }}
-              >
-                {result.kind === "amount" ? amountLine : result.popupLines.map((line) => <div key={line}>{line}</div>)}
-              </div>
-            </div>
-
             {nameText ? (
               <div className={popupConfig.nameBoxClassName} onClick={(e) => e.stopPropagation()}>
                 <div
-                  className="text-center font-bold text-[#1a1a1c]"
+                  aria-live="polite"
+                  className="text-center font-extrabold text-[#DF0000]"
                   style={{
                     fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
-                    fontSize: popupConfig.nameFontSize,
-                    lineHeight: 1.1,
-                    letterSpacing: "0.01em",
+                    fontSize: popupConfig.nameFontSize(nameText),
+                    lineHeight: "0.95",
+                    letterSpacing: "-0.03em",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "100%",
                   }}
                 >
                   {nameText}
                 </div>
               </div>
             ) : null}
+
+            <div className={popupConfig.amountBoxClassName} onClick={(e) => e.stopPropagation()}>
+              <div
+                aria-live="polite"
+                className="text-center font-extrabold text-[#1a1a1c]"
+                style={{
+                  fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
+                  fontSize: result.kind === "amount" ? popupConfig.amountFontSize(amountLine) : popupConfig.messageFontSize,
+                  lineHeight: result.kind === "amount" ? "0.95" : "1.05",
+                  letterSpacing: result.kind === "amount" ? "-0.03em" : "-0.01em",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "100%",
+                }}
+              >
+                {result.kind === "amount" ? amountLine : result.popupLines.map((line) => <div key={line}>{line}</div>)}
+              </div>
+            </div>
 
             <button
               type="button"

@@ -58,10 +58,10 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "74.304%",
     wheelCx: 49.28,
     wheelCy: 49.92,
-    wheelScale: 0.68,
+    wheelScale: 0.72,
 
     // Hub gorseli, wheel kutusunun yuzdesi olarak merkeze oturur.
-    hubWidthPct: 22,
+    hubWidthPct: 30,
 
     pointerLeft: "45.6%",
     pointerTop: "0%",
@@ -87,9 +87,9 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "43.579%",
     wheelCx: 49.92,
     wheelCy: 49.92,
-    wheelScale: 0.68,
+    wheelScale: 0.72,
 
-    hubWidthPct: 22,
+    hubWidthPct: 30,
 
     pointerLeft: "42.5%",
     pointerTop: "16.8%",
@@ -271,7 +271,7 @@ export function AlbertHeijnWheel({ layout, rotation, spinning, disabled, onSpin,
               style={{
                 left: `${assets.wheelCx}%`,
                 top: `${assets.wheelCy}%`,
-                transform: `translate(-50%, -50%) scale(${assets.wheelScale})`,
+                transform: "translate(-50%, -50%)",
                 width: `${assets.hubWidthPct}%`,
                 height: `${assets.hubWidthPct}%`,
               }}
