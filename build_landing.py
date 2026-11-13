@@ -124,7 +124,14 @@ campaign_footer = """
 </footer>
 """
 
-out = head_part + body_tag + header_part + main_tag + campaign + "</main>" + campaign_footer + "</body></html>"
+override_css = """<style>
+/* Landing override: sayfa hicbir zaman transparan olmasin, icerik hep gorunsun */
+html,body{background:#ffffff !important;background-image:none !important;}
+#main-content,main{display:block !important;min-height:0 !important;}
+.sf-hidden{display:none !important;}
+</style>"""
+
+out = head_part + body_tag + header_part + main_tag + campaign + "</main>" + campaign_footer + override_css + "</body></html>"
 
 out = re.sub(r"<script></script>", "", out)
 out = re.sub(r"<div data-ad-curtain.*?</div></div></div>", "", out, flags=re.S)
