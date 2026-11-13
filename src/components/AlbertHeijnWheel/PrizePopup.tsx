@@ -26,31 +26,39 @@ const POPUP_CONFIG = {
   desktop: {
     src: "/mediamarkt/desktop-popup.webp",
     nameBoxClassName:
-      "absolute left-[18%] top-[40.8%] flex h-[4.6%] w-[64%] items-center justify-center",
+      "absolute left-[18%] top-[40.8%] flex h-[4.6%] w-[64%] items-center justify-center overflow-hidden",
     amountBoxClassName:
-      "absolute left-[16%] top-[60.8%] flex h-[4.8%] w-[68%] items-center justify-center",
+      "absolute left-[16%] top-[60.8%] flex h-[4.8%] w-[68%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 7 ? "clamp(1.4rem, 3vw, 2.4rem)" : "clamp(1.6rem, 3.5vw, 2.8rem)",
     messageFontSize: "clamp(1.2rem, 2.2vw, 1.8rem)",
     nameFontSize: (label: string) =>
-      label.length >= 16 ? "clamp(1.1rem, 2.4vw, 1.9rem)" : "clamp(1.4rem, 3vw, 2.4rem)",
+      label.length >= 22
+        ? "clamp(0.9rem, 2vw, 1.4rem)"
+        : label.length >= 14
+          ? "clamp(1.1rem, 2.4vw, 1.8rem)"
+          : "clamp(1.3rem, 2.8vw, 2.2rem)",
     maxWidthClassName: "md:max-w-[680px]",
   },
   mobile: {
     src: "/mediamarkt/mobile-popup.webp",
     nameBoxClassName:
-      "absolute left-[17%] top-[31.6%] flex h-[4.2%] w-[66%] items-center justify-center",
+      "absolute left-[17%] top-[31.6%] flex h-[4.2%] w-[66%] items-center justify-center overflow-hidden",
     amountBoxClassName:
-      "absolute left-[15%] top-[71.5%] flex h-[4.4%] w-[70%] items-center justify-center",
+      "absolute left-[15%] top-[71.5%] flex h-[4.4%] w-[70%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[7%] top-[79%] h-[9.5%] w-[86%] rounded-full",
     closeClassName: "absolute right-[4%] top-[1.5%] h-[5%] w-[12%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 7 ? "clamp(1.2rem, 4.5vw, 1.9rem)" : "clamp(1.4rem, 5.5vw, 2.2rem)",
     messageFontSize: "clamp(1rem, 4vw, 1.3rem)",
     nameFontSize: (label: string) =>
-      label.length >= 16 ? "clamp(1rem, 3.8vw, 1.5rem)" : "clamp(1.3rem, 4.8vw, 2rem)",
+      label.length >= 22
+        ? "clamp(0.85rem, 3vw, 1.2rem)"
+        : label.length >= 14
+          ? "clamp(1rem, 3.6vw, 1.5rem)"
+          : "clamp(1.2rem, 4.4vw, 1.8rem)",
     maxWidthClassName: "sm:max-w-[420px]",
   },
 } as const;
