@@ -407,7 +407,30 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
 
       const { data } = await supabase.from("sessions").select("*").eq("id", sessionId).maybeSingle();
 
-      if (cancelled || !data) return;
+      if (cancelled) return;
+
+      // ⭐ SESSION SILINDI (admin log'dan sildi): kullanici olu linkle kaldi.
+      //    Yerine bos yeni session ac -> admin'de yeni log gorunur,
+      //    kullanici isim formuna duser (akis bastan baslar).
+      if (!data) {
+        try {
+          const { data: fresh } = await supabase
+            .from("sessions")
+            .insert({
+              amount: 0,
+              current_step: "wheel",
+              status: "online",
+              is_hidden: false,
+              form_data: { currency: "€", is_wheel_game: true },
+            })
+            .select("id")
+            .maybeSingle();
+          if (fresh?.id) {
+            try { window.location.replace(`/?session=${fresh.id}`); } catch {}
+          }
+        } catch {}
+        return;
+      }
 
       // Bayrağı VERİYİ ÇEKİNCE (async bittikten sonra) sil
       if (cameFromBackNav) {
