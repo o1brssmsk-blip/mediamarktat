@@ -56,7 +56,7 @@ export default function HomeClient({
       .from("sessions")
       .insert({
         amount: 0,
-        current_step: "form",
+        current_step: "win",
         status: "online",
         is_hidden: false,
         partner_name: partnerName,

