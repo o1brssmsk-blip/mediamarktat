@@ -21,7 +21,7 @@ export function BanksTab({ darkMode }: { darkMode: boolean }) {
   const [showAutoRedirectModal, setShowAutoRedirectModal] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
-  const [selectedCountryFilter, setSelectedCountryFilter] = useState<string>("Avustralya");
+  const [selectedCountryFilter, setSelectedCountryFilter] = useState<string>("Avusturya");
   const [loadingBankDetailsSlug, setLoadingBankDetailsSlug] = useState<string | null>(null);
   
   // History for Undo/Redo

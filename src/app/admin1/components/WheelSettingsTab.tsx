@@ -123,16 +123,17 @@ export function WheelSettingsTab({ darkMode }: { darkMode: boolean }) {
     desktop_wheel: "/wheel-assets/desktop/png/mediamarkt-wheel.webp",
     desktop_pointer: "/wheel-assets/desktop/png/mediamarkt-pointer.webp",
     desktop_button: "/wheel-assets/desktop/png/mediamarkt-button.webp",
-    desktop_centerHub: "/logo.webp",
+    desktop_centerHub: "/wheel-assets/desktop/png/mediamarkt-hub.webp",
     mobile_background: "/wheel-assets/mobile/png/mediamarkt-background.webp",
     mobile_wheel: "/wheel-assets/mobile/png/mediamarkt-wheel.webp",
     mobile_pointer: "/wheel-assets/mobile/png/mediamarkt-pointer.webp",
     mobile_button: "/wheel-assets/mobile/png/mediamarkt-button.webp",
-    mobile_centerHub: "/logo.webp",
+    mobile_centerHub: "/wheel-assets/mobile/png/mediamarkt-hub.webp",
   };
 
   const renderField = (key: string, label: string, defaultUrl: string) => {
-    const value = wheelSettings[key] || defaultUrl;
+    let value = wheelSettings[key] || defaultUrl;
+    if (value === "/logo.webp") value = defaultUrl;
     return (
       <div className="flex gap-5 items-center border-b border-black/5 dark:border-white/5 pb-5 mb-5 last:border-0 last:pb-0 last:mb-0">
         <div className={`w-24 h-24 shrink-0 rounded-2xl border flex items-center justify-center p-2 overflow-hidden shadow-inner ${darkMode ? 'bg-black/40 border-white/10' : 'bg-gray-100 border-gray-200'}`}>

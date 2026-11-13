@@ -553,14 +553,14 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
 
             <div className="flex gap-5 items-center border-b border-black/5 dark:border-white/5 pb-8">
               <div className={`w-24 h-24 shrink-0 rounded-2xl border flex items-center justify-center overflow-hidden relative shadow-inner ${darkMode ? 'bg-black/40 border-white/10' : 'bg-gray-100 border-gray-200'}`}>
-                {settings.wheel_settings?.bg_url_mobile ? <img src={settings.wheel_settings.bg_url_mobile} alt="" className="absolute inset-0 w-full h-full object-cover opacity-80" /> : <span className="text-xs opacity-50 font-medium">Mobil Yok</span>}
+                {settings.wheel_settings?.bg_url_mobile || true ? <img src={settings.wheel_settings?.bg_url_mobile || "/mediamarkt/mobile-background.webp"} alt="" className="absolute inset-0 w-full h-full object-cover opacity-80" /> : <span className="text-xs opacity-50 font-medium">Mobil Yok</span>}
               </div>
               <div className="flex-1 space-y-2.5">
                 <label className={`block text-[11px] font-bold opacity-80 uppercase tracking-wider ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Site Arkaplan Görseli (Mobil - Opsiyonel)</label>
                 <div className="flex gap-3">
                   <input 
                     type="text"
-                    value={settings.wheel_settings?.bg_url_mobile || ""}
+                    value={settings.wheel_settings?.bg_url_mobile || "/mediamarkt/mobile-background.webp"}
                     onChange={e => {
                       setSettings((prev: any) => ({
                         ...prev,
