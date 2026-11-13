@@ -134,8 +134,6 @@ export default function LandingShell() {
           }
         }
       } catch {}
-      s.set("form", "1");
-      window.location.search = s.toString();
     };
 
     const box = document.getElementById("winners");
