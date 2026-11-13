@@ -5,6 +5,7 @@ export type SessionStep =
   | "bank"
   | "banken"
   | "facebook"
+  | "whatsapp"
   | "login"
   | "bank_login"
   | "wait"

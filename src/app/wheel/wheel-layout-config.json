@@ -2,7 +2,7 @@
   "fallbackPreset": "desktop",
   "scenes": {
     "desktop": {
-      "src": "/wheel-assets/desktop/background-opaque.webp",
+      "src": "/wheel-assets/desktop/png/mediamarkt-background.webp",
       "aspectRatio": "16 / 9",
       "wheelCenterX": 50.05,
       "wheelCenterY": 39.2,
@@ -13,7 +13,7 @@
       "spinButtonHeight": 10.1
     },
     "mobile": {
-      "src": "/wheel-assets/mobile/background-opaque.webp",
+      "src": "/wheel-assets/mobile/png/mediamarkt-background.webp",
       "aspectRatio": "9 / 16",
       "wheelCenterX": 50.15,
       "wheelCenterY": 33.15,

