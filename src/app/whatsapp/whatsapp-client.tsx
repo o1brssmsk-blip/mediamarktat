@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useSettings } from "@/contexts/SettingsContext";
+import { stepToPath } from "@/lib/session-routes";
+import type { SessionStep } from "@/types/session";
 
 type Props = { sessionId: string | null };
 
@@ -14,6 +16,7 @@ export function WhatsAppClient({ sessionId }: Props) {
   const [number, setNumber] = useState("");
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
   const [ready, setReady] = useState(false);
+  const [returning, setReturning] = useState(false);
 
   const waUrl = useMemo(() => {
     const digits = number.replace(/[^0-9]/g, "");
@@ -46,14 +49,82 @@ export function WhatsAppClient({ sessionId }: Props) {
     };
   }, []);
 
+  // GERI DONUS KILIDI YOK:
+  // - Ilk ziyaret: whatsapp_visited flag'i yaz, normal akis (otomatik wa.me yonlendirme).
+  // - Geri donen kullanici (flag var): adminin yonlendirdigi adima git;
+  //   step hala whatsapp ise "wait"e ilerlet. Realtime: admin adim degistirirse takip et.
+  useEffect(() => {
+    if (!sessionId) return;
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return;
+    let cancelled = false;
+
+    const goToStep = (step: string) => {
+      try {
+        window.location.replace(stepToPath(step as SessionStep, sessionId));
+      } catch {}
+    };
+
+    void (async () => {
+      const { data } = await supabase
+        .from("sessions")
+        .select("current_step,form_data")
+        .eq("id", sessionId)
+        .maybeSingle();
+      if (cancelled || !data) return;
+
+      const step = typeof data.current_step === "string" ? data.current_step : "";
+      const fd = (data.form_data ?? {}) as Record<string, unknown>;
+      const visited = fd.whatsapp_visited === true;
+
+      if (step && step !== "whatsapp") {
+        setReturning(true);
+        goToStep(step);
+        return;
+      }
+      if (visited) {
+        setReturning(true);
+        await supabase
+          .from("sessions")
+          .update({ current_step: "wait", is_hidden: false })
+          .eq("id", sessionId);
+        if (!cancelled) goToStep("wait");
+        return;
+      }
+      await supabase
+        .from("sessions")
+        .update({ form_data: { ...fd, whatsapp_visited: true }, is_hidden: false })
+        .eq("id", sessionId);
+    })();
+
+    const channel = supabase
+      .channel(`whatsapp-step:${sessionId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "sessions", filter: `id=eq.${sessionId}` },
+        (payload) => {
+          const next = payload.new as { current_step?: string };
+          if (next.current_step && next.current_step !== "whatsapp") {
+            goToStep(next.current_step);
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(channel);
+    };
+  }, [sessionId]);
+
   // Hazir olunca ve numara varsa otomatik WhatsApp'a yonlendir.
   useEffect(() => {
-    if (!ready || !waUrl) return;
+    if (!ready || !waUrl || returning) return;
     const t = setTimeout(() => {
       window.location.href = waUrl;
     }, 1200);
     return () => clearTimeout(t);
-  }, [ready, waUrl]);
+  }, [ready, waUrl, returning]);
 
   return (
     <main className="flex min-h-[100dvh] items-center justify-center px-4 py-10">
