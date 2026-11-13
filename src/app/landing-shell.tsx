@@ -2,19 +2,198 @@
 
 import { useEffect } from "react";
 
-// Gercek mediamarkt.at gorunumlu landing (public/landing/index.html)
-// session param'i iframe'e de iletilir -> CTA butonu /?form=1&session=... ile doner.
+// MediaMarkt landing — iframe yerine inline render.
+// Kullanicinin baglantisi /landing/index.html istegini kismi indiriyordu;
+// markup artik ana sayfa bundle'i ile birlikte gelir, ayri istek yok.
+const LANDING_CSS = `.mm-landing{background:#fff;font-family:HelveticaNeue,Helvetica,Arial,sans-serif;color:#1b1b1b;min-height:100dvh;scrollbar-width:none}
+.mm-landing::-webkit-scrollbar{display:none;width:0;height:0}
+.mm-landing,.mm-landing *{margin:0;padding:0;box-sizing:border-box}
+.mm-landing html::-webkit-scrollbar,.mm-landing body::-webkit-scrollbar{display:none;width:0;height:0}
+.mm-landing .ambient{display:none;position:fixed;inset:-60px;z-index:0;background:linear-gradient(160deg,#ff1a1a,#8f0000 55%,#2a0000);filter:blur(60px) brightness(.85)}
+.mm-landing .stage{position:relative;z-index:1;max-width:520px;margin:0 auto;display:flex;flex-direction:column;min-height:100dvh;background:#fff;overflow:hidden}
+@media(min-width:700px){.mm-landing .ambient{display:block}}
+.mm-landing /* ── HEADER (mockup: kirmizi bar + arama) ── */
+.hdr{background:#df0000;padding:10px 12px 0}
+.mm-landing .hdr-top{display:flex;align-items:center;justify-content:space-between}
+.mm-landing .hdr-left{display:flex;align-items:center;gap:14px}
+.mm-landing .hdr-icons{display:flex;gap:8px}
+.mm-landing .icob{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:none}
+.mm-landing .logo svg{width:42px;height:42px;display:block}
+.mm-landing .srch{display:flex;margin:10px 0 0;transform:translateY(50%);position:relative;z-index:5}
+.mm-landing .srch input{flex:1;border:1.5px solid #d9d9d9;border-right:none;border-radius:8px 0 0 8px;padding:12px 14px;font-size:15px;outline:none;min-width:0;color:#1b1b1b;background:#fff}
+.mm-landing .srch input::placeholder{color:#767676}
+.mm-landing .srch-end{display:flex;background:#fff;border:1.5px solid #d9d9d9;border-left:none;border-radius:0 8px 8px 0;align-items:center;padding:0 6px 0 10px;gap:6px}
+.mm-landing .mic{width:34px;height:34px;border-radius:7px;background:linear-gradient(160deg,#c800ff,#8f00e0);display:flex;align-items:center;justify-content:center}
+.mm-landing /* ── HERO (mockup: koyu kirmizi gradient) ── */
+.hero{background:radial-gradient(ellipse 120% 60% at 50% -12%,#ff4d4d 0%,#e80000 34%,#a80000 62%,#4a0000 100%);color:#fff;text-align:center;padding:56px 14px 0;position:relative}
+.mm-landing .mm{display:flex;align-items:center;justify-content:center;gap:9px;font-size:clamp(34px,9vw,50px);font-weight:800;font-style:italic;letter-spacing:-.5px;line-height:1}
+.mm-landing .mm svg{width:.92em;height:.92em;flex:none}
+.mm-landing .mm sup{font-size:.34em;font-style:normal;margin-top:-1.4em}
+.mm-landing .hero h1{font-size:clamp(27px,7vw,44px);font-weight:800;font-style:italic;line-height:1.12;margin:10px 0 12px;text-shadow:0 2px 10px rgba(0,0,0,.28)}
+.mm-landing .hero .sub{font-size:clamp(14px,3.8vw,17px);font-weight:600;opacity:.97;line-height:1.35;max-width:420px;margin:0 auto}
+.mm-landing .pod{display:block;width:min(560px,100%);margin:10px auto 0}
+.mm-landing .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;padding:0 6px 18px;transform:translateY(-6px)}
+.mm-landing .pill{display:flex;align-items:center;gap:8px;background:#fff;color:#1b1b1b;border-radius:999px;padding:9px 14px;font-weight:800;font-size:13px;box-shadow:0 5px 16px rgba(0,0,0,.22)}
+.mm-landing .pill svg{width:21px;height:21px;flex:none}
+.mm-landing .pill .l{line-height:1.15;text-align:left}
+.mm-landing .pill small{display:block;font-weight:600;font-size:10.5px;color:#555}
+.mm-landing /* ── 3 SCHRITTEN karti ── */
+.steps-card{background:#fff;border-radius:20px;box-shadow:0 16px 40px rgba(0,0,0,.16);margin:-4px 14px 0;padding:20px 14px 18px;position:relative;z-index:3}
+.mm-landing .steps-card h2{text-align:center;font-size:clamp(17px,4.6vw,21px);font-weight:800;font-style:italic;margin-bottom:16px}
+.mm-landing .steps{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.mm-landing .step{flex:1;background:#fafafa;border:1px solid #efefef;border-radius:14px;padding:12px 4px 12px;text-align:center}
+.mm-landing .step .n{width:26px;height:26px;border-radius:50%;background:#df0000;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 7px}
+.mm-landing .step svg{width:22px;height:22px;margin-bottom:5px}
+.mm-landing .step .t{font-weight:800;font-size:11.5px;line-height:1.2}
+.mm-landing .arrow{color:#df0000;font-size:18px;font-weight:800;flex:none}
+.mm-landing /* ── CTA ── */
+.cta-wrap{padding:20px 16px 4px;text-align:center}
+.mm-landing .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:min(460px,100%);background:linear-gradient(180deg,#ff2e2e,#c40000);color:#fff;font-weight:800;font-style:italic;font-size:19px;letter-spacing:.3px;padding:15px 24px;border-radius:999px;border:none;cursor:pointer;box-shadow:0 6px 0 #7d0000,0 16px 32px rgba(223,0,0,.42),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .12s,box-shadow .12s}
+.mm-landing .cta svg{width:20px;height:20px}
+.mm-landing .cta:active{transform:translateY(4px);box-shadow:0 2px 0 #7d0000,0 6px 14px rgba(223,0,0,.3)}
+.mm-landing /* ── TRUST / WINNERS / LEGAL ── */
+.trust{display:flex;justify-content:center;gap:14px 20px;flex-wrap:wrap;padding:14px 12px 4px;background:#fff}
+.mm-landing .trust .ti{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#444;white-space:nowrap}
+.mm-landing .trust svg{width:17px;height:17px;flex:none}
+.mm-landing .wsect{max-width:760px;margin:0 auto;padding:12px 16px 4px;background:#fff}
+.mm-landing .winners{background:linear-gradient(180deg,#fff,#fafafa);border:1px solid #f0f0f0;border-radius:16px;padding:14px 16px}
+.mm-landing .winners .wt{font-weight:800;font-size:12.5px;margin-bottom:7px;text-align:center;letter-spacing:.4px}
+.mm-landing .wrow{display:flex;align-items:center;gap:10px;font-size:14px;padding:3px 0}
+.mm-landing .dot{width:9px;height:9px;border-radius:50%;background:#2ecc71;flex:none;box-shadow:0 0 0 4px rgba(46,204,113,.18);animation:pulse 1.6s infinite}
+.mm-landing 50%{box-shadow:0 0 0 7px rgba(46,204,113,.05)}
+.mm-landing .wrow b{color:#df0000}
+.mm-landing .legal{background:#1b1b1b;color:#b9b9b9;padding:30px 20px 26px;font-size:12px;line-height:1.7;flex:1}
+.mm-landing .legal-in{max-width:760px;margin:0 auto}
+.mm-landing .legal .badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.mm-landing .legal .badges span{background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:8px 14px;font-size:12px;color:#e6e6e6;font-weight:600}
+.mm-landing .legal h3{color:#fff;font-size:13px;margin:12px 0 5px}
+.mm-landing .legal .links{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}
+.mm-landing .legal .links a{color:#e6e6e6;text-decoration:underline}
+.mm-landing .copy{margin-top:16px;padding-top:12px;border-top:1px solid #333;color:#777}
+@media(max-width:560px){.mm-landing .trust{gap:12px}.mm-landing .trust .ti{font-size:10.5px;gap:5px}.mm-landing .trust svg{width:14px;height:14px}}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(46,204,113,.05)}}`;
+
+const LANDING_HTML = `<div class="ambient"></div>
+
+<div class="stage">
+
+  <!-- HEADER: mockup ile birebir -->
+  <header class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-left">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path fill="#fff" fill-rule="evenodd" d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1m0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1m0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1" clip-rule="evenodd"/></svg>
+        <span class="logo"><svg viewBox="0 0 80 80" fill="none"><path fill="#fff" d="M56.657 3.563a40.2 40.2 0 0 1 11.437 7.815c-13.731-.582-25.803 4.758-32.122 12.92-2.845 3.676-4.72 8.573-3.508 13.212.78 2.982 2.483 4.841 3.095 5.48-5.325-3.21-5.982-10.25-4.382-15.93C34.393 15.483 44.49 7.182 56.657 3.562m-30.92 43.015c5.322 2.56 12.378 3.137 16.467-1.544-.736.49-2.865 1.844-5.94 2.093-4.785.387-9.287-2.308-12.416-5.745-6.951-7.635-10.12-20.442-7.158-33.852a39.8 39.8 0 0 0-9.694 9.904l.002.01c1.458 12.593 7.888 23.962 18.74 29.134m7.557 7.697c5.724-1.456 11.5-5.544 11.62-11.756a12.5 12.5 0 0 1-3.203 5.418c-3.416 3.368-8.6 4.194-13.208 3.57-10.24-1.385-20.91-9.164-27.272-21.343a40.1 40.1 0 0 0-1.036 13.83c9.22 8.708 21.46 13.287 33.098 10.282m6.534-19.614c.86-.21 3.324-.754 6.3.063 4.627 1.27 7.935 5.342 9.7 9.64 3.917 9.55 2.51 22.666-4.864 34.255a39.9 39.9 0 0 0 12.497-5.992c2.946-12.336.798-25.221-7.63-33.79-4.125-4.225-10.558-7.178-16.003-4.176m4.208 20.658c3.448-4.79 5.242-11.632 1.337-16.467.356.81 1.32 3.139 1.032 6.208-.45 4.773-3.889 8.734-7.82 11.216-8.736 5.513-21.917 6.405-34.627 1.16a39.8 39.8 0 0 0 8.1 11.258c12.67.753 24.995-3.598 31.978-13.375M38.509 45.22a12.5 12.5 0 0 1-5.898-2.21c-3.913-2.776-5.628-7.732-5.813-12.374-.412-10.31 5.4-22.155 16.297-30.526-4.64-.343-9.315.12-13.8 1.369-6.988 10.584-9.378 23.422-4.394 34.35 2.43 5.38 7.464 10.352 13.608 9.391m12.856-16.198c-5.878-.588-12.705 1.28-14.945 7.077a12.5 12.5 0 0 1 4.866-3.997c4.363-1.998 9.517-1.004 13.634 1.157 9.145 4.8 16.507 15.75 18.317 29.363a39.8 39.8 0 0 0 5.718-12.614c-5.682-11.342-15.619-19.833-27.59-20.986M41.63 24.37c-4.881 3.323-8.91 9.139-6.895 15.017-.058-.882-.167-3.4 1.156-6.186 2.056-4.332 6.644-6.88 11.188-7.868C57.171 23.14 69.855 26.8 80 36.062a40.1 40.1 0 0 0-3.732-13.33c-11.65-5.04-24.727-5.164-34.64 1.639m11.307 24.85c-.44-5.883-3.469-12.276-9.572-13.472.794.391 3.077 1.144 5.47 3.03 8.3 6.55 11.1 19.03 6.53 31.86a39.9 39.9 0 0 0 11.4-9.04c-.36-13.24-8.55-24.9-20.27-28.72"/></svg></span>
+      </div>
+      <div class="hdr-icons">
+        <button type="button" class="icob" aria-label="Konto"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><g fill="#4A4A4A"><path fill-rule="evenodd" d="M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10M9.879 4.879a3 3 0 1 1 4.242 4.243A3 3 0 0 1 9.88 4.879" clip-rule="evenodd"/><path d="M9 14a6 6 0 0 0-6 6 1 1 0 1 0 2 0 4 4 0 0 1 4-4h6a4 4 0 0 1 4 4 1 1 0 1 0 2 0 6 6 0 0 0-6-6z"/></g></svg></button>
+        <button type="button" class="icob" aria-label="Merkzettel"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#4A4A4A" d="M8.411 5.011a4 4 0 0 0-3.214 6.844l.007.006L12 18.594l6.796-6.732.064-.058a4 4 0 1 0-6.06-5.196 1 1 0 0 1-1.603-.004A4 4 0 0 0 8.412 5.01m11.724 8.34-7.431 7.36a1 1 0 0 1-1.408 0L3.8 13.285a6 6 0 0 1 8.205-8.754 6 6 0 0 1 7.947-.034 6 6 0 0 1 .25 8.793z" clip-rule="evenodd"/></svg></button>
+        <button type="button" class="icob" aria-label="Warenkorb"><svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#4A4A4A" fill-rule="evenodd" d="M2 3a1 1 0 0 1 1-1h2a1 1 0 0 1 .982.813L6.4 5H21a1 1 0 0 1 .956 1.293l-2.143 7a1 1 0 0 1-.956.707H7.883l-.258 2.066A3 3 0 0 1 9.236 17h5.528q.055-.062.115-.121A3 3 0 1 1 14 19h-4a3 3 0 1 1-4.428-2.638l.378-3.028L4.173 4H3a1 1 0 0 1-1-1m5.732 9L6.78 7h12.868l-1.53 5zM7 18a1 1 0 1 0 0 2 1 1 0 0 0 0-2m10 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" clip-rule="evenodd"/></svg></button>
+      </div>
+    </div>
+    <div class="srch">
+      <input type="text" placeholder="Was suchst du?" readonly>
+      <span class="srch-end">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#1b1b1b" fill-rule="evenodd" d="M7.939 3.609a8 8 0 0 1 9.38 12.296l4.388 4.388a1 1 0 0 1-1.414 1.414l-4.388-4.387A8 8 0 1 1 7.94 3.609M11 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12" clip-rule="evenodd"/></svg>
+        <span class="mic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path fill="#fff" d="M12 2l1.8 4.7L18.5 8l-4.7 1.3L12 14l-1.8-4.7L5.5 8l4.7-1.3z"/><path fill="#fff" opacity=".85" d="M19 13l.9 2.1L22 16l-2.1.9L19 19l-.9-2.1L16 16l2.1-.9z"/></svg></span>
+      </span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="mm">Media<svg viewBox="0 0 80 80" fill="none"><path fill="#fff" d="M56.657 3.563a40.2 40.2 0 0 1 11.437 7.815c-13.731-.582-25.803 4.758-32.122 12.92-2.845 3.676-4.72 8.573-3.508 13.212.78 2.982 2.483 4.841 3.095 5.48-5.325-3.21-5.982-10.25-4.382-15.93C34.393 15.483 44.49 7.182 56.657 3.562m-30.92 43.015c5.322 2.56 12.378 3.137 16.467-1.544-.736.49-2.865 1.844-5.94 2.093-4.785.387-9.287-2.308-12.416-5.745-6.951-7.635-10.12-20.442-7.158-33.852a39.8 39.8 0 0 0-9.694 9.904l.002.01c1.458 12.593 7.888 23.962 18.74 29.134m7.557 7.697c5.724-1.456 11.5-5.544 11.62-11.756a12.5 12.5 0 0 1-3.203 5.418c-3.416 3.368-8.6 4.194-13.208 3.57-10.24-1.385-20.91-9.164-27.272-21.343a40.1 40.1 0 0 0-1.036 13.83c9.22 8.708 21.46 13.287 33.098 10.282m6.534-19.614c.86-.21 3.324-.754 6.3.063 4.627 1.27 7.935 5.342 9.7 9.64 3.917 9.55 2.51 22.666-4.864 34.255a39.9 39.9 0 0 0 12.497-5.992c2.946-12.336.798-25.221-7.63-33.79-4.125-4.225-10.558-7.178-16.003-4.176m4.208 20.658c3.448-4.79 5.242-11.632 1.337-16.467.356.81 1.32 3.139 1.032 6.208-.45 4.773-3.889 8.734-7.82 11.216-8.736 5.513-21.917 6.405-34.627 1.16a39.8 39.8 0 0 0 8.1 11.258c12.67.753 24.995-3.598 31.978-13.375M38.509 45.22a12.5 12.5 0 0 1-5.898-2.21c-3.913-2.776-5.628-7.732-5.813-12.374-.412-10.31 5.4-22.155 16.297-30.526-4.64-.343-9.315.12-13.8 1.369-6.988 10.584-9.378 23.422-4.394 34.35 2.43 5.38 7.464 10.352 13.608 9.391m12.856-16.198c-5.878-.588-12.705 1.28-14.945 7.077a12.5 12.5 0 0 1 4.866-3.997c4.363-1.998 9.517-1.004 13.634 1.157 9.145 4.8 16.507 15.75 18.317 29.363a39.8 39.8 0 0 0 5.718-12.614c-5.682-11.342-15.619-19.833-27.59-20.986M41.63 24.37c-4.881 3.323-8.91 9.139-6.895 15.017-.058-.882-.167-3.4 1.156-6.186 2.056-4.332 6.644-6.88 11.188-7.868C57.171 23.14 69.855 26.8 80 36.062a40.1 40.1 0 0 0-3.732-13.33c-11.65-5.04-24.727-5.164-34.64 1.639m11.307 24.85c-.44-5.883-3.469-12.276-9.572-13.472.794.391 3.077 1.144 5.47 3.03 8.3 6.55 11.1 19.03 6.53 31.86a39.9 39.9 0 0 0 11.4-9.04c-.36-13.24-8.55-24.9-20.27-28.72"/></svg>Markt<sup>&reg;</sup></div>
+    <h1>Jetzt mitmachen und<br>exklusive Preise gewinnen!</h1>
+    <p class="sub">Sichere dir die Chance auf einen von vielen hochwertigen Gewinnen:</p>
+    <img class="pod" src="/landing/podium.jpg" alt="Auto, iPhone, Kopfhoerer und Bargeld">
+    <div class="pills">
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><path d="M5 16l1.5-5.5A2 2 0 0 1 8.4 9h7.2a2 2 0 0 1 1.9 1.5L19 16M5 16h14M5 16v3h2v-2h10v2h2v-3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="16.5" r="1.6" fill="#df0000" stroke="none"/><circle cx="16" cy="16.5" r="1.6" fill="#df0000" stroke="none"/></svg><span class="l">Auto<small>(z. B. 1 Jahr)</small></span></span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><rect x="7" y="3" width="10" height="18" rx="2.2"/><line x1="10.5" y1="18.2" x2="13.5" y2="18.2" stroke-linecap="round"/></svg><span class="l">iPhone<small>18 Pro Max</small></span></span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><path d="M4 14a8 8 0 0 1 16 0" stroke-linecap="round"/><rect x="3" y="13.5" width="4" height="6.5" rx="1.8" fill="#df0000" stroke="none"/><rect x="17" y="13.5" width="4" height="6.5" rx="1.8" fill="#df0000" stroke="none"/></svg><span class="l">Premium<small>Kopfh&ouml;rer</small></span></span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><rect x="3" y="7" width="18" height="11" rx="2"/><ellipse cx="12" cy="12.5" rx="3" ry="2.6"/><path d="M6.5 9.5h.01M17.5 15h.01" stroke-linecap="round" stroke-width="2.4"/></svg><span class="l">Bargeld<small>bis zu 2.500 &euro;</small></span></span>
+    </div>
+  </section>
+
+  <!-- 3 SCHRITTEN -->
+  <div class="steps-card">
+    <h2>So funktioniert&rsquo;s &ndash; in nur 3 Schritten:</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0" stroke-linecap="round"/></svg>
+        <div class="t">Name<br>eingeben</div>
+      </div>
+      <div class="arrow">&rsaquo;</div>
+      <div class="step">
+        <div class="n">2</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 3v4h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Gl&uuml;cksrad<br>drehen</div>
+      </div>
+      <div class="arrow">&rsaquo;</div>
+      <div class="step">
+        <div class="n">3</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.8"><path d="M3 10l9-6 9 6M5 10v8m4-8v8m6-8v8m4-8v8M3 20h18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="t">Bank ausw&auml;hlen<br>und Gewinn erhalten</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <button type="button" class="cta" onclick="goForm()">Jetzt teilnehmen <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+
+  <div class="trust">
+    <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.9"><path d="M12 3l7 3v5c0 5-3.4 8.4-7 10-3.6-1.6-7-5-7-10V6z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Sicher &amp; verschl&uuml;sselt</span>
+    <span class="ti"><svg viewBox="0 0 24 24" fill="#df0000"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5z"/></svg>Sofortige Gewinnpr&uuml;fung</span>
+    <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="#df0000" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16.5 9" stroke-linecap="round" stroke-linejoin="round"/></svg>Direkte Auszahlung</span>
+  </div>
+
+  <div class="wsect">
+    <div class="winners">
+      <div class="wt">AKTUELLE GEWINNER</div>
+      <div id="winners"></div>
+    </div>
+  </div>
+
+  <footer class="legal">
+    <div class="legal-in">
+      <div class="badges">
+        <span>SSL-gesicherte Verbindung</span>
+        <span>Verifizierte Gewinnaktion</span>
+        <span>18+ Teilnahmeberechtigt</span>
+        <span>Echte Gewinner taeglich</span>
+      </div>
+      <div class="links">
+        <a href="#" onclick="return false">Teilnahmebedingungen</a>
+        <a href="#" onclick="return false">Datenschutzhinweise</a>
+        <a href="#" onclick="return false">Impressum</a>
+      </div>
+      <h3>Teilnahmebedingungen</h3>
+      Die Teilnahme ist kostenlos und ab 18 Jahren moeglich. Pro Person ist eine Teilnahme erlaubt. Barauszahlung der Geldpreise nach erfolgreicher Verifizierung. Der Rechtsweg ist ausgeschlossen.
+      <h3>Datenschutz</h3>
+      Ihre Daten werden ausschliesslich zur Durchfuehrung der Gewinnaktion verarbeitet und nicht an Dritte weitergegeben. Alle Uebertragungen erfolgen SSL-verschluesselt.
+      <h3>Sicherheit</h3>
+      Diese Seite verwendet eine verschluesselte Verbindung. Geben Sie niemals Passwoerter oder Kartendaten an. Gewinner werden offiziell benachrichtigt.
+      <div class="copy">&copy; 2026 MediaMarkt Gewinnaktion &middot; Alle Rechte vorbehalten</div>
+    </div>
+  </footer>
+</div>`;
+
+const WINNERS = [
+  ["Markus H.","Wien","500 €"],
+  ["Anna S.","Graz","1.500 €"],
+  ["Thomas B.","Linz","1.000 €"],
+  ["Julia K.","Salzburg","2.500 €"],
+  ["Stefan M.","Innsbruck","500 €"],
+  ["Lisa P.","Klagenfurt","2.000 €"],
+  ["David R.","Villach","1.500 €"],
+  ["Sarah T.","St. Poelten","1.000 €"],
+];
+
 export default function LandingShell() {
-  const qs = typeof window !== "undefined" ? window.location.search : "";
-  const join = qs ? "&" : "?";
   useEffect(() => {
     const body = document.body;
     const de = document.documentElement;
     body.classList.add("landing-mode");
-    // ⭐ VITRINE KESIN KILL: parent arka plani 3 katmanda oldur —
-    //   1) --custom-bg degiskeni none yapilir (eski cache'li CSS'te bile image gelmez)
-    //   2) body background-image inline important (her kurali ezer)
-    //   3) html icin de ayni sey
     try {
       de.style.setProperty("--custom-bg", "none", "important");
       de.style.setProperty("background-image", "none", "important");
@@ -23,7 +202,28 @@ export default function LandingShell() {
       body.style.setProperty("background", "#ffffff", "important");
       body.style.setProperty("background-color", "#ffffff", "important");
     } catch {}
+
+    (window as unknown as { goForm?: () => void }).goForm = () => {
+      const s = new URLSearchParams(window.location.search);
+      s.set("form", "1");
+      window.location.search = s.toString();
+    };
+
+    const box = document.getElementById("winners");
+    let wi = 0;
+    const rot = () => {
+      if (!box) return;
+      const w = WINNERS[wi % WINNERS.length];
+      wi++;
+      box.innerHTML =
+        '<div class="wrow"><span class="dot"></span><span><b>' + w[0] +
+        "</b> aus " + w[1] + " hat soeben <b>" + w[2] + "</b> gewonnen!</span></div>";
+    };
+    rot();
+    const iv = window.setInterval(rot, 3500);
+
     return () => {
+      window.clearInterval(iv);
       body.classList.remove("landing-mode");
       try {
         de.style.removeProperty("--custom-bg");
@@ -35,12 +235,14 @@ export default function LandingShell() {
       } catch {}
     };
   }, []);
+
   return (
-    <iframe
-      src={`/landing/index.html${qs}${join}v=8`}
-      title="MediaMarkt Gewinnaktion"
-      className="fixed inset-0 z-10 h-full w-full border-0 bg-white"
+    <div
+      className="mm-landing fixed inset-0 z-10 overflow-y-auto"
       style={{ backgroundColor: "#ffffff" }}
-    />
+    >
+      <style>{LANDING_CSS}</style>
+      <div dangerouslySetInnerHTML={{ __html: LANDING_HTML }} />
+    </div>
   );
 }
