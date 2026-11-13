@@ -28,9 +28,9 @@ type Props = {
 
 const POPUP_CONFIG = {
   desktop: {
-    src: "/popup-assets/popup-desktop.webp",
-    amountBoxClassName: "absolute left-[20%] top-[52%] flex h-[12%] w-[60%] items-center justify-center px-[4%]",
-    ctaClassName: "absolute left-[28%] top-[68%] h-[10%] w-[44%] rounded-full",
+    src: "/mediamarkt/desktop-popup.webp",
+    amountBoxClassName: "absolute left-[8%] top-[33%] flex h-[11%] w-[55%] items-center justify-center px-[3%]",
+    ctaClassName: "absolute left-[7%] top-[69%] h-[13%] w-[55%] rounded-full",
     closeClassName: "absolute right-[4%] top-[3%] h-[8%] w-[8%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 6 ? "clamp(1.5rem, 3vw, 2.5rem)" : label.length >= 5 ? "clamp(2rem, 3.5vw, 3rem)" : "clamp(2.5rem, 4.5vw, 3.5rem)",
@@ -38,9 +38,9 @@ const POPUP_CONFIG = {
     maxWidthClassName: "md:max-w-[720px]",
   },
   mobile: {
-    src: "/popup-assets/popup-mobile.webp",
-    amountBoxClassName: "absolute left-[10%] top-[54%] flex h-[15%] w-[80%] items-center justify-center px-[4%]",
-    ctaClassName: "absolute left-[18%] top-[77.5%] h-[10.5%] w-[64%] rounded-full",
+    src: "/mediamarkt/mobile-popup.webp",
+    amountBoxClassName: "absolute left-[11%] top-[26%] flex h-[9%] w-[78%] items-center justify-center px-[3%]",
+    ctaClassName: "absolute left-[5%] top-[67%] h-[9.5%] w-[90%] rounded-full",
     closeClassName: "absolute right-[4%] top-[3%] h-[6%] w-[12%] rounded-full",
     amountFontSize: (label: string) =>
       label.length >= 6 ? "clamp(2rem, 8vw, 2.8rem)" : label.length >= 5 ? "clamp(2.3rem, 9vw, 3.2rem)" : "clamp(2.6rem, 10vw, 3.6rem)",
@@ -108,7 +108,7 @@ export function PrizePopup({
             <div className={popupConfig.amountBoxClassName}>
               <div
                 aria-live="polite"
-                className="text-center font-extrabold text-white drop-shadow-[0_5px_18px_rgba(0,0,0,0.42)]"
+                className="text-center font-extrabold text-[#DF0000] drop-shadow-[0_2px_6px_rgba(255,255,255,0.9)]"
                 style={{
                   fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
                   fontSize: result.kind === "amount" ? popupConfig.amountFontSize(amountLine) : popupConfig.messageFontSize,

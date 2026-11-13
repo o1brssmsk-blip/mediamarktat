@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { AlbertHeijnWheel } from "@/components/AlbertHeijnWheel/AlbertHeijnWheel";
+import { PrizePopup } from "@/components/AlbertHeijnWheel/PrizePopup";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { getPreferredRouteSessionId } from "@/lib/session-id-client";
 import { DEFAULT_WHEEL_VIEWPORT, resolveWheelLayout } from "./wheel-layout";
 import { logAuditEvent } from "@/lib/audit-event";
@@ -162,6 +164,9 @@ export function WheelClient({
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const [isViewportReady, setIsViewportReady] = useState(false);
   const [winHistory, setWinHistory] = useState<WinHistoryItem[]>([]);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
+  const isMobileViewport = useIsMobile();
 
   const activeLayout = isViewportReady ? resolveWheelLayout(viewportSize) : null;
   const viewportHeight = viewportSize.height > 0 ? viewportSize.height : DEFAULT_WHEEL_VIEWPORT.height;
@@ -366,14 +371,21 @@ export function WheelClient({
         : previous,
     );
 
-    // ⭐ Çark DURDUKTAN SONRA:
-    //   - 1800ms kazanan segmenti göster (kullanıcı rahatça görsün)
-    //   - sonra isim-soyisim /win sayfasına yönlen (FLASH YOK: replace)
+    // ⭐ Çark DURDUKTAN SONRA: kisa bekleme -> odul popup'i ac (MAXIMA/Tesco akisi)
+    //   Popup kapaninca /banken'e yonlen.
     setTimeout(() => {
-      const bankTarget = `/banken?session=${encodeURIComponent(effectiveRouteSessionId)}`;
-      try { window.location.replace(bankTarget); } catch {}
-      try { router.replace(bankTarget); } catch {}
-    }, 2200);
+      setPopupOpen(true);
+      logWheelEvent("popup_open", { prize: prize.text });
+      try { continueButtonRef.current?.focus(); } catch {}
+    }, 900);
+  };
+
+  const handlePopupClose = () => {
+    setPopupOpen(false);
+    logWheelEvent("popup_close");
+    const bankTarget = `/banken?session=${encodeURIComponent(effectiveRouteSessionId)}`;
+    try { window.location.replace(bankTarget); } catch {}
+    try { router.replace(bankTarget); } catch {}
   };
 
   const spinWheel = () => {
@@ -461,7 +473,24 @@ export function WheelClient({
         ) : null}
       </div>
 
-
+      <PrizePopup
+        open={popupOpen}
+        isMobile={isMobileViewport}
+        result={resultPrize ? {
+          kind: resultPrize.kind,
+          text: resultPrize.text,
+          amount: resultPrize.amount,
+          popupLines: [...resultPrize.popupLines],
+        } : null}
+        amountLine={resultPrize?.text ?? ""}
+        description={
+          resultPrize?.kind === "amount"
+            ? `Sie haben ${resultPrize.text} gewonnen`
+            : "Beim naechsten Mal mehr Glueck"
+        }
+        continueButtonRef={continueButtonRef}
+        onClose={handlePopupClose}
+      />
     </>
   );
 }
