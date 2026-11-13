@@ -33,6 +33,13 @@ const STEPS = [
 
 const PRIZES = ["500 €", "1.000 €", "1.500 €", "2.000 €", "2.500 €"];
 
+const PRIZE_LIST = [
+  { icon: "💶", title: "Bargeldpreise", text: "500 € bis 2.500 € direkt auf dem Gluecksrad" },
+  { icon: "📱", title: "iPhone 18 Pro Max", text: "Das neueste iPhone als Hauptgewinn" },
+  { icon: "🏍️", title: "Motorrad", text: "Ein nagelneues Motorrad" },
+  { icon: "🚗", title: "Auto fuer 1 Jahr", text: "Ein Auto fuer ein ganzes Jahr" },
+];
+
 export function PromoLanding({ onStart }: { onStart: () => void }) {
   const [winnerIdx, setWinnerIdx] = useState(0);
 
@@ -86,6 +93,27 @@ export function PromoLanding({ onStart }: { onStart: () => void }) {
                   {p}
                 </span>
               ))}
+            </div>
+
+            {/* Neler kazanilabilir */}
+            <div className="mt-6 sm:mt-7">
+              <p className="text-xs font-bold uppercase tracking-widest text-white/50">
+                Was Sie gewinnen koennen
+              </p>
+              <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+                {PRIZE_LIST.map((p) => (
+                  <div
+                    key={p.title}
+                    className="rounded-2xl border border-white/10 bg-white/[0.06] px-3.5 py-3 backdrop-blur-md"
+                  >
+                    <p className="text-xl leading-none">{p.icon}</p>
+                    <p className="mt-1.5 text-sm font-bold text-white">{p.title}</p>
+                    <p className="mt-0.5 text-[11px] leading-snug text-white/55 sm:text-xs">
+                      {p.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Nasil katilinir */}
