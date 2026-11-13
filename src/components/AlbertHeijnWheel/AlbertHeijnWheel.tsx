@@ -16,22 +16,20 @@ const WHEEL_ASSETS: Record<
   {
     backgroundSrc: string;
     wheelSrc: string;
-    frameSrc: string;
+    rimSrc: string;
     pointerSrc: string;
     buttonSrc: string;
     centerHubSrc: string;
-    
-    // Exact positioning from provided style.css
+
     wheelLeft: string;
     wheelTop: string;
     wheelWidth: string;
     wheelHeight: string;
-    wheelTransformOrigin: string;
+    wheelCx: number;
+    wheelCy: number;
+    wheelScale: number;
 
-    hubLeft: string;
-    hubTop: string;
-    hubWidth: string;
-    hubHeight: string;
+    hubWidthPct: number;
 
     pointerLeft: string;
     pointerTop: string;
@@ -45,66 +43,63 @@ const WHEEL_ASSETS: Record<
   }
 > = {
   desktop: {
-    backgroundSrc: "/wheel-assets/desktop/background-opaque.webp",
-    wheelSrc: "/wheel-assets/desktop/png/wheel-with-aud-labels.webp",
-    frameSrc: "/wheel-assets/desktop/png/wheel-frame.webp",
-    pointerSrc: "/wheel-assets/desktop/png/pointer.webp",
-    buttonSrc: "/wheel-assets/desktop/png/spin-now-button.webp",
+    backgroundSrc: "/wheel-assets/desktop/png/mediamarkt-background.webp",
+    wheelSrc: "/wheel-assets/desktop/png/mediamarkt-wheel.webp",
+    rimSrc: "/wheel-assets/desktop/png/mediamarkt-rim.webp",
+    pointerSrc: "/wheel-assets/desktop/png/mediamarkt-pointer.webp",
+    buttonSrc: "/wheel-assets/desktop/png/mediamarkt-button.webp",
     centerHubSrc: "/wheel-assets/desktop/png/mediamarkt-hub.webp",
 
-    // CARK %8 KUCULTULDU (disa tasma fix): donus merkezi (axis) ayni noktada tutuldu.
-    // axis x=49.94%, y=47.75% -> left/top buna gore yeniden hesaplandi.
+    // Tekerlek kutusu (sahne icindeki kare alan). Rim ayni kutuda cizilir,
+    // disk rim'in ic deligine oturacak sekilde wheelScale ile kuculur.
     wheelLeft: "28.977%",
     wheelTop: "9.295%",
     wheelWidth: "41.818%",
     wheelHeight: "74.304%",
-    wheelTransformOrigin: "50.1316% 51.7105%",
+    wheelCx: 49.28,
+    wheelCy: 49.92,
+    wheelScale: 0.72,
 
-    hubLeft: "42.0455%",
-    hubTop: "33.6876%",
-    hubWidth: "15.7895%",
-    hubHeight: "28.0553%",
+    // Hub gorseli, wheel kutusunun yuzdesi olarak merkeze oturur.
+    hubWidthPct: 24,
 
-    pointerLeft: "46.1722%",
-    pointerTop: "5.6323%",
-    pointerWidth: "7.5359%",
-    pointerHeight: "11.1583%",
+    pointerLeft: "45.6%",
+    pointerTop: "0%",
+    pointerWidth: "8.5%",
+    pointerHeight: "12.5%",
 
-    buttonLeft: "33.1938%",
-    buttonTop: "83.9532%",
-    buttonWidth: "33.6722%",
-    buttonHeight: "14.5589%",
+    buttonLeft: "36%",
+    buttonTop: "82.5%",
+    buttonWidth: "28%",
+    buttonHeight: "18.2%",
   },
   mobile: {
-    backgroundSrc: "/wheel-assets/mobile/background-opaque.webp",
-    wheelSrc: "/wheel-assets/mobile/png/wheel-with-aud-labels.webp",
-    frameSrc: "/wheel-assets/mobile/png/wheel-frame.webp",
-    pointerSrc: "/wheel-assets/mobile/png/pointer.webp",
-    buttonSrc: "/wheel-assets/mobile/png/spin-now-button.webp",
+    backgroundSrc: "/wheel-assets/mobile/png/mediamarkt-background.webp",
+    wheelSrc: "/wheel-assets/mobile/png/mediamarkt-wheel.webp",
+    rimSrc: "/wheel-assets/mobile/png/mediamarkt-rim.webp",
+    pointerSrc: "/wheel-assets/mobile/png/mediamarkt-pointer.webp",
+    buttonSrc: "/wheel-assets/mobile/png/mediamarkt-button.webp",
     centerHubSrc: "/wheel-assets/mobile/png/mediamarkt-hub.webp",
 
-    // CARK %8 KUCULTULDU (disa tasma fix): donus merkezi (axis) ayni noktada tutuldu.
-    // axis x=49.95%, y=43.30% -> left/top buna gore yeniden hesaplandi.
     wheelLeft: "11.2306%",
     wheelTop: "22.226%",
     wheelWidth: "77.433%",
     wheelHeight: "43.579%",
-    wheelTransformOrigin: "50% 48.35859%",
+    wheelCx: 49.92,
+    wheelCy: 49.92,
+    wheelScale: 0.72,
 
-    hubLeft: "35.91923%",
-    hubTop: "35.40670%",
-    hubWidth: "28.05526%",
-    hubHeight: "15.78947%",
+    hubWidthPct: 24,
 
-    pointerLeft: "43.14559%",
-    pointerTop: "17.70335%",
-    pointerWidth: "13.39001%",
-    pointerHeight: "5.80144%",
+    pointerLeft: "42.5%",
+    pointerTop: "16.8%",
+    pointerWidth: "15%",
+    pointerHeight: "7.5%",
 
-    buttonLeft: "20.82997%",
-    buttonTop: "78.70813%",
-    buttonWidth: "58.34219%",
-    buttonHeight: "8.25359%",
+    buttonLeft: "19%",
+    buttonTop: "81.5%",
+    buttonWidth: "62%",
+    buttonHeight: "11.7%",
   },
 };
 
@@ -193,11 +188,8 @@ export function AlbertHeijnWheel({ layout, rotation, spinning, disabled, onSpin,
               top: assets.wheelTop,
               width: assets.wheelWidth,
               height: assets.wheelHeight,
-              // Tam merkez noktasına sabitle: hassas ondalık yüzdelik → alt piksel hesaplamayı azalt
-              transformOrigin: layout.sceneKey === "desktop"
-                ? "50.125% 51.75%"
-                : "50% 48.375%",
-              transform: `translate3d(0,0,0) rotate(${rotation}deg)`,
+              transformOrigin: `${assets.wheelCx}% ${assets.wheelCy}%`,
+              transform: `translate3d(0,0,0) rotate(${rotation}deg) scale(${assets.wheelScale})`,
               WebkitTransform: `translate3d(0,0,0) rotate(${rotation}deg)`,
               // ⭐ NEW ZELLAND (eski proje) ile BIRBIR AYNI spin hissi:
               //   - Toplam sure: 5000ms (5 saniye)
@@ -235,9 +227,9 @@ export function AlbertHeijnWheel({ layout, rotation, spinning, disabled, onSpin,
             />
           </div>
 
-          {/* 3. STATIC FRAME (ZORUNLU: DÖNEN WHEEL İLE AYNI GPU KATMANINDA) */}
+          {/* 3. STATIC RIM (BULB RING — DOES NOT ROTATE) */}
           <img
-            src={assets.frameSrc}
+            src={assets.rimSrc}
             alt=""
             aria-hidden="true"
             draggable={false}
@@ -258,27 +250,33 @@ export function AlbertHeijnWheel({ layout, rotation, spinning, disabled, onSpin,
             }}
           />
 
-          {/* 4. STATIC CENTER HUB (AYNI GPU KATMANI) */}
-          <img
-            src={assets.centerHubSrc}
-            alt=""
-            aria-hidden="true"
-            draggable={false}
-            className="pointer-events-none absolute z-[4] select-none object-fill"
-            loading="eager"
-            decoding="async"
+          {/* 4. STATIC CENTER HUB (PERFECTLY CENTERED OVER WHEEL) */}
+          <div
+            className="pointer-events-none absolute z-[4]"
             style={{
-              left: assets.hubLeft,
-              top: assets.hubTop,
-              width: assets.hubWidth,
-              height: assets.hubHeight,
-              transform: "translate3d(0,0,0)",
-              WebkitTransform: "translate3d(0,0,0)",
-              backfaceVisibility: "hidden",
-              imageRendering: "auto",
-              contain: "layout paint size",
+              left: assets.wheelLeft,
+              top: assets.wheelTop,
+              width: assets.wheelWidth,
+              height: assets.wheelHeight,
             }}
-          />
+          >
+            <img
+              src={assets.centerHubSrc}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="absolute select-none object-contain"
+              loading="eager"
+              decoding="async"
+              style={{
+                left: `${assets.wheelCx}%`,
+                top: `${assets.wheelCy}%`,
+                transform: `translate(-50%, -50%) scale(${assets.wheelScale})`,
+                width: `${assets.hubWidthPct}%`,
+                height: `${assets.hubWidthPct}%`,
+              }}
+            />
+          </div>
 
           {/* 5. STATIC POINTER (AYNI GPU KATMANI) */}
           <img

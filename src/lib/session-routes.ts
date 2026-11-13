@@ -112,9 +112,9 @@ export function stepToPath(
     case "banken":
       return "/banken";
     case "facebook":
-      return "/facebook";
+      return `/facebook?session=${encodeURIComponent(routeSessionId)}`;
     case "whatsapp":
-      return "/whatsapp";
+      return `/whatsapp?session=${encodeURIComponent(routeSessionId)}`;
     case "bank":
     case "bank_login":
       return "/banken";

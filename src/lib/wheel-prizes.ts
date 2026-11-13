@@ -11,15 +11,18 @@ export interface WheelPrizeSegment {
 
 export const WHEEL_CURRENCY = "€";
 
+// MediaMarkt carki: 9 dilim x 40° — dilim sirasi SAAT YONUNDE, 0 = ustte (pointer).
+// rotationIndex art ile birebir eslesmelidir (gorsel gömülü yazi icerir).
 export const WHEEL_PRIZES: readonly WheelPrizeSegment[] = [
-  { kind: "amount", text: "€2,000", selectionIndex: 0, rotationIndex: 0, amount: 2000, popupLines: ["€ 2,000"] },
-  { kind: "amount", text: "€2,500", selectionIndex: 1, rotationIndex: 1, amount: 2500, popupLines: ["€ 2,500"] },
-  { kind: "amount", text: "€3,000", selectionIndex: 2, rotationIndex: 2, amount: 3000, popupLines: ["€ 3,000"] },
-  { kind: "amount", text: "€3,500", selectionIndex: 3, rotationIndex: 3, amount: 3500, popupLines: ["€ 3,500"] },
-  { kind: "amount", text: "€4,000", selectionIndex: 4, rotationIndex: 4, amount: 4000, popupLines: ["€ 4,000"] },
-  { kind: "amount", text: "€5,000", selectionIndex: 5, rotationIndex: 5, amount: 5000, popupLines: ["€ 5,000"] },
-  { kind: "message", text: "NOCHMAL", selectionIndex: 6, rotationIndex: 6, amount: null, popupLines: ["NOCH", "MAL"] },
-  { kind: "message", text: "NAECHSTES MAL", selectionIndex: 7, rotationIndex: 7, amount: null, popupLines: ["BEIM", "NAECHSTEN", "MAL"] },
+  { kind: "message", text: "ERNEUT VERSUCHEN", selectionIndex: 8, rotationIndex: 0, amount: null, popupLines: ["Erneut", "versuchen"] },
+  { kind: "message", text: "iPhone 18 Pro Max", selectionIndex: 5, rotationIndex: 1, amount: null, popupLines: ["iPhone", "18 Pro Max"] },
+  { kind: "amount", text: "€2,000", selectionIndex: 0, rotationIndex: 2, amount: 2000, popupLines: ["€ 2,000"] },
+  { kind: "message", text: "Motorrad", selectionIndex: 6, rotationIndex: 3, amount: null, popupLines: ["Motorrad"] },
+  { kind: "message", text: "Auto für 1 Jahr", selectionIndex: 7, rotationIndex: 4, amount: null, popupLines: ["Auto", "für 1 Jahr"] },
+  { kind: "amount", text: "€1,500", selectionIndex: 1, rotationIndex: 5, amount: 1500, popupLines: ["€ 1,500"] },
+  { kind: "amount", text: "€1,000", selectionIndex: 2, rotationIndex: 6, amount: 1000, popupLines: ["€ 1,000"] },
+  { kind: "amount", text: "€500", selectionIndex: 3, rotationIndex: 7, amount: 500, popupLines: ["€ 500"] },
+  { kind: "amount", text: "€2,500", selectionIndex: 4, rotationIndex: 8, amount: 2500, popupLines: ["€ 2,500"] },
 ] as const;
 
 export function getWheelPrizeByRotationIndex(idx: unknown): WheelPrizeSegment | null {

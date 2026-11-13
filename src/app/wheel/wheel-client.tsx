@@ -36,19 +36,19 @@ const LOCAL_HISTORY_KEY = "ah-prize-wheel-last-five-wins";
 const MAX_HISTORY_ITEMS = 5;
 const PRIZES: readonly PrizeSegment[] = WHEEL_PRIZES;
 
-const WINNABLE_PRIZES = PRIZES.filter((prize) => prize.selectionIndex <= 5);
+const WINNABLE_PRIZES = PRIZES.filter((prize) => prize.kind === "amount");
 
 function normalizeAngle(angle: number) {
   return ((angle % 360) + 360) % 360;
 }
 
 function formatAmount(amount: number) {
-  return new Intl.NumberFormat("en-AU").format(amount);
+  return new Intl.NumberFormat("de-AT").format(amount);
 }
 
 function getTargetRotation(currentRotation: number, rotationIndex: number) {
   const normalizedCurrent = normalizeAngle(currentRotation);
-  const targetNormalized = normalizeAngle(ANGLE_OFFSET - rotationIndex * 45);
+  const targetNormalized = normalizeAngle(ANGLE_OFFSET - rotationIndex * 40);
   const delta = normalizeAngle(targetNormalized - normalizedCurrent);
   return currentRotation + MIN_FULL_SPINS * 360 + delta;
 }
@@ -86,7 +86,7 @@ function getRandomWinnablePrize() {
 
 function getRotationIndexFromRotation(rotation: number) {
   const normalizedRotation = normalizeAngle(rotation);
-  return Math.round(normalizeAngle(ANGLE_OFFSET - normalizedRotation) / 45) % PRIZES.length;
+  return Math.round(normalizeAngle(ANGLE_OFFSET - normalizedRotation) / 40) % PRIZES.length;
 }
 
 function getPrizeFromRotation(rotation: number) {
@@ -484,9 +484,9 @@ export function WheelClient({
         } : null}
         amountLine={resultPrize?.text ?? ""}
         description={
-          resultPrize?.kind === "amount"
-            ? `Sie haben ${resultPrize.text} gewonnen`
-            : "Beim naechsten Mal mehr Glueck"
+          resultPrize
+            ? `Sie haben ${resultPrize.text} gewonnen!`
+            : ""
         }
         continueButtonRef={continueButtonRef}
         onClose={handlePopupClose}

