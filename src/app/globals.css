@@ -147,12 +147,12 @@ body > *:not([data-overlay-root="true"]) {
   border-radius: 1.9rem;
   border: 2px solid rgba(223, 0, 0, 0.88);
   background:
-    linear-gradient(180deg, rgba(3, 40, 26, 0.86) 0%, rgba(12, 12, 14, 0.92) 100%);
+    linear-gradient(180deg, rgba(26, 13, 13, 0.88) 0%, rgba(12, 12, 14, 0.92) 100%);
   box-shadow:
     0 0 0 1px rgba(255, 69, 58, 0.3),
     0 18px 48px rgba(0, 0, 0, 0.55),
     inset 0 0 0 1px rgba(223, 0, 0, 0.16),
-    inset 0 20px 60px rgba(18, 156, 79, 0.08);
+    inset 0 20px 60px rgba(223, 0, 0, 0.07);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -163,7 +163,7 @@ body > *:not([data-overlay-root="true"]) {
   inset: 0;
   background:
     radial-gradient(circle at top right, rgba(255, 69, 58, 0.13), transparent 28%),
-    radial-gradient(circle at bottom left, rgba(18, 156, 79, 0.10), transparent 25%),
+    radial-gradient(circle at bottom left, rgba(223, 0, 0, 0.10), transparent 25%),
     repeating-linear-gradient(
       -55deg,
       rgba(223, 0, 0, 0.04) 0,
@@ -473,7 +473,7 @@ body.device-desktop .pak-page-shell > * {
   box-shadow:
     0 0 0 1px rgba(255, 69, 58, 0.42),
     0 0 22px rgba(223, 0, 0, 0.34),
-    0 0 42px rgba(18, 156, 79, 0.24);
+    0 0 42px rgba(223, 0, 0, 0.24);
 }
 
 @keyframes fadeIn {
