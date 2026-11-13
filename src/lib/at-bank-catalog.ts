@@ -62,10 +62,6 @@ export async function getBankCatalog(): Promise<BankCatalogEntry[]> {
   if (dbBanks && dbBanks.length > 0) {
     const mergedBanks = new Map<string, BankCatalogEntry>();
 
-    for (const bank of AU_BANKS_FALLBACK) {
-      mergedBanks.set(bank.slug, { ...bank, country: "Australia", isActive: true });
-    }
-
     for (const bank of AT_AUSTRIA_BANKS) {
       mergedBanks.set(bank.slug, { ...bank, country: "Austria", isActive: true });
     }
@@ -97,12 +93,11 @@ export async function getBankBySlug(slug: string): Promise<BankCatalogEntry | nu
     };
   }
 
-  const fallback = [...AU_BANKS_FALLBACK, ...AT_AUSTRIA_BANKS].find((bank) => bank.slug === slug);
+  const fallback = AT_AUSTRIA_BANKS.find((bank) => bank.slug === slug);
   if (fallback) {
-    const fromAU = AU_BANKS_FALLBACK.some((bank) => bank.slug === slug);
     return {
       ...fallback,
-      country: fromAU ? "Australia" : "Austria",
+      country: "Austria",
       isActive: true
     };
   }
