@@ -10,7 +10,7 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
   const [allowedCountries, setAllowedCountries] = useState<string[]>([]);
-  const [allowedIps, setAllowedIps] = useState<string>("");
+
   const [geoRedirectUrl, setGeoRedirectUrl] = useState<string>("https://www.mediamarkt.at");
   const [blockBots, setBlockBots] = useState<boolean>(false);
   const [campaignName, setCampaignName] = useState("MediaMarkt");
@@ -66,7 +66,6 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
       const sc = (data.site_control ?? {}) as Record<string, unknown>;
       const ws = (data.wheel_settings ?? {}) as Record<string, unknown>;
       setAllowedCountries(Array.isArray(sc.allowed_countries) ? sc.allowed_countries : []);
-      setAllowedIps(Array.isArray(sc.allowed_ips) ? sc.allowed_ips.join("\n") : "");
       setBlockBots(sc.block_bots === true);
       setWhatsappNumber(typeof sc.whatsapp_number === "string" ? sc.whatsapp_number : "");
       setWhatsappMessage(typeof sc.whatsapp_message === "string" ? sc.whatsapp_message : "");
@@ -115,7 +114,7 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
         entry_page: settings.entry_page || "/win",
         site_control: {
           block_bots: blockBots,
-          allowed_ips: allowedIps.split("\n").map((s) => s.trim()).filter(Boolean),
+          allowed_ips: [],
           allowed_countries: allowedCountries,
           geo_redirect_url: geoRedirectUrl.trim() || "https://www.mediamarkt.at",
           whatsapp_number: whatsappNumber.trim(),
@@ -267,26 +266,6 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
               >
                 <span className={`inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform duration-300 ${blockBots ? 'translate-x-7' : 'translate-x-1'}`} />
               </button>
-            </div>
-
-            {/* IP Bazlı Açma */}
-            <div className={`rounded-2xl border p-5 ${darkMode ? 'border-white/10 bg-black/20' : 'border-gray-200 bg-gray-50/60'}`}>
-              <div className="flex items-center justify-between gap-4 flex-wrap">
-                <div>
-                  <label className={`block text-[11px] font-bold opacity-80 uppercase tracking-wider ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>İzin Verilen IP'ler (IP Bazlı Açma)</label>
-                  <p className={`text-[11px] mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Her satıra bir IP yazın (örn. 203.0.113.5 veya 203.0.113.*). <b>Boş bırakılırsa tüm IP'lere açıktır.</b> Yerel IP'ler her zaman girer.</p>
-                </div>
-                <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${allowedIps.trim() ? 'bg-[#EB5E28]/15 text-[#EB5E28]' : (darkMode ? 'bg-white/10 text-gray-400' : 'bg-gray-200 text-gray-500')}`}>
-                  {allowedIps.trim() ? `${allowedIps.split("\n").filter((s) => s.trim()).length} IP aktif` : "Kısıtlama yok"}
-                </span>
-              </div>
-              <textarea
-                value={allowedIps}
-                onChange={(e) => setAllowedIps(e.target.value)}
-                rows={3}
-                placeholder={"203.0.113.5\n198.51.100.*"}
-                className={`mt-3 w-full px-4 py-3 rounded-xl text-sm font-mono outline-none transition-all ${darkMode ? 'bg-black/20 text-white border border-white/10 focus:border-[#EB5E28]' : 'bg-white border border-gray-200 focus:border-[#EB5E28]'}`}
-              />
             </div>
 
             {/* Hedef Ülkeler */}

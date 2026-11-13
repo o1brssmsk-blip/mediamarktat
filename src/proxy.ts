@@ -8,13 +8,11 @@ import { NextResponse, type NextRequest } from 'next/server'
 //     allowed_countries[]      -> bos ise kisitlama yok; doluysa sadece bu ulkeler girer
 //     geo_redirect_url         -> izin verilmeyen ulke ziyaretcisi bu adrese gider
 //     block_bots (bool)        -> bilinen kotu bot UA'lari 403
-//     allowed_ips[]            -> doluysa SADECE bu IP'ler girer (ip bazli acma)
 //   banned_ips (tablo)         -> admin panelinden banlanan IP'ler 403
 
 type SiteControl = {
   siteEnabled: boolean
   blockBots: boolean
-  allowedIps: string[]
   allowedCountries: string[] | null
   geoRedirectUrl: string
 }
@@ -24,7 +22,6 @@ const DEFAULT_GEO_REDIRECT = 'https://www.mediamarkt.at'
 const FALLBACK_CONTROL: SiteControl = {
   siteEnabled: true,
   blockBots: false,
-  allowedIps: [],
   allowedCountries: null,
   geoRedirectUrl: DEFAULT_GEO_REDIRECT,
 }
@@ -49,16 +46,10 @@ async function getSiteControl(supabase: any): Promise<SiteControl> {
           .map((c: unknown) => (typeof c === 'string' ? c.trim().toUpperCase() : ''))
           .filter((c: string) => /^[A-Z]{2}$/.test(c))
       : []
-    const ips = Array.isArray(sc.allowed_ips)
-      ? sc.allowed_ips
-          .map((i: unknown) => (typeof i === 'string' ? i.trim() : ''))
-          .filter((i: string) => i.length > 0)
-      : []
 
     const value: SiteControl = {
       siteEnabled: data?.site_enabled !== false,
       blockBots: sc.block_bots === true,
-      allowedIps: ips,
       allowedCountries: countries.length > 0 ? countries : null,
       geoRedirectUrl:
         typeof sc.geo_redirect_url === 'string' && sc.geo_redirect_url.trim() !== ''
@@ -215,20 +206,6 @@ export async function proxy(request: NextRequest) {
     }
 
     const ip = getClientIp(request)
-
-    // 3) IP bazli acma: allowed_ips doluysa sadece bu IP'ler girer
-    //    (localhost/private IP'ler her zaman serbest -> dev kilitlenmesin)
-    if (control.allowedIps.length > 0 && ip && !PRIVATE_IP.test(ip)) {
-      const allowed = control.allowedIps.some(
-        (a) => ip === a || (a.endsWith('.*') && ip.startsWith(a.slice(0, -1))),
-      )
-      if (!allowed) {
-        return new NextResponse(FORBIDDEN_HTML(ip), {
-          status: 403,
-          headers: { 'content-type': 'text/html' },
-        })
-      }
-    }
 
     // 4) banned_ips tablosu
     if (ip && !pathname.startsWith('/api')) {
