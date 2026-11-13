@@ -17,6 +17,7 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
   const [themePrimary, setThemePrimary] = useState("#DF0000");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [whatsappMessage, setWhatsappMessage] = useState("");
+  const [savingWhatsApp, setSavingWhatsApp] = useState(false);
   const [openContinent, setOpenContinent] = useState<string | null>(null);
   const supabase = createBrowserSupabaseClient();
 
@@ -134,6 +135,26 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
     setSaving(false);
     if (error) alert("Hata: " + error.message);
     else alert("Genel ayarlar başarıyla kaydedildi!");
+  };
+
+  // WhatsApp ayarlarını TEK BAŞINA kaydet — site_control'un diger alanlarini korur.
+  const handleSaveWhatsApp = async () => {
+    if (!supabase || !settings) return;
+    setSavingWhatsApp(true);
+    const currentControl = (settings.site_control ?? {}) as Record<string, unknown>;
+    const { error } = await supabase
+      .from("global_settings")
+      .update({
+        site_control: {
+          ...currentControl,
+          whatsapp_number: whatsappNumber.trim(),
+          whatsapp_message: whatsappMessage,
+        },
+      })
+      .eq("id", settings.id || "default");
+    setSavingWhatsApp(false);
+    if (error) alert("Hata: " + error.message);
+    else alert("WhatsApp ayarları kaydedildi!");
   };
 
   const handleChange = (key: string, value: string) => {
@@ -417,6 +438,14 @@ export function GeneralSettingsTab({ darkMode }: { darkMode: boolean }) {
               <p className={`text-[11px] mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 Buraya yazdığın metin, kullanıcının WhatsApp'ında <b>hazır mesaj olarak</b> açılır — tek dokunuşla sana gönderir.
               </p>
+              <button
+                type="button"
+                onClick={() => void handleSaveWhatsApp()}
+                disabled={savingWhatsApp}
+                className="mt-4 w-full rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-[#04310f] shadow-[0_8px_20px_rgba(37,211,102,0.35)] transition hover:bg-[#2ce075] active:scale-[0.98] disabled:opacity-60"
+              >
+                {savingWhatsApp ? "Kaydediliyor..." : "WhatsApp Ayarlarını Kaydet"}
+              </button>
             </div>
           </div>
         </div>
