@@ -45,7 +45,7 @@ const WHEEL_ASSETS: Record<
   desktop: {
     backgroundSrc: "/wheel-assets/desktop/png/mediamarkt-background.webp",
     wheelSrc: "/wheel-assets/desktop/png/mediamarkt-wheel.webp",
-    rimSrc: "/wheel-assets/desktop/png/mediamarkt-rim-v2.webp",
+    rimSrc: "/wheel-assets/desktop/png/mediamarkt-rim-v3.webp",
     pointerSrc: "/wheel-assets/desktop/png/mediamarkt-pointer.webp",
     buttonSrc: "/wheel-assets/desktop/png/mediamarkt-button.webp",
     centerHubSrc: "/wheel-assets/desktop/png/mediamarkt-hub.webp",
@@ -58,7 +58,7 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "74.304%",
     wheelCx: 50,
     wheelCy: 50,
-    wheelScale: 0.79,
+    wheelScale: 0.89,
 
     // Hub gorseli, wheel kutusunun yuzdesi olarak merkeze oturur.
     hubWidthPct: 30,
@@ -76,7 +76,7 @@ const WHEEL_ASSETS: Record<
   mobile: {
     backgroundSrc: "/wheel-assets/mobile/png/mediamarkt-background.webp",
     wheelSrc: "/wheel-assets/mobile/png/mediamarkt-wheel.webp",
-    rimSrc: "/wheel-assets/mobile/png/mediamarkt-rim-v2.webp",
+    rimSrc: "/wheel-assets/mobile/png/mediamarkt-rim-v3.webp",
     pointerSrc: "/wheel-assets/mobile/png/mediamarkt-pointer.webp",
     buttonSrc: "/wheel-assets/mobile/png/mediamarkt-button.webp",
     centerHubSrc: "/wheel-assets/mobile/png/mediamarkt-hub.webp",
@@ -87,7 +87,7 @@ const WHEEL_ASSETS: Record<
     wheelHeight: "43.579%",
     wheelCx: 50,
     wheelCy: 50,
-    wheelScale: 0.79,
+    wheelScale: 0.89,
 
     hubWidthPct: 30,
 
