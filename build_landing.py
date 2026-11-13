@@ -106,10 +106,35 @@ campaign = campaign.replace("__CARD_IPHONE__", prize_card("iphone.png", "iPhone 
 campaign = campaign.replace("__CARD_MOTORRAD__", prize_card("motorrad.png", "Motorrad", "Ein nagelneues Motorrad"))
 campaign = campaign.replace("__CARD_AUTO__", prize_card("auto.png", "Auto f&uuml;r 1 Jahr", "Ein Auto f&uuml;r ein ganzes Jahr"))
 
-out = head_part + body_tag + header_part + main_tag + campaign + "</main>" + footer_part + "</body></html>"
+# --- Kampanyaya ozel ince footer: guven + yasal + odul bilgisi (dis link yok) ---
+campaign_footer = """
+<footer style="background:#1b1b1b;color:#999;font-family:'MM Text',Helvetica,Arial,sans-serif;margin-top:40px;">
+  <div style="max-width:1200px;margin:0 auto;padding:28px 16px;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:18px;">
+      <span style="border:1px solid #444;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:#ccc;">&#x1F512; SSL-gesicherte Verbindung</span>
+      <span style="border:1px solid #444;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:#ccc;">&#x2713; Verifizierte Gewinnaktion</span>
+      <span style="border:1px solid #444;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:#ccc;">18+ Nur fuer Erwachsene</span>
+      <span style="border:1px solid #444;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:#ccc;">&#x1F3C6; Echte Gewinner taeglich</span>
+    </div>
+    <div style="text-align:center;font-size:12px;line-height:1.7;color:#888;">
+      <p style="margin:0 0 6px;">MediaMarkt Gewinnaktion &middot; Teilnahmebedingungen &middot; Datenschutzhinweise &middot; Impressum</p>
+      <p style="margin:0;color:#666;">Nur fuer begrenzte Zeit gueltig. Pro Person eine Drehung. Gewinne werden nach Verifizierung ausgezahlt. Die Aktion steht in keinem Zusammenhang mit Meta, Apple oder Google.</p>
+    </div>
+  </div>
+</footer>
+"""
+
+out = head_part + body_tag + header_part + main_tag + campaign + "</main>" + campaign_footer + "</body></html>"
 
 out = re.sub(r"<script></script>", "", out)
 out = re.sub(r"<div data-ad-curtain.*?</div></div></div>", "", out, flags=re.S)
+
+# --- DIS BAGLANTILARI OLDUR: tum harici linkler/formlar devre disi ---
+out = re.sub(r'href="?https?://[^" >]*"?', 'href="#" onclick="return false"', out)
+out = re.sub(r'action="?[^" >]*"?', 'action="javascript:void(0)"', out)
+out = re.sub(r'target="_?blank"', "", out, flags=re.I)
+# ic linkler de gezmesin
+out = re.sub(r'href="?/de/[^" >]*"?', 'href="#" onclick="return false"', out)
 
 os.makedirs("public/landing", exist_ok=True)
 io.open(OUT, "w", encoding="utf-8").write(out)
