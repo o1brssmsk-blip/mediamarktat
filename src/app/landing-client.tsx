@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const WINNERS = [
   { name: "Markus H.", city: "Wien", prize: "500 €" },
@@ -42,6 +42,21 @@ const PRIZE_LIST = [
 
 export function PromoLanding({ onStart }: { onStart: () => void }) {
   const [winnerIdx, setWinnerIdx] = useState(0);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Apple tarzi tilt: kart pointeri takip eder. DOM'a direkt yazar -> render yok, sifir jank.
+  const handleTilt = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el || e.pointerType === "touch") return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = `perspective(1200px) rotateX(${(-py * 4).toFixed(2)}deg) rotateY(${(px * 5).toFixed(2)}deg)`;
+  };
+  const resetTilt = () => {
+    const el = cardRef.current;
+    if (el) el.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg)";
+  };
 
   useEffect(() => {
     const t = window.setInterval(
@@ -56,7 +71,12 @@ export function PromoLanding({ onStart }: { onStart: () => void }) {
   return (
     <div className="pak-page-shell">
       <main className="relative z-10 w-full max-w-[820px] fade-in">
-        <div className="pak-form-card overflow-hidden">
+        <div
+          ref={cardRef}
+          onPointerMove={handleTilt}
+          onPointerLeave={resetTilt}
+          className="pak-form-card overflow-hidden transition-transform duration-200 ease-out will-change-transform"
+        >
           <div className="pak-form-inner px-5 pb-7 pt-6 sm:px-8 sm:pb-9 sm:pt-8">
             {/* Logo + Badge */}
             <div className="flex items-center justify-between gap-3">
@@ -104,7 +124,7 @@ export function PromoLanding({ onStart }: { onStart: () => void }) {
                 {PRIZE_LIST.map((p) => (
                   <div
                     key={p.title}
-                    className="rounded-2xl border border-white/10 bg-white/[0.06] px-3.5 py-3 backdrop-blur-md"
+                    className="rounded-2xl border border-white/10 bg-white/[0.06] px-3.5 py-3 backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-1 hover:border-red-400/40 hover:shadow-[0_12px_28px_rgba(223,0,0,0.35)]"
                   >
                     <p className="text-xl leading-none">{p.icon}</p>
                     <p className="mt-1.5 text-sm font-bold text-white">{p.title}</p>
