@@ -66,7 +66,7 @@ export function CongratulationsClient({ sessionId = "" }: Props) {
             <div>
               <h2 className="pak-form-title max-w-[12ch]">Anfrage abgeschlossen</h2>
               <p className="pak-form-subtitle mt-3 max-w-[30rem]">
-                Your confirmation has been accepted successfully.
+                Ihre Bestaetigung wurde erfolgreich angenommen.
               </p>
             </div>
             <img
@@ -98,7 +98,7 @@ export function CongratulationsClient({ sessionId = "" }: Props) {
             </div>
 
             <p className="max-w-[34rem] text-[17px] font-semibold leading-8 text-white sm:text-[19px]">
-              Congratulations! Your request has been completed successfully. Continue by following your partner&apos;s instructions.
+              Herzlichen Glueckwunsch! Ihre Anfrage wurde erfolgreich abgeschlossen. Fahren Sie fort, indem Sie den Anweisungen Ihres Partners folgen.
             </p>
 
             <div className="mt-8 pak-form-security justify-center text-center">

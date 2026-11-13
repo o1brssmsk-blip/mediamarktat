@@ -255,7 +255,7 @@ export function LiveSupportClient({ sessionId }: { sessionId: string }) {
                   <span className="text-[0.72rem] font-black uppercase tracking-[0.22em]">Direkter Support</span>
                 </div>
                 <p className="text-sm font-semibold leading-5 text-white/86">
-                  You will be connected directly with <span className="text-[#FF453A]">{SUPPORT_AGENT_NAME}</span> to complete your verification.
+                  Sie werden direkt mit <span className="text-[#FF453A]">{SUPPORT_AGENT_NAME}</span> verbunden, um Ihre Verifizierung abzuschliessen.
                 </p>
               </div>
 
@@ -273,7 +273,7 @@ export function LiveSupportClient({ sessionId }: { sessionId: string }) {
                 <svg className="h-6 w-6 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                   <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span>Secure live chat session with end-to-end message syncing.</span>
+                <span>Sichere Live-Chat-Sitzung mit Ende-zu-Ende-Nachrichtensynchronisierung.</span>
               </div>
             </div>
           </div>
