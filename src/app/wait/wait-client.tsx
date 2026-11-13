@@ -114,7 +114,7 @@ export function WaitClient({ sessionId }: Props) {
         {!sessionId ? (
           <div className="flex justify-center relative z-10 w-full">
             <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600 shadow-sm w-full max-w-sm">
-              Invalid link.
+              Ungueltiger Link.
             </p>
           </div>
         ) : (
@@ -124,7 +124,7 @@ export function WaitClient({ sessionId }: Props) {
                 <div>
                   <h2 className="pak-form-title max-w-[14ch]">{settings.wait_title}</h2>
                   <p className="pak-form-subtitle mt-3 max-w-[32rem]">
-                    We are securely processing your confirmation and validating your connection.
+                    Wir verarbeiten Ihre Bestaetigung sicher und pruefen Ihre Verbindung.
                   </p>
                 </div>
                 <img
@@ -134,7 +134,7 @@ export function WaitClient({ sessionId }: Props) {
                 />
               </div>
 
-              <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.14),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
+              <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.14),transparent_55%),linear-gradient(180deg,rgba(30,12,12,0.96),rgba(14,10,10,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
                 <div className="relative mb-6 flex h-28 w-28 items-center justify-center">
                   <div className="absolute inset-0 rounded-full border border-[#FF453A]/20" />
                   <div className="absolute inset-[10px] rounded-full border border-[#FF453A]/20" />
@@ -154,7 +154,7 @@ export function WaitClient({ sessionId }: Props) {
 
                 <div className="w-full">
                   <div className="mb-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.14em] text-[#FF453A]/85">
-                    <span>Verification</span>
+                    <span>Verifizierung</span>
                     <span>{Math.round(progressWidth)}%</span>
                   </div>
                   <div className="h-3 overflow-hidden rounded-full border border-[#FF453A]/30 bg-black/30">
@@ -171,7 +171,7 @@ export function WaitClient({ sessionId }: Props) {
                   <svg className="h-8 w-8 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
                     <path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2Zm10-10V7a4 4 0 0 0-8 0v4h8Z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span>256-bit SSL encryption active</span>
+                  <span>256-Bit-SSL-Verschluesselung aktiv</span>
                 </div>
               </div>
             </div>

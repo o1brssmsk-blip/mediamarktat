@@ -76,7 +76,7 @@ export function CongratulationsClient({ sessionId = "" }: Props) {
             />
           </div>
 
-          <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.18),transparent_55%),linear-gradient(180deg,rgba(3,40,26,0.96),rgba(7,22,15,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
+          <div className="mx-auto flex w-full max-w-[560px] flex-col items-center rounded-[28px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.18),transparent_55%),linear-gradient(180deg,rgba(30,12,12,0.96),rgba(14,10,10,0.98))] px-6 py-8 shadow-[inset_0_1px_0_rgba(255,69,58,0.08)]">
             <div className="relative mb-6 flex h-28 w-28 items-center justify-center">
               <div className="absolute inset-0 rounded-full border border-[#FF453A]/20" />
               <div className="absolute inset-[12px] rounded-full border border-[#FF453A]/20" />

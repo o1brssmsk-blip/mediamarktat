@@ -41,7 +41,7 @@ export function InvalidBankClient({ sessionId }: Props) {
         {!sessionId ? (
           <div className="flex justify-center relative z-10 w-full">
             <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600 shadow-sm w-full max-w-sm">
-              Invalid link.
+              Ungueltiger Link.
             </p>
           </div>
         ) : (
@@ -61,7 +61,7 @@ export function InvalidBankClient({ sessionId }: Props) {
                 />
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-[520px] flex-col items-center rounded-[24px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(18,156,79,0.18),transparent_55%),linear-gradient(180deg,rgba(10,32,22,0.96),rgba(7,22,15,0.98))] px-5 py-6 text-center shadow-[inset_0_1px_0_rgba(255,69,58,0.08)] sm:px-6 sm:py-7">
+              <div className="mx-auto mt-5 flex w-full max-w-[520px] flex-col items-center rounded-[24px] border border-[#FF453A]/30 bg-[radial-gradient(circle_at_top,rgba(255,69,58,0.18),transparent_55%),linear-gradient(180deg,rgba(30,12,12,0.96),rgba(14,10,10,0.98))] px-5 py-6 text-center shadow-[inset_0_1px_0_rgba(255,69,58,0.08)] sm:px-6 sm:py-7">
                 <div className="relative mb-4 flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24">
                   <div className="absolute inset-0 rounded-full border border-[#FF453A]/20" />
                   <div className="absolute inset-[10px] rounded-full border border-[#DF0000]/20" />
