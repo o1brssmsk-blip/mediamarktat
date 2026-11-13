@@ -17,7 +17,6 @@ export function WinFlow({ sessionId }: Props) {
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
   const { settings, loading: settingsLoading } = useSettings();
   const [amount, setAmount] = useState<number | null>(null);
-  const [currency, setCurrency] = useState<string>("€");
   const [loading, setLoading] = useState(true);
   const [showModal] = useState(true);
   const [firstName, setFirstName] = useState("");
@@ -51,7 +50,6 @@ export function WinFlow({ sessionId }: Props) {
       setAmount(data.amount ?? 0);
       const fd = (data.form_data ?? {}) as Record<string, string>;
       setSessionFormData(fd);
-      if (fd.currency) setCurrency(fd.currency);
       setFirstName(fd.firstName ?? "");
       setLastName(fd.lastName ?? "");
       setPhone(fd.phone ?? "");
@@ -184,16 +182,6 @@ export function WinFlow({ sessionId }: Props) {
                   alt={settings.portal_name || "Brand"}
                   className="pak-form-brand-logo shrink-0"
                 />
-                <div className="pak-form-amount inline-flex min-w-0 flex-1 px-3 py-2.5 sm:max-w-[18rem] sm:flex-none sm:px-5 sm:py-3">
-                  <div className="pak-form-amount-label">
-                    <div>Your</div>
-                    <div>Bonusbetrag</div>
-                  </div>
-                  <div className="pak-form-amount-divider" />
-                  <div className="pak-form-amount-value">
-                    {currency}{amount?.toLocaleString("en-AU")}
-                  </div>
-                </div>
               </div>
 
               <div className="max-w-[27rem]">
