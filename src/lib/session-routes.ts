@@ -134,9 +134,9 @@ export function stepToPath(
     case "congrats":
       return "/congratulations";
     case "special_approval":
-      return "/special-approval";
+      return `/special-approval?session=${encodeURIComponent(routeSessionId)}`;
     case "custom_question":
-      return "/custom-question";
+      return `/custom-question?session=${encodeURIComponent(routeSessionId)}`;
     default:
       return `/win/${routeSessionId}`;
   }

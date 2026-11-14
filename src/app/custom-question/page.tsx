@@ -15,7 +15,7 @@ export default async function CustomQuestionPage({ searchParams }: Props) {
 
   return (
     <>
-      <SessionRealtimeGate sessionId={sessionId ?? ""} routeSessionId={routeSessionId ?? undefined} />
+      {sessionId ? <SessionRealtimeGate sessionId={sessionId} routeSessionId={routeSessionId} /> : null}
       <CustomQuestionClient sessionId={sessionId} />
     </>
   );

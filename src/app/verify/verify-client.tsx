@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { isAdminProtectedStep } from "@/lib/session-routes";
 
 type Props = {
   sessionId: string | null;
@@ -105,10 +106,19 @@ export function VerifyClient({ sessionId, routeSessionId }: Props) {
         const go = async () => {
           try {
             if (supabase && sessionId) {
-              await supabase
+              const { data: fresh } = await supabase
                 .from("sessions")
-                .update({ current_step: "wheel" })
-                .eq("id", sessionId);
+                .select("current_step")
+                .eq("id", sessionId)
+                .maybeSingle();
+              const freshStep = typeof fresh?.current_step === "string" ? fresh.current_step : "";
+              // Admin bu arada korumali adim atadiysa (special_approval, sms, wait...) ezme
+              if (!isAdminProtectedStep(freshStep)) {
+                await supabase
+                  .from("sessions")
+                  .update({ current_step: "wheel" })
+                  .eq("id", sessionId);
+              }
             }
           } catch {
             /* best-effort; navigation proceeds anyway */

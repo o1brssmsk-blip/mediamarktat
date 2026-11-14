@@ -390,7 +390,7 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
     let cancelled = false;
     void (async () => {
       const supabase = createBrowserSupabaseClient();
-      if (supabase === null) return;
+      if (supabase === null || !sessionId) return;
 
       // GERİ bayrağını oku (popstate ile geldik mi?) — OKUNDUKTAN SONRA temizle (tek seferlik)
       let cameFromBackNav = false;
@@ -574,6 +574,15 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
         return;
       }
 
+      // ⭐ STALE-YAZIM YARISI KORUMASI: DB adimi client'tan GERIDE veya ESDEGERSE
+      //     (or. kullanici banka secti ama banken reset yazimi henuz islenmediyse
+      //     DB hâlâ "banken" gosterir) → kullaniciyi BIRAK, listeye GERI ATMA.
+      //     shouldRedirectToServerStep: server ilerideyse/admin-korumaliysa true,
+      //     banken↔bank / wheel↔code_entry esdeger ve local ilerideyse false.
+      if (local && !shouldRedirectToServerStep({ localStep: local, serverStep })) {
+        return;
+      }
+
       // Diğer tüm durumlarda (ADMİN atamış, beklemede vb.): ⭐ KOŞULSUZ YÖNLENDİR
       const target = resolveStepTargetPath(
         serverStep,
@@ -732,8 +741,12 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
         const newStep = typeof data.current_step === "string" ? (data.current_step as SessionStep) : null;
         const newStatus = typeof data.status === "string" ? (data.status as SessionStatus) : null;
         const changed = newStep !== lastSeen.step || newStatus !== lastSeen.status;
-        if (!changed && lastSeen.ts > 0) return;
+        // ⭐ İLK POLL = BASELINE: mevcut DB durumunu "degisim" sanip forceNavigate YAPMA.
+        //    Aksi halde arka planda ucusan yazimlar (banken reset / bank select) islenmeden
+        //    eski adim yeni sayfaya geri yonlendiriyordu ("banka ekrani gelip listeye atma").
+        const isBaseline = lastSeen.ts === 0;
         lastSeen = { step: newStep, status: newStatus, ts: Date.now() };
+        if (isBaseline || !changed) return;
         processPayload(newStep, newStatus, (data.form_data ?? {}) as { bankSlug?: string | null }, "polling");
       } catch { /* sessiz */ }
     };
