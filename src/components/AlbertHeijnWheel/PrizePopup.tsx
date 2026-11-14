@@ -26,9 +26,9 @@ const POPUP_CONFIG = {
   desktop: {
     src: "/mediamarkt/desktop-popup.webp",
     nameBoxClassName:
-      "absolute left-[18%] top-[40.8%] flex h-[4.6%] w-[64%] items-center justify-center overflow-hidden",
+      "absolute left-[18%] top-[40.5%] flex h-[5.4%] w-[64%] items-center justify-center overflow-hidden",
     amountBoxClassName:
-      "absolute left-[16%] top-[60.8%] flex h-[4.8%] w-[68%] items-center justify-center overflow-hidden",
+      "absolute left-[16%] top-[60.2%] flex h-[5.8%] w-[68%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[20%] top-[90.5%] h-[8%] w-[60%] rounded-full",
     closeClassName: "absolute right-[3%] top-[2%] h-[7%] w-[8%] rounded-full",
     messageFontSize: "clamp(0.95rem, 1.8vw, 1.4rem)",
@@ -37,9 +37,9 @@ const POPUP_CONFIG = {
   mobile: {
     src: "/mediamarkt/mobile-popup.webp",
     nameBoxClassName:
-      "absolute left-[17%] top-[31.6%] flex h-[4.2%] w-[66%] items-center justify-center overflow-hidden",
+      "absolute left-[17%] top-[31.2%] flex h-[5%] w-[66%] items-center justify-center overflow-hidden",
     amountBoxClassName:
-      "absolute left-[15%] top-[71.5%] flex h-[4.4%] w-[70%] items-center justify-center overflow-hidden",
+      "absolute left-[15%] top-[71.4%] flex h-[5.4%] w-[70%] items-center justify-center overflow-hidden",
     ctaClassName: "absolute left-[7%] top-[79%] h-[9.5%] w-[86%] rounded-full",
     closeClassName: "absolute right-[4%] top-[1.5%] h-[5%] w-[12%] rounded-full",
     messageFontSize: "clamp(0.8rem, 3vw, 1.1rem)",
@@ -47,7 +47,10 @@ const POPUP_CONFIG = {
   },
 } as const;
 
-// Yaziyi kutunun icine olabildigince buyuk sigdirir (en/boy tasmasi olmaz)
+// Yaziyi kutunun icine olabildigince buyuk sigdirir — canvas ile gercek glyph
+// olcumu (en/boy tasmasi olmaz, kisa yazi kocaman, uzun yazi kuculur)
+const FIT_FONT_STACK = "var(--font-inter), system-ui, -apple-system, sans-serif";
+
 function FittedText({
   text,
   color,
@@ -56,40 +59,58 @@ function FittedText({
   color: string;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0);
+  const [fontSize, setFontSize] = useState(0);
 
   useLayoutEffect(() => {
     const measure = () => {
       const box = boxRef.current;
-      const el = textRef.current;
-      if (!box || !el) return;
-      const tw = el.scrollWidth;
-      const th = el.scrollHeight;
-      if (!tw || !th) return;
-      setScale(Math.min(box.clientWidth / tw, box.clientHeight / th) * 0.86);
+      if (!box || !text.trim()) return;
+      const boxW = box.clientWidth;
+      const boxH = box.clientHeight;
+      if (boxW < 4 || boxH < 4) return;
+
+      const canvas = document.createElement("canvas").getContext("2d");
+      if (!canvas) return;
+      canvas.font = `800 100px ${FIT_FONT_STACK}`;
+      const metrics = canvas.measureText(text);
+      const glyphW = Math.max(1, metrics.width);
+      const glyphH = Math.max(
+        1,
+        (metrics.actualBoundingBoxAscent || 70) + (metrics.actualBoundingBoxDescent || 20),
+      );
+      // 100px referans olcuyu kutuya oranla: en %88, boy %80
+      const byWidth = (boxW * 0.88 * 100) / glyphW;
+      const byHeight = (boxH * 0.8 * 100) / glyphH;
+      setFontSize(Math.min(byWidth, byHeight));
     };
+
     measure();
+    let fontsDone = false;
+    if (typeof document !== "undefined" && "fonts" in document) {
+      void document.fonts.ready.then(() => {
+        if (!fontsDone) measure();
+      });
+    }
     const ro = new ResizeObserver(measure);
     if (boxRef.current) ro.observe(boxRef.current);
-    return () => ro.disconnect();
+    return () => {
+      fontsDone = true;
+      ro.disconnect();
+    };
   }, [text]);
 
   return (
     <div ref={boxRef} className="flex h-full w-full items-center justify-center overflow-hidden">
       <div
-        ref={textRef}
         aria-live="polite"
         className="whitespace-nowrap text-center font-extrabold"
         style={{
-          fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
-          fontSize: "140px",
-          lineHeight: "0.95",
+          fontFamily: FIT_FONT_STACK,
+          fontSize: fontSize > 0 ? `${fontSize}px` : "1px",
+          lineHeight: "1",
           letterSpacing: "-0.02em",
           color,
-          transform: `scale(${scale})`,
-          transformOrigin: "center",
-          visibility: scale > 0 ? "visible" : "hidden",
+          visibility: fontSize > 0 ? "visible" : "hidden",
         }}
       >
         {text}
