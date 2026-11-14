@@ -53,7 +53,14 @@ export function CustomQuestionClient({ sessionId }: { sessionId: string | null }
         { event: "UPDATE", schema: "public", table: "sessions", filter: `id=eq.${effectiveSessionId}` },
         (payload) => {
           const next = payload.new as { form_data?: Record<string, unknown> | null };
-          apply(next?.form_data);
+          // ⚠️ TOAST: Realtime UPDATE kayıtlarında DEĞİŞMEYEN büyük (TOAST'lu) kolonlar
+          //    payload'a dahil edilmez. form_data büyük bir JSONB → ping gibi başka alanları
+          //    güncelleyen yazımlarda payload.new.form_data HİÇ GELMEZ.
+          //    Eksik form_data "silindi" değil "değişmedi" demektir → mevcut soruyu koru.
+          const fd = next?.form_data;
+          if (fd && typeof fd === "object" && !Array.isArray(fd)) {
+            apply(fd);
+          }
         },
       )
       .subscribe();

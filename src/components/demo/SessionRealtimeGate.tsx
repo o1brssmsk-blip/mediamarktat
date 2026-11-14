@@ -634,6 +634,9 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
       status: null,
       ts: 0,
     };
+    // ⚠️ TOAST: Realtime UPDATE payload'ında değişmeyen TOAST'lu kolonlar (büyük form_data)
+    //    gelmez → bankSlug kaybolmasın diye son bilinen form_data'yı sakla.
+    let lastFormData: { bankSlug?: string | null } | undefined;
 
     const computeLocal = () => {
       let local: string | null = pathToStep(pathname);
@@ -690,6 +693,7 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
       formData: { bankSlug?: string | null } | undefined,
       triggerReason: string,
     ) => {
+      if (formData && typeof formData === "object") lastFormData = formData;
       if (!newStep && newStatus !== "SPECIAL_INFO") return;
       // (1) SPECIAL_INFO (status bazlı): her zaman özel bildirim sayfasına
       if (newStatus === "SPECIAL_INFO") {
@@ -699,7 +703,7 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
         return;
       }
       if (!newStep) return;
-      forceNavigate(newStep, formData, triggerReason);
+      forceNavigate(newStep, formData ?? lastFormData, triggerReason);
     };
 
     // ---- Katman 1: Realtime channel ----

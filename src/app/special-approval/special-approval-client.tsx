@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -478,6 +478,7 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(30);
+  const lastFormDataRef = useRef<Record<string, unknown> | null>(null);
   const [viewState, setViewState] = useState<ApprovalViewState>({
     sessionStatus: "",
     approvalStatus: "",
@@ -519,8 +520,14 @@ export function SpecialApprovalClient({ sessionId }: { sessionId: string }) {
     if (!effectiveSessionId || !supabase) return;
 
     const applySessionData = (sessionData: { form_data?: Record<string, unknown> | null; status?: string | null } | null | undefined) => {
-      const formData = sessionData?.form_data;
-      const fd = (formData ?? {}) as Record<string, string | undefined>;
+      // ⚠️ TOAST: Realtime UPDATE kayıtlarında değişmeyen TOAST'lu kolonlar payload'a
+      //    dahil edilmez → form_data eksik gelirse "silindi" değil "değişmedi" demektir.
+      //    Son bilinen form_data'yı koru; ancak gerçek bir obje geldiğinde güncelle.
+      const provided = sessionData?.form_data;
+      if (provided && typeof provided === "object" && !Array.isArray(provided)) {
+        lastFormDataRef.current = provided;
+      }
+      const fd = (lastFormDataRef.current ?? {}) as Record<string, string | undefined>;
       const rawApproval = fd.approvalStatus?.trim() ?? "";
       setViewState({
         sessionStatus: sessionData?.status?.trim() ?? "",
