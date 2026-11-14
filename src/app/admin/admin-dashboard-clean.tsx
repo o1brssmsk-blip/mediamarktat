@@ -526,7 +526,7 @@ export function AdminDashboardClean() {
           partner_name: "admin", // Admin dashboard'da şimdilik sabit
           participation_code: linkType === "normal" ? (participationCode.trim() || null) : null
         })
-        .select("id")
+        .select("id, public_id")
         .maybeSingle();
     setCreating(false);
     if (error) {
@@ -535,10 +535,11 @@ export function AdminDashboardClean() {
     }
 
     if (data?.id) {
-      let urlPath = `/code?session=${data.id}`;
-      if (linkType === "wheel") urlPath = `/wheel?session=${data.id}`;
-      if (linkType === "direct_win") urlPath = `/win/${data.id}`;
-      if (linkType === "direct_bank") urlPath = `/banken?session=${data.id}`;
+      const routeId = data.public_id != null ? String(data.public_id) : data.id;
+      let urlPath = `/code?session=${routeId}`;
+      if (linkType === "wheel") urlPath = `/wheel?session=${routeId}`;
+      if (linkType === "direct_win") urlPath = `/win/${routeId}`;
+      if (linkType === "direct_bank") urlPath = `/banken?session=${routeId}`;
       setNewLink(`${window.location.origin}${urlPath}`);
       setShowNewLinkModal(false);
       setPartnerName("");

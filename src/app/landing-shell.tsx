@@ -95,12 +95,24 @@ export default function LandingShell() {
     (window as unknown as { goForm?: () => Promise<void> }).goForm = async () => {
       const s = new URLSearchParams(window.location.search);
       const existing = s.get("session");
-      if (existing) {
-        window.location.href = "/win/" + encodeURIComponent(existing);
-        return;
-      }
       try {
         const supabase = createBrowserSupabaseClient();
+        if (existing) {
+          // UUID ile gelindiyse kisa public_id'ye cevir (or. /win/19)
+          let route = existing;
+          if (supabase && existing.includes("-")) {
+            try {
+              const { data: row } = await supabase
+                .from("sessions")
+                .select("public_id")
+                .eq("id", existing)
+                .maybeSingle();
+              if (row?.public_id != null) route = String(row.public_id);
+            } catch {}
+          }
+          window.location.href = "/win/" + encodeURIComponent(route);
+          return;
+        }
         if (supabase) {
           const partner = s.get("ref") || "admin";
           const { data } = await supabase

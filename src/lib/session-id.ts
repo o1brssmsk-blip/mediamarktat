@@ -20,6 +20,21 @@ async function resolveSessionIdentifier(identifier?: string | null) {
   }
 
   if (isUuidSessionIdentifier(normalized)) {
+    // Kisa URL icin public_id'ye coz (varsa): /win/19, /win/20, ...
+    const supabase = await createServerSupabaseClient();
+    if (supabase) {
+      const { data } = await supabase
+        .from("sessions")
+        .select("public_id")
+        .eq("id", normalized)
+        .maybeSingle();
+      if (data?.public_id != null) {
+        return {
+          sessionId: normalized,
+          routeSessionId: String(data.public_id),
+        };
+      }
+    }
     return {
       sessionId: normalized,
       routeSessionId: normalized,

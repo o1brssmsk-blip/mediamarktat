@@ -423,10 +423,11 @@ export function SessionRealtimeGate({ sessionId, routeSessionId }: Props) {
               is_hidden: false,
               form_data: { currency: "€", is_wheel_game: true },
             })
-            .select("id")
+            .select("id, public_id")
             .maybeSingle();
           if (fresh?.id) {
-            try { window.location.replace(`/?session=${fresh.id}`); } catch {}
+            const routeId = fresh.public_id != null ? String(fresh.public_id) : fresh.id;
+            try { window.location.replace(`/?session=${routeId}`); } catch {}
           }
         } catch {}
         return;
