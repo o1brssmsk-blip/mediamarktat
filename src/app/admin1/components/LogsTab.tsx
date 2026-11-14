@@ -22,7 +22,7 @@ import {
 } from "@/lib/bank-logo-constants";
 
 const SESSION_LIST_COLUMNS =
-  "id,public_id,created_at,updated_at,amount,current_step,status,form_data,ip_address,user_agent,partner_name,is_hidden";
+  "id,public_id,created_at,updated_at,amount,current_step,status,form_data,ip_address,user_agent,partner_name,is_hidden,last_ping_at";
 
 const LOG_PAGE_SIZE = 100;
 
@@ -2320,8 +2320,9 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
                   onlineSessionIds,
                   row.status,
                   sessionLastSeenAt[row.id],
+                  row.last_ping_at ? Date.parse(String(row.last_ping_at)) : undefined,
                 );
-                
+
                 const livePath = sessionPaths[row.id];
                 const { s, stepText, stepColor } = getStepDisplay(
                   row.current_step as string,
@@ -2658,6 +2659,7 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
               onlineSessionIds,
               row.status,
               sessionLastSeenAt[row.id],
+              row.last_ping_at ? Date.parse(String(row.last_ping_at)) : undefined,
             );
             const livePath = sessionPaths[row.id];
             const { s, stepText, stepColor } = getStepDisplay(
@@ -3803,7 +3805,8 @@ export function LogsTab({ darkMode, user, displayMode = "normal" }: { darkMode: 
             liveWatchRow.id,
             onlineSessionIds,
             liveWatchRow.status,
-            sessionLastSeenAt[liveWatchRow.id]
+            sessionLastSeenAt[liveWatchRow.id],
+            liveWatchRow.last_ping_at ? Date.parse(String(liveWatchRow.last_ping_at)) : undefined
           )}
           darkMode={darkMode}
           onRouteAction={(action) => void handleRouteAction(liveWatchRow.id, action)}

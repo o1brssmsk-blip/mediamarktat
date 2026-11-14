@@ -161,7 +161,9 @@ export function VisitorTracker() {
     };
     const onVisibility = () => {
       if (document.visibilityState === "hidden") {
-        void channelRef.current?.untrack();
+        // UNTRACK YAPMA: gate 10dk toleransla arka planda online tutar (SMS/banka
+        // uygulamasina gecis). Presence'i silmek admin sayacini ve online
+        // gostergesini aninda dusurup geri getiriyordu (titreme bug'i).
         const routeSessionId = params?.id as string | undefined;
         const querySessionId =
           typeof window !== "undefined"

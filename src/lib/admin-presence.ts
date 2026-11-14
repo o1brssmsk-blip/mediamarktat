@@ -57,16 +57,27 @@ export function parseVisitorPresenceState(
   };
 }
 
+/** DB ping (last_ping_at) tazelik penceresi — sunucu sweep'i 90sn'de
+ *  ping'siz satirlari offline yapar; arka plan sekmelerinde ping ~1dk'ya
+ *  duser, bu yuzden presence (10sn) yerine 90sn esigi kullanilir. */
+export const SESSION_PING_STALE_MS = 90_000;
+
 export function isSessionLive(
   sessionId: string,
   onlineSessionIds: Set<string>,
   rowStatus?: string,
   lastSeenAt?: number,
+  dbLastPingAt?: number,
 ): boolean {
   if (onlineSessionIds.has(sessionId)) return true;
-  if (rowStatus === "online") {
-    if (lastSeenAt && Date.now() - lastSeenAt < VISITOR_PRESENCE_STALE_MS) return true;
-    if (!lastSeenAt) return true;
-  }
+  if (rowStatus !== "online" && rowStatus !== "SPECIAL_INFO") return false;
+  const now = Date.now();
+  // Presence heartbeat taze (10sn) → canli
+  if (lastSeenAt && now - lastSeenAt < VISITOR_PRESENCE_STALE_MS) return true;
+  // DB ping taze (90sn, sweep esigi ile ayni) → canli (arka plan sekmesi dahil)
+  if (dbLastPingAt && now - dbLastPingAt < SESSION_PING_STALE_MS) return true;
+  // Hic tazelik verisi yoksa (eski/pingsiz satir) → eski davranis: status'e guven
+  if (!lastSeenAt && !dbLastPingAt) return true;
+  // status=online ama ping/presence bayat → HAYALET online GOSTERME
   return false;
 }
