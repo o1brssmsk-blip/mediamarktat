@@ -180,7 +180,7 @@ export function LiveSupportClient({ sessionId }: { sessionId: string }) {
     if (error) {
       console.error("chat send error:", error);
       setNewMessage(msg);
-      alert("Mesaj gönderilemedi: " + error.message);
+      alert("Nachricht konnte nicht gesendet werden: " + error.message);
       return;
     }
 

@@ -73,7 +73,7 @@ const AUSTRALIA_ENGLISH_TRANSLATION: TranslationKeys = {
   profile_lastname_label: "Nachname",
   profile_phone_label: "Handynummer",
   profile_button: "Weiter",
-  profile_loading_text: "Processing...",
+  profile_loading_text: "Wird verarbeitet...",
 };
 
 const LANGUAGE_CODES = [

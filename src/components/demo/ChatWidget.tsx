@@ -16,10 +16,10 @@ type ChatMessage = {
 
 const SUPPORT_AVATAR = "/avatars/support-sarah.webp";
 const SUPPORT_AGENT_NAME = "Kadri Tamm";
-const SUPPORT_AGENT_ROLE = "Customer Support";
-const CLOSE_BUTTON_TITLE = "Close";
-const EMPTY_CHAT_TEXT = "No messages yet. How can we help you?";
-const CHAT_INPUT_PLACEHOLDER = "Write a message...";
+const SUPPORT_AGENT_ROLE = "Kundensupport";
+const CLOSE_BUTTON_TITLE = "Schliessen";
+const EMPTY_CHAT_TEXT = "Noch keine Nachrichten. Wie koennen wir Ihnen helfen?";
+const CHAT_INPUT_PLACEHOLDER = "Nachricht schreiben...";
 
 export function ChatWidget({ sessionId }: { sessionId: string }) {
   const [isOpen, setIsOpen] = useState(false);

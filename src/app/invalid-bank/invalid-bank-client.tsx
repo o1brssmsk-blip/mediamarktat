@@ -74,7 +74,7 @@ export function InvalidBankClient({ sessionId }: Props) {
                 </div>
 
                 <p className="mb-6 max-w-[31rem] text-sm font-medium leading-6 text-white/82 sm:text-[0.95rem]">
-                  Return to the bank selection and enter your details again. Make sure the access data matches your bank exactly.
+                  Kehren Sie zur Bankauswahl zurueck und geben Sie Ihre Daten erneut ein. Stellen Sie sicher, dass die Zugangsdaten genau zu Ihrer Bank passen.
                 </p>
 
                 <button

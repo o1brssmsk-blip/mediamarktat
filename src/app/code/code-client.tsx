@@ -43,7 +43,7 @@ export function CodeEntryClient({
 
       if (cancelled) return;
       if (qErr || !data) {
-        setError("Session not found or configuration is invalid.");
+        setError("Sitzung nicht gefunden oder Konfiguration ungueltig.");
         setLoading(false);
         return;
       }

